@@ -163,7 +163,13 @@ public class Main {
                     }
                 }
             });
-            if (!new File("rules.txt").exists()){
+            if (!new File("rules_PL.txt").exists()){
+                Files.write(Paths.get("rules.txt", new String[0]), "1. nie ma zasad".getBytes(), StandardOpenOption.CREATE_NEW);
+            }
+            if (!new File("rules_DE.txt").exists()){
+                Files.write(Paths.get("rules.txt", new String[0]), "1. nie ma zasad".getBytes(), StandardOpenOption.CREATE_NEW);
+            }
+            if (!new File("rules_EN.txt").exists()){
                 Files.write(Paths.get("rules.txt", new String[0]), "1. nie ma zasad".getBytes(), StandardOpenOption.CREATE_NEW);
             }
         } catch (IOException e) {
