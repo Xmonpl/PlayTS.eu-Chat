@@ -1,0 +1,58 @@
+{
+  "playts": {
+      "required": "none",
+      "file": "playts.txt",
+      "description": "Glowny kanal!",
+      "private": false,
+      "imprecation": false,
+      "advertising": false
+    },
+    "nsfw": {
+      "required": "age18",
+      "file": "nsfw.txt",
+      "description": "Kanal wylacznie dla doroslych!",
+      "private": false,
+      "imprecation": true,
+      "advertising": false
+    },
+    "staff": {
+      "required": "admin",
+      "file": "staff.txt",
+      "description": "Kanal wylacznie dla administracji",
+      "private": false,
+      "imprecation": false,
+      "advertising": false
+    },
+    "plus": {
+      "required": "plus",
+      "file": "plus.txt",
+      "description": "Kanal wylacznie dla rangi plus oraz premium",
+      "private": false,
+      "imprecation": false,
+      "advertising": false
+    },
+    "premium": {
+      "required": "premium",
+      "file": "premium.txt",
+      "description": "Kanal wylacznie dla rangi premium!",
+      "private": false,
+      "imprecation": false,
+      "advertising": false
+    },
+    "gaming": {
+      "required": "none",
+      "file": "gaming.txt",
+      "description": "Kanal dla zapalonych grajkow",
+      "private": false,
+      "imprecation": false,
+      "advertising": false
+    },
+    "xmon": {
+      "required": "none",
+      "file": "xmon.txt",
+      "description": "Kanal dla zapalonych grajkow",
+      "private": true,
+      "imprecation": true,
+      "advertising": true
+    }
+}

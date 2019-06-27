@@ -1,0 +1,17 @@
+{
+  "Config": {
+    "virutal-server-id": 1,
+    "query-password": "1234567890",
+    "query-address": "127.0.0.1",
+    "query-port": 10011,
+    "query-login": "serveradmin",
+    "debug": false,
+    "database-mode": "SQLITE",
+    "database-tableprefix": "chat",
+    "database-mysql-host": "123.123.123.123",
+    "database-mysql-port": 3036,
+    "database-mysql-user": "root",
+    "database-mysql-password": "toor",
+    "database-mysql-name": "chat"
+  }
+}
