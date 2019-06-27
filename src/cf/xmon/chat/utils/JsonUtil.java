@@ -2,6 +2,8 @@ package cf.xmon.chat.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,7 +17,7 @@ public class JsonUtil
 {
     private static final Gson gson;
 
-    public static <T> T readConfiguration(final Class<T> configurationClass, final File file) throws Exception {
+    public static <T> T readConfiguration(final Class<T> configurationClass, @NotNull final File file) throws Exception {
         if (!file.exists()) {
             file.createNewFile();
             System.out.println("Generowanie configu..");
@@ -24,7 +26,8 @@ public class JsonUtil
         return JsonUtil.gson.fromJson(new String(Files.readAllBytes(file.toPath()), StandardCharsets.UTF_8), configurationClass);
     }
 
-    public static <T> T readObjectFromFile(final Class<T> object, final File file) throws Exception {
+    @Nullable
+    public static <T> T readObjectFromFile(final Class<T> object, @NotNull final File file) throws Exception {
         if (!file.exists()) {
             return null;
         }
@@ -32,7 +35,7 @@ public class JsonUtil
         return JsonUtil.gson.fromJson(reader, object);
     }
 
-    public static void writeObjectToFile(final Object object, final File file) throws Exception {
+    public static void writeObjectToFile(final Object object, @NotNull final File file) throws Exception {
         if (!file.exists()) {
             file.createNewFile();
         }

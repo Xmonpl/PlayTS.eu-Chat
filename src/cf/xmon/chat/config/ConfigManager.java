@@ -1,6 +1,7 @@
 package cf.xmon.chat.config;
 
 import cf.xmon.chat.utils.JsonUtil;
+import org.jetbrains.annotations.Contract;
 
 import java.io.File;
 
@@ -18,6 +19,7 @@ public class ConfigManager
         }
     }
 
+    @Contract(pure = true)
     public static Config getConfig() {
         return ConfigManager.botConfig;
     }

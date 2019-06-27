@@ -3,6 +3,7 @@ package cf.xmon.chat.database;
 import cf.xmon.chat.utils.Logger;
 import cf.xmon.chat.utils.TimeUtil;
 import cf.xmon.chat.utils.Timming;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
 import java.util.Timer;
@@ -90,7 +91,7 @@ public class StoreMySQL implements Store
     }
 
     @Override
-    public ResultSet update(final String update) {
+    public ResultSet update(@NotNull final String update) {
         try {
             final Statement statement = this.conn.createStatement();
             statement.executeUpdate(update.replace("{P}", this.prefix), 1);
@@ -136,7 +137,7 @@ public class StoreMySQL implements Store
     }
 
     @Override
-    public ResultSet query(final String query) {
+    public ResultSet query(@NotNull final String query) {
         try {
             return this.conn.createStatement().executeQuery(query.replace("{P}", this.prefix));
         }

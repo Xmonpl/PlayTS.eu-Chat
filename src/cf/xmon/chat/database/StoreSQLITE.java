@@ -2,6 +2,8 @@ package cf.xmon.chat.database;
 
 import cf.xmon.chat.utils.Logger;
 import cf.xmon.chat.utils.Timming;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.*;
 import java.util.concurrent.Executor;
@@ -63,7 +65,7 @@ public class StoreSQLITE implements Store
     }
 
     @Override
-    public ResultSet update(final String update) {
+    public ResultSet update(@NotNull final String update) {
         try {
             final Statement statement = this.conn.createStatement();
             statement.executeUpdate(update.replace("{P}", this.prefix), 1);
@@ -109,7 +111,7 @@ public class StoreSQLITE implements Store
     }
 
     @Override
-    public ResultSet query(final String query) {
+    public ResultSet query(@NotNull final String query) {
         try {
             return this.conn.createStatement().executeQuery(query.replace("{P}", this.prefix));
         }
@@ -158,6 +160,7 @@ public class StoreSQLITE implements Store
         this.executor = executor;
     }
 
+    @Contract(value = "null -> false", pure = true)
     @Override
     public boolean equals(final Object o) {
         if (o == this) {

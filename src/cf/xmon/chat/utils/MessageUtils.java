@@ -48,6 +48,7 @@ public class MessageUtils {
         Collections.reverse(reverse);
         return reverse;
     }
+    @NotNull
     public static String parserMessage(@NotNull Client c, @NotNull User u, @NotNull String message, @NotNull File channel){
         if (c.isInServerGroup(6) || c.isInServerGroup(16)){
             return "[b]Kanał: [color=#f4511e]#" + channel.getName().replace(".txt", "") + "[/color] ([color=#43a047]" + UserUtils.online.get(channel.getName().replace(".txt", "").toLowerCase()) + "/" + UserUtils.max.get(channel.getName().replace(".txt", "").toLowerCase()) + "[/color])[/b]\n\uD83D\uDCAC [color=#5e6165]" + getTime() + "[/color] \uD83D\uDD27 [b][URL=client://0/" +

@@ -12,6 +12,8 @@ import cf.xmon.chat.utils.MessageUtils;
 import cf.xmon.chat.utils.TeamSpeakUtils;
 import cf.xmon.chat.utils.UserUtils;
 import org.apache.commons.io.input.ReversedLinesFileReader;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -135,10 +137,12 @@ public class Main {
         channels = add;
         System.out.println(channels);
     }
+    @NotNull
     public static JSONObject parseJSONFile(String filename) throws JSONException, IOException {
         String content = new String(Files.readAllBytes(Paths.get(filename)));
         return new JSONObject(content);
     }
+    @Contract(pure = true)
     public static Store getStore() {
         return store;
     }

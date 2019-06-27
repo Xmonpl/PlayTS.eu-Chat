@@ -10,6 +10,7 @@ import com.github.theholywaffle.teamspeak3.api.event.TS3EventAdapter;
 import com.github.theholywaffle.teamspeak3.api.event.TextMessageEvent;
 import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
 import org.apache.commons.io.input.ReversedLinesFileReader;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -36,7 +37,7 @@ public class ChatEvent extends TS3EventAdapter {
         uppercase = Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$");
     }
     @Override
-    public void onTextMessage(TextMessageEvent e){
+    public void onTextMessage(@NotNull TextMessageEvent e){
         if(!e.getInvokerName().equals("PlayTS.eu @ Chat")) {
             Client c = TeamSpeakUtils.api.getClientInfo(e.getInvokerId());
             if (!c.isServerQueryClient()){

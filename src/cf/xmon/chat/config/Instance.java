@@ -1,6 +1,7 @@
 package cf.xmon.chat.config;
 
 import com.google.gson.annotations.SerializedName;
+import org.jetbrains.annotations.Contract;
 
 public class Instance {
     @SerializedName("virutal-server-id")
@@ -29,6 +30,7 @@ public class Instance {
     private String databasemysqlpassword;
     @SerializedName("database-mysql-name")
     private String databasemysqlname;
+    @Contract(pure = true)
     public Instance() {
         this.ip = "127.0.0.1";
         this.queryLogin = "serveradmin";

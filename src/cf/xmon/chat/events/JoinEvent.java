@@ -9,6 +9,7 @@ import com.github.theholywaffle.teamspeak3.api.event.ClientJoinEvent;
 import com.github.theholywaffle.teamspeak3.api.event.TS3EventAdapter;
 import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
 import org.apache.commons.io.input.ReversedLinesFileReader;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -21,7 +22,7 @@ import static cf.xmon.chat.Main.parseJSONFile;
 
 public class JoinEvent extends TS3EventAdapter {
     @Override
-    public void onClientJoin(ClientJoinEvent e){
+    public void onClientJoin(@NotNull ClientJoinEvent e){
         Client c = TeamSpeakUtils.api.getClientByUId(e.getUniqueClientIdentifier());
         if (c.isRegularClient()) {
             try {

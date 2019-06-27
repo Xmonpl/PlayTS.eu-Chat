@@ -4,6 +4,7 @@ import cf.xmon.chat.Main;
 import cf.xmon.chat.utils.TeamSpeakUtils;
 import cf.xmon.chat.utils.UserUtils;
 import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -20,7 +21,7 @@ public class User {
     private String password;
     private long mute;
 
-    public User(Client c){
+    public User(@NotNull Client c){
         new User(c.getUniqueIdentifier());
     }
 
@@ -37,7 +38,7 @@ public class User {
         UserUtils.addUser(this);
         this.insert();
     }
-    public User(final ResultSet rs) throws SQLException {
+    public User(@NotNull final ResultSet rs) throws SQLException {
         this.name = rs.getString("name");
         this.uuid = rs.getString("uuid");
         this.dbid = rs.getInt("dbid");

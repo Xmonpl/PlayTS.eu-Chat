@@ -3,6 +3,8 @@ package cf.xmon.chat.utils;
 import cf.xmon.chat.Main;
 import cf.xmon.chat.object.User;
 import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,6 +16,7 @@ public class UserUtils {
     public static Map<String, Integer> max = new HashMap<>();
     public static Map<String, Integer> online = new HashMap<>();
     private static List<User> users = new ArrayList<User>();
+    @Contract(pure = true)
     public static List<User> getUsers() {
         return users;
     }
@@ -21,7 +24,7 @@ public class UserUtils {
         users.add(u);
     }
     public static void remUser(User u) { users.remove(u); }
-    public static User get(Client c) {
+    public static User get(@NotNull Client c) {
         return get(c.getUniqueIdentifier());
     }
 
@@ -37,7 +40,7 @@ public class UserUtils {
                 UserUtils.users.add(u);
             }
             rs.close();
-            Logger.info("Loaded " + UserUtils.users.size() + " users");
+            Logger.info("Loaded " + UserUtils.users.size()/2 + " users");
         }
         catch (SQLException e) {
             Logger.info("Can not load players Error " + e.getMessage());

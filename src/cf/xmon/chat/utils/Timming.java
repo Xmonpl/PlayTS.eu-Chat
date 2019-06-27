@@ -1,5 +1,7 @@
 package cf.xmon.chat.utils;
 
+import org.jetbrains.annotations.Contract;
+
 public class Timming
 {
     private long startTime;
@@ -8,6 +10,7 @@ public class Timming
     private long nanoEndTime;
     private final String name;
 
+    @Contract(pure = true)
     public Timming(final String name) {
         this.name = name;
     }

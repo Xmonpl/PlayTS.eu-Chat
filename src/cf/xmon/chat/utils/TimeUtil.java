@@ -1,5 +1,7 @@
 package cf.xmon.chat.utils;
 
+import org.jetbrains.annotations.Contract;
+
 public enum TimeUtil
 {
     TICK("TICK", 0, "TICK", 0, "TICK", 0, 50, 50),
@@ -14,27 +16,33 @@ public enum TimeUtil
     private final int time;
     private final int timeMulti;
 
+    @Contract(pure = true)
     private TimeUtil(final String s3, final int n3, final String s2, final int n2, final String s, final int n, final int time, final int timeMulti) {
         this.time = time;
         this.timeMulti = timeMulti;
     }
 
+    @Contract(pure = true)
     public int getMulti() {
         return this.timeMulti;
     }
 
+    @Contract(pure = true)
     public int getTime() {
         return this.time;
     }
 
+    @Contract(pure = true)
     public int getTick() {
         return this.time / 50;
     }
 
+    @Contract(pure = true)
     public int getTime(final int multi) {
         return this.time * multi;
     }
 
+    @Contract(pure = true)
     public int getTick(final int multi) {
         return this.getTick() * multi;
     }

@@ -110,6 +110,7 @@ public class TeamSpeakUtils {
             return false;
         }
     }
+    @NotNull
     public static String getDate(long czas)
     {
         SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy - HH:mm:ss");
