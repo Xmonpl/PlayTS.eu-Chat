@@ -51,14 +51,14 @@ public class TeamSpeakUtils {
         String colorCode = String.format("#%06x", nextInt);
         return colorCode;
     }
-    public static void sendMultiLanguagePrivateMessage(@NotNull String[] Poland$Niemcy$English, @NotNull Client c){
+    public static void sendMultiLanguagePrivateMessage(@NotNull String[] Poland$English$Niemcy, @NotNull Client c){
         String country = c.getCountry().toLowerCase();
         if (country.equalsIgnoreCase("pl")){
-            api.sendPrivateMessage(c.getId(), Poland$Niemcy$English[0]);
+            api.sendPrivateMessage(c.getId(), Poland$English$Niemcy[0]);
         }else if(country.equalsIgnoreCase("de")){
-            api.sendPrivateMessage(c.getId(), Poland$Niemcy$English[1]);
+            api.sendPrivateMessage(c.getId(), Poland$English$Niemcy[2]);
         }else{
-            api.sendPrivateMessage(c.getId(), Poland$Niemcy$English[2]);
+            api.sendPrivateMessage(c.getId(), Poland$English$Niemcy[3]);
         }
     }
     public static boolean canUse(final long saveTime, final long time) {

@@ -138,9 +138,13 @@ public class ChatEvent extends TS3EventAdapter {
                         if (args.length == 2) {
                             if (Main.channels.contains(args[1])) {
                                 if (u.getChannels().contains(args[1])) {
-                                    slowdown.put(c.getUniqueIdentifier(), System.currentTimeMillis());
-                                    u.setSelect(args[1]);
-                                    TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#00bcd4]Wybrano kanał[/color] [color=#f4511e][B]#" + args[1].toLowerCase() + "[/B][/color] ([color=#43a047][B]" + UserUtils.online.get(args[1].toLowerCase()) + "/" + UserUtils.max.get(args[1].toLowerCase()) + " online[/B][/color]).", "[color=#00bcd4]Selected channel[/color] [color=#f4511e][B]#" + args[1].toLowerCase() + "[/B][/color] ([color=#43a047][B]" + UserUtils.online.get(args[1].toLowerCase()) + "/" + UserUtils.max.get(args[1].toLowerCase()) + " online[/B][/color]).", "brak"}, c);
+                                    if (!u.getSelect().equalsIgnoreCase(args[1].toLowerCase())) {
+                                        slowdown.put(c.getUniqueIdentifier(), System.currentTimeMillis());
+                                        u.setSelect(args[1]);
+                                        TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#00bcd4]Wybrano kanał[/color] [color=#f4511e][B]#" + args[1].toLowerCase() + "[/B][/color] ([color=#43a047][B]" + UserUtils.online.get(args[1].toLowerCase()) + "/" + UserUtils.max.get(args[1].toLowerCase()) + " online[/B][/color]).", "[color=#00bcd4]Selected channel[/color] [color=#f4511e][B]#" + args[1].toLowerCase() + "[/B][/color] ([color=#43a047][B]" + UserUtils.online.get(args[1].toLowerCase()) + "/" + UserUtils.max.get(args[1].toLowerCase()) + " online[/B][/color]).", "brak"}, c);
+                                    }else{
+                                        TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Należysz już do tego kanału.", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]You already belong to this channel.", "brak"}, c);
+                                    }
                                 } else {
                                     TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Nie subskrybujesz tego kanału. Dołącz do niego za pomocą !join <nazwa_kanału>", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]You are not subscribed to this channel. Join to that channel by !join <channel_name>", "brak"}, c);
                                 }
@@ -289,9 +293,9 @@ public class ChatEvent extends TS3EventAdapter {
                         if (System.currentTimeMillis() < u.getMute()) {
                             u.setMute(System.currentTimeMillis());
                             slowdown.put(c.getUniqueIdentifier(), System.currentTimeMillis());
-                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=Green]Gratulacje! Pomyślnie odciszyleś chat!");
+                            TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=lightgreen][B]Gratulacje[/B][/color], [color=#00bcd4]chat został odciszony.", "[color=lightgreen][B]Congratulations[/B][/color], [color=#00bcd4]chat was unmuted.", "brak"}, c);
                         } else {
-                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=red]Blad! [color=pink]Chat nie jest wyciszony!");
+                            TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Chat nie jest wyciszony.", "[color=lightgreen][B]Congratulations[/B][/color], [color=#00bcd4]chat was unmuted.", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]Chat is not muted.", "brak"}, c);
                         }
                     }
                     //ustawienie koloru
@@ -303,27 +307,27 @@ public class ChatEvent extends TS3EventAdapter {
                                         if (args[1].length() <= 7) {
                                             u.setColor(args[1]);
                                             slowdown.put(c.getUniqueIdentifier(), System.currentTimeMillis());
-                                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=Green]Gratulacje! Pomyślnie ustawiłeś [color=" + args[1] + "]kolor[/color]");
+                                            TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=lightgreen][B]Gratulacje[/B][/color], [color=#00bcd4]pomyślnie ustawiłeś/aś [color=" + args[1] + "]kolor[/color]", "[color=lightgreen][B]Congratulations[/B][/color], [color=#00bcd4]you have set successfully [color=" + args[1] + "]color[/color]", "brak"}, c);
                                         } else {
-                                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=red]Blad! [color=pink]Poprawne użycie: !color <#ffffff>");
+                                            TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !color <#ffffff>", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]Correct use: !color <#ffffff>", "brral"}, c);
                                         }
                                     } else {
                                         if (args[1].length() <= 6) {
                                             u.setColor(args[1]);
                                             slowdown.put(c.getUniqueIdentifier(), System.currentTimeMillis());
-                                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=Green]Gratulacje! Pomyślnie ustawiłeś [color=#" + args[1] + "]kolor[/color]");
+                                            TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=lightgreen][B]Gratulacje[/B][/color], [color=#00bcd4]pomyślnie ustawiłeś/aś [color=#" + args[1] + "]kolor[/color]", "[color=lightgreen][B]Congratulations[/B][/color], [color=#00bcd4]you have set successfully [color=" + args[1] + "]color[/color]", "brak"}, c);
                                         } else {
-                                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=red]Blad! [color=pink]Poprawne użycie: !color <#ffffff>");
+                                            TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !color <#ffffff>", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]Correct use: !color <#ffffff>", "brral"}, c);
                                         }
                                     }
                                 } else {
                                     TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=red]Blad! [color=pink]Chciałoby się nie? 😪");
                                 }
                             } else {
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=red]Blad! [color=pink]Poprawne użycie: !color <#ffffff>");
+                                TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !color <#ffffff>", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]Correct use: !color <#ffffff>", "brral"}, c);
                             }
                         } else {
-                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=red]Blad! [color=pink]Aby użyć tej komedy wymagana jest ranga plus lub premium!");
+                            TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Aby użyć tego polecenia, musisz posiadać rangę Plus lub Premium!", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]To use this command, you must have the Plus or Premium rank!", "brak"}, c);
                         }
                     }
                     if (args[0].equalsIgnoreCase("!rainbow") || args[0].equalsIgnoreCase("!tencza") || args[0].equalsIgnoreCase("!regenbogen")) {
@@ -338,19 +342,19 @@ public class ChatEvent extends TS3EventAdapter {
                                     slowdown.put(c.getUniqueIdentifier(), System.currentTimeMillis());
                                     TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[b][color=#914C3B]P[/color][color=#4213CB]o[/color][color=#A0DC07]m[/color][color=#FE24EF]y[/color][color=#EF696A]ś[/color][color=#9A3BF9]l[/color][color=#022B1E]n[/color][color=#28DFFF]i[/color][color=#308277]e[/color] [color=#2FAC6C]w[/color][color=#585D9A]y[/color][color=#661641]ł[/color][color=#96EBD8]ą[/color][color=#67B125]c[/color][color=#DBD02A]z[/color][color=#2EF831]y[/color][color=#8A183A]ł[/color][color=#183590]e[/color][color=#915CD3]ś[/color][color=#E6FA0A]/[/color][color=#55A571]a[/color][color=#514DFF]ś[/color] [color=#B598DC]t[/color][color=#C50538]r[/color][color=#E8FD1C]y[/color][color=#F8F3E7]b[/color] [color=#70A7E2]r[/color][color=#A701F1]a[/color][color=#4E4A33]i[/color][color=#3CC287]n[/color][color=#F99F54]b[/color][color=#7C6BF1]o[/color][color=#DCC32A]w[/color][color=#07ED7F]![/color][/b]");
                                 } else {
-                                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=red]Blad! [color=pink]Poprawne użycie: !rainbow on/off");
+                                    TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !rainbow on/off", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]Correct use: !rainbow on/off", "brral"}, c);
                                 }
                             } else {
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=red]Blad! [color=pink]Poprawne użycie: !rainbow on/off");
+                                TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !rainbow on/off", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]Correct use: !rainbow on/off", "brral"}, c);
                             }
                         } else {
-                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=red]Blad! [color=pink]Aby użyć tej komedy wymagana jest ranga plus lub premium!");
+                            TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Aby użyć tego polecenia, musisz posiadać rangę Plus lub Premium!", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]To use this command, you must have the Plus or Premium rank!", "brak"}, c);
                         }
                     }
                     //help
                     if (args[0].equalsIgnoreCase("!help") || args[0].equalsIgnoreCase("!pomoc") || args[0].equalsIgnoreCase("!komendy") || args[0].equalsIgnoreCase("!hilfe")){
-                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[b]Dostępne komendy:[/b]\n" +
-                                "[b]!channels[/b] — Wyświetla wszystkie dostępne kanały.\n" +
+                        TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[b]Dostępne komendy:[/b]\n" +
+                        "[b]!channels[/b] — Wyświetla wszystkie dostępne kanały.\n" +
                                 "[b]!join <nazwa>[/b] — Dołącza do wybranego kanału\n" +
                                 "[b]!leave <nazwa>[/b] — Wychodzi z wybranego kanału tekstowego.\n" +
                                 "[b]!mute <3s/5m/6h>[/b] — Wycisza chat na podaną ilość sekund/minut/godzin.\n" +
@@ -358,8 +362,16 @@ public class ChatEvent extends TS3EventAdapter {
                                 "[b]!check <nazwa>[/b] — Sprawdza ostatnie 15 wiadomości, bez dołączania do kanału.\n" +
                                 "[b]!color <#ffea00>[/b] — Zmienia kolor twoich wiadomości. [Plus/Premium]\n" +
                                 "[b]!rainbow on/off[/b] — Zmienia kolor twoich wiadomosci na tęczowy. [Premium]\n" +
-                                "[b]!admin[/b] — Wyświetla pomoc dostępną tylko dla Administratorów.\n" +
-                                "[b]!botinfo — Wyświetla informacje o bocie.");
+                                "[b]!admin[/b] — Wyświetla pomoc dostępną tylko dla Administratorów.\n[b]!botinfo — Wyswietla informacje dotyczące autora.[/b]", "[b]Available commands:[/b]\n" +
+                        "[b]!channels[/b] — Displays all available channels.\n" +
+                                "[b]!join <nazwa>[/b] — Joins the selected channel.\n" +
+                                "[b]!leave <nazwa>[/b] — Exits from the selected text channel.\n" +
+                                "[b]!mute <3s/5m/6h>[/b] — Mute the chat to the specified number of seconds / minutes / hours.\n" +
+                                "[b]!switch <nazwa>[/b] — Switches your answers to the selected channel.\n" +
+                                "[b]!check <nazwa>[/b] — Checks the last 15 messages without joining the channel.\n" +
+                                "[b]!color <#ffea00>[/b] — Changes the color of your messages. [Plus/Premium]\n" +
+                                "[b]!rainbow on/off[/b] — Changes the color of your messages to the rainbow. [Premium]\n" +
+                                "[b]!admin[/b] — Displays help available only to Administrators.\n[b]!botinfo[/b] — Displays information about the author.", "brak"}, c);
                     }
                     if (args[0].equalsIgnoreCase("!slowdown")){
                         if (c.isInServerGroup(6) || c.isInServerGroup(16) || c.isInServerGroup(17) || c.isInServerGroup(26) || c.isInServerGroup(75)) {
@@ -390,25 +402,41 @@ public class ChatEvent extends TS3EventAdapter {
                             ex.printStackTrace();
                         }
                     }
+                    if (args[0].startsWith("#")){
+                        if (Main.channels.contains(args[0].replace("#", "").toLowerCase())){
+                            if (u.getChannels().contains(args[0].replace("#", "").toLowerCase())){
+                                if (!u.getSelect().equalsIgnoreCase(args[0].replace("#", "").toLowerCase())){
+                                    u.setSelect(args[0].replace("#", "").toLowerCase());
+                                    TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#00bcd4]Wybrano kanał[/color] [color=#f4511e][B]#" + args[0].replace("#", "").toLowerCase() + "[/B][/color] ([color=#43a047][B]" + UserUtils.online.get(args[0].replace("#", "").toLowerCase()) + "/" + UserUtils.max.get(args[0].replace("#", "").toLowerCase()) + " online[/B][/color]).", "[color=#00bcd4]Selected channel[/color] [color=#f4511e][B]#" + args[0].replace("#", "").toLowerCase() + "[/B][/color] ([color=#43a047][B]" + UserUtils.online.get(args[0].replace("#", "").toLowerCase()) + "/" + UserUtils.max.get(args[0].replace("#", "").toLowerCase()) + " online[/B][/color]).", "brak"}, c);
+                                }else{
+                                    TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Należysz już do tego kanału.", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]You already belong to this channel.", "brak"}, c);
+                                }
+                            }else{
+                                TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Nie subskrybujesz tego kanału. Dołącz do niego za pomocą !join <nazwa_kanału>", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]You are not subscribed to this channel. Join to that channel by !join <channel_name>", "brak"}, c);
+                            }
+                        }else{
+                            TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Taki kanał nie istnieje.", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]Such a channel does not exist.", "brak"}, c);
+                        }
+                    }
                     //Wiadomosci
                     if (!args[0].contains("!")) {
                         try {
                             if (c.isInServerGroup(133)) {
                                 //blokada ranga (BAN)
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=red]Blad! [color=pink]Administrator nałożył na Ciebie blokade!");
+                                TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Ostrzeżenie:[/B][/color] [color=#00bcd4]Administrator nałożył na Ciebie blokadę!", "[color=#d50000][B]Warning:[/B][/color] [color=#00bcd4]Administrator has blocked you!", "brak"}, c);
                             } else {
                                 JSONObject jsonObject = (JSONObject) parseJSONFile("channelconfig.json");
                                 if (c.isInServerGroup(7) || c.isInServerGroup(9)) {
                                     //z ranga premium/plus
                                     if (c.isInServerGroup(122) || c.isInServerGroup(123) || c.isInServerGroup(6) || c.isInServerGroup(16)) {
                                         if (message.length() > charlimit * 2) {
-                                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Błąd! Zbyt duża ilośc znaków! (" + message.length() + "/" + charlimit * 2 + ")");
+                                            TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Ostrzeżenie:[/B][/color] [color=#00bcd4]Twoja wiadomość zawiera zbyt dużą ilość znaków! (" + message.length() + "/" + charlimit * 2 + ")", "[color=#d50000][B]Warning:[/B][/color] [color=#00bcd4]Your message contains too many characters! (" + message.length() + "/" + charlimit * 2 + ")", "brak"}, c);
                                         } else {
                                             if (URL_PATTERN.matcher(message).find() || IPPATTERN.matcher(message).find() && !jsonObject.getJSONObject(u.getSelect().toLowerCase()).getBoolean("advertising")) {
-                                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Nie reklamuj się!");
+                                                TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Ostrzeżenie:[/B][/color] [color=#00bcd4]Twoja wiadomość zawiera reklamę!", "[color=#d50000][B]Warning:[/B][/color] [color=#00bcd4]Your message contains an advertisement!", "brak"}, c);
                                             } else {
                                                 if (BANNED_WORDS.matcher(message).find() && !jsonObject.getJSONObject(u.getSelect().toLowerCase()).getBoolean("imprecation")) {
-                                                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Przeklinanie jest dowolone wyłącznie na kanale #NSFW");
+                                                    TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Ostrzeżenie:[/B][/color] [color=#00bcd4]Przeklinanie nie jest tutaj dozwolone!", "[color=#d50000][B]Warning:[/B][/color] [color=#00bcd4]Swearing is not allowed here!", "brak"}, c);
                                                 } else {
                                                     if (Main.channels.contains(u.getSelect())) {
                                                         String parse = MessageUtils.parserMessage(c, u, message, new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
@@ -428,10 +456,10 @@ public class ChatEvent extends TS3EventAdapter {
                                                             });
                                                             MessageUtils.saveMessageToFile(c, u, message.replace(":shrug:", "¯\\_(ツ)_/¯").replace(":lenny:", "( ͡° ͜ʖ ͡°)").replace(":take:", "༼ つ ◕_◕ ༽つ").replace(":dolar:", "[̲̅$̲̅(̲̅5̲̅)̲̅$̲̅]").replace(":lennydolar:", "[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]").replace("<3", "[b][color=red]❤[/color][/b]"), new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
                                                             } else {
-                                                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=red]Blad! [color=pink]Masz wyciszony chat użyj komendy !unmute aby go odsiczyć!");
+                                                                TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Ostrzeżenie:[/B][/color] [color=#00bcd4]Masz wyciszony chat użyj komendy !unmute aby go odsiczyć!", "[color=#d50000][B]Warning:[/B][/color] [color=#00bcd4]You have muted chat, please use the !unmute command to unmute!", "brak"}, c);
                                                             }
                                                     } else {
-                                                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=red]Blad! [color=pink]Wystąpił błąd, spróbuj jeszcze raz wybrać kanał oraz dołączyć do kanału, który wybrałeś/aś.");
+                                                        TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Spróbuj jeszcze raz wybrać kanał oraz dołączyć do kanału, który wybrałeś/aś.", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]Try again to choose a channel and join the channel you have chosen.", "bral"}, c);
                                                     }
                                                 }
                                             }
