@@ -24,6 +24,7 @@ public class JoinEvent extends TS3EventAdapter {
     @Override
     public void onClientJoin(@NotNull ClientJoinEvent e){
         Client c = TeamSpeakUtils.api.getClientByUId(e.getUniqueClientIdentifier());
+        //@TODO wiadomosci na multilanguage
         if (c.isRegularClient()) {
             try {
                 JSONObject jsonObject = (JSONObject) parseJSONFile("channelconfig.json");

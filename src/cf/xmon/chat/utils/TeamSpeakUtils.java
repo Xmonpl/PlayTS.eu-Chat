@@ -58,7 +58,7 @@ public class TeamSpeakUtils {
         }else if(country.equalsIgnoreCase("de")){
             api.sendPrivateMessage(c.getId(), Poland$English$Niemcy[2]);
         }else{
-            api.sendPrivateMessage(c.getId(), Poland$English$Niemcy[3]);
+            api.sendPrivateMessage(c.getId(), Poland$English$Niemcy[1]);
         }
     }
     public static boolean canUse(final long saveTime, final long time) {

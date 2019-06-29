@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 import static cf.xmon.chat.Main.parseJSONFile;
 
 public class ChatEvent extends TS3EventAdapter {
-    private static Integer charlimit = 128;
+    private static Integer charlimit = 256;
     private static Integer slowdowntime = 5;
     public static Pattern URL_PATTERN;
     public static Pattern IPPATTERN;
@@ -46,7 +46,7 @@ public class ChatEvent extends TS3EventAdapter {
                 String[] args = message.split(" ");
                 if (!c.isInServerGroup(6) && slowdown.containsKey(c.getUniqueIdentifier()) && !TeamSpeakUtils.canUse(slowdown.get(c.getUniqueIdentifier()), slowdowntime * 1000)) {
                     String time = Long.toString(slowdowntime - TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - slowdown.get(c.getUniqueIdentifier())));
-                    TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Następną wiadomość możesz wysłać za " + time + "sekund.", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]You can send the next message in " + time + "seconds.", "brak"}, c);
+                    TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Następną wiadomość możesz wysłać za " + time + " sekund.", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]You can send the next message in " + time + " seconds.", "brak"}, c);
                 }else {
                     //join command
                     if (args[0].equalsIgnoreCase("!join") || args[0].equalsIgnoreCase("!dolacz") || args[0].equalsIgnoreCase("!beitreten")) {
@@ -133,6 +133,7 @@ public class ChatEvent extends TS3EventAdapter {
                         }
                     }
                     */
+                    //@TODO !timeout
                     //switch kanał
                     if (args[0].equalsIgnoreCase("!switch") || args[0].equalsIgnoreCase("!przelacz") || args[0].equalsIgnoreCase("!select") || args[0].equalsIgnoreCase("!schalter")) {
                         if (args.length == 2) {
@@ -373,7 +374,7 @@ public class ChatEvent extends TS3EventAdapter {
                                 "[b]!rainbow on/off[/b] — Changes the color of your messages to the rainbow. [Premium]\n" +
                                 "[b]!admin[/b] — Displays help available only to Administrators.\n[b]!botinfo[/b] — Displays information about the author.", "brak"}, c);
                     }
-                    if (args[0].equalsIgnoreCase("!slowdown")){
+                    if (args[0].equalsIgnoreCase("!slowdown") && args[0].equalsIgnoreCase("!slowmode")){
                         if (c.isInServerGroup(6) || c.isInServerGroup(16) || c.isInServerGroup(17) || c.isInServerGroup(26) || c.isInServerGroup(75)) {
                             if (args.length == 2) {
                                 try {
@@ -419,7 +420,8 @@ public class ChatEvent extends TS3EventAdapter {
                         }
                     }
                     //Wiadomosci
-                    if (!args[0].contains("!")) {
+                    //if (!args[0].contains("!") && !args[0].contains("#")) {
+                    if (!args[0].startsWith("!") && !args[0].startsWith("#")) {
                         try {
                             if (c.isInServerGroup(133)) {
                                 //blokada ranga (BAN)

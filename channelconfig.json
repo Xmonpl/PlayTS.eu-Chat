@@ -54,5 +54,13 @@
       "private": true,
       "imprecation": true,
       "advertising": true
+    },
+    "matis": {
+      "required": "none",
+      "file": "matis.txt",
+      "description": "Kanal dla zapalonych grajkow",
+      "private": true,
+      "imprecation": true,
+      "advertising": true
     }
 }

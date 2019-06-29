@@ -40,8 +40,15 @@ public class Main {
         UserUtils.load();
         createFiles();
         TeamSpeakUtils.TeamSpeakConnect(c.getInstance().getQueryIp(), c.getInstance().getPort(), c.getInstance().getDebug(), c.getInstance().getQueryLogin(), c.getInstance().getPassword(), c.getInstance().getVirtualServerId());
-        JSONObject jsonObject = (JSONObject) parseJSONFile("channelconfig.json");
         UserUtils.loadOnline();
+        onload();
+        //ServerCreator.createServer();
+        System.out.println("Uruchomiono w " + (System.currentTimeMillis() - start) + "ms!");
+        System.out.println("x-Chat created by Xmon for PlayTS.eu (https://github.com/xmonpl)");
+    }
+
+    private static void onload() throws IOException {
+        JSONObject jsonObject = (JSONObject) parseJSONFile("channelconfig.json");
         TeamSpeakUtils.api.getClients().forEach(x ->{
             if (!x.getUniqueIdentifier().equals("ServerQuery") || !x.getUniqueIdentifier().equals("serveradmin")) {
                 try {
@@ -97,8 +104,6 @@ public class Main {
                 }
             }
         });
-        System.out.println("Uruchomiono w " + (System.currentTimeMillis() - start) + "ms!");
-        System.out.println("x-Chat created by Xmon for PlayTS.eu (https://github.com/xmonpl)");
     }
 
     private static boolean registerDatabase() {
@@ -164,13 +169,13 @@ public class Main {
                 }
             });
             if (!new File("rules_PL.txt").exists()){
-                Files.write(Paths.get("rules.txt", new String[0]), "1. nie ma zasad".getBytes(), StandardOpenOption.CREATE_NEW);
+                Files.write(Paths.get("rules_PL.txt", new String[0]), "1. nie ma zasad".getBytes(), StandardOpenOption.CREATE_NEW);
             }
             if (!new File("rules_DE.txt").exists()){
-                Files.write(Paths.get("rules.txt", new String[0]), "1. nie ma zasad".getBytes(), StandardOpenOption.CREATE_NEW);
+                Files.write(Paths.get("rules_DE.txt", new String[0]), "1. nie ma zasad".getBytes(), StandardOpenOption.CREATE_NEW);
             }
             if (!new File("rules_EN.txt").exists()){
-                Files.write(Paths.get("rules.txt", new String[0]), "1. nie ma zasad".getBytes(), StandardOpenOption.CREATE_NEW);
+                Files.write(Paths.get("rules_EN.txt", new String[0]), "1. nie ma zasad".getBytes(), StandardOpenOption.CREATE_NEW);
             }
         } catch (IOException e) {
             e.printStackTrace();
