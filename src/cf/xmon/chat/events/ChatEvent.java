@@ -133,7 +133,52 @@ public class ChatEvent extends TS3EventAdapter {
                         }
                     }
                     */
-                    //@TODO !timeout
+                    if (args[0].equalsIgnoreCase("!timeout")){
+                        if (c.isInServerGroup(6) || c.isInServerGroup(16) || c.isInServerGroup(17) || c.isInServerGroup(26) || c.isInServerGroup(75)) {
+
+                            if (args[1].equalsIgnoreCase("revoke")){
+                                if (args.length == 3) {
+                                    String uuid = args[2].split("/")[3].replaceAll("~.+", "");
+                                    User ua = UserUtils.get(uuid);
+                                    ua.setTimeout(System.currentTimeMillis());
+                                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Użytkownik " + ua.getName() + " został odciszony!");
+                                }else{
+                                    TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !timeout revoke <przenies klienta>", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]Correct use: !timeout revoke <move client>", "brak"}, c);
+                                }
+                            }else {
+                                if (args.length == 3) {
+                                    try {
+                                        long czas = System.currentTimeMillis() + TeamSpeakUtils.getTimeWithString(args[2]);
+                                        String uuid = args[1].split("/")[3].replaceAll("~.+", "");
+                                        User ua = UserUtils.get(uuid);
+                                        ua.setTimeout(czas);
+                                        slowdown.put(c.getUniqueIdentifier(), System.currentTimeMillis());
+                                        JSONObject jsonObject = (JSONObject) parseJSONFile("channelconfig.json");
+                                        String parse = MessageUtils.parserMessage("System", "[color=#00bcd4]Użytkownik " + ua.getName() + " został [color=#d50000]wyciszony[/color], do [B]" + TeamSpeakUtils.getDate(czas) + " przez [url=" + c.getClientURI() + "]" + c.getNickname() + "[/url]", new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
+                                        TeamSpeakUtils.api.getClients().forEach(x -> {
+                                            if (x.isRegularClient()) {
+                                                User ux = UserUtils.get(x.getUniqueIdentifier());
+                                                if (System.currentTimeMillis() > ux.getMute()) {
+                                                    if (!x.isInServerGroup(115)) {
+                                                        if (ux.getChannels().contains(u.getSelect())) {
+                                                            TeamSpeakUtils.api.sendPrivateMessage(x.getId(), parse);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        });
+                                        MessageUtils.saveMessageToFile("System", "[color=#00bcd4]Użytkownik " + ua.getName() + " został [color=#d50000]wyciszony[/color], do [B]" + TeamSpeakUtils.getDate(czas) + " przez [url=" + c.getClientURI() + "]" + c.getNickname() + "[/url]", new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
+                                    } catch (Exception ee) {
+                                        Logger.warning(ee.getMessage());
+                                    }
+                                } else {
+                                    TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !timeout <przenies klienta> <czas>", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]Correct use: !timeout <move client> <time>", "brak"}, c);
+                                }
+                            }
+                        }else{
+                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Nie jesteś moim szefem! 🤓");
+                        }
+                    }
                     //switch kanał
                     if (args[0].equalsIgnoreCase("!switch") || args[0].equalsIgnoreCase("!przelacz") || args[0].equalsIgnoreCase("!select") || args[0].equalsIgnoreCase("!schalter")) {
                         if (args.length == 2) {
@@ -163,13 +208,13 @@ public class ChatEvent extends TS3EventAdapter {
                                     if (TeamSpeakUtils.getRequired(c, args[1])){
                                         JSONObject jsonObject = (JSONObject) parseJSONFile("channelconfig.json");
                                         File file = new File(jsonObject.getJSONObject(args[1]).getString("file"));
-                                        int n_lines = 15;
+                                        int n_lines = 12;
                                         int counter = 0;
                                         ReversedLinesFileReader object = null;
                                         object = new ReversedLinesFileReader(file);
                                         List<String> s = new ArrayList();
                                         while(counter < n_lines) {
-                                            if (counter == 15){
+                                            if (counter == 12){
                                                 //sendto.append("\n" + object.readLine() + "\n");
                                                 s.add(counter ,"\n" + object.readLine() + "\n");
                                             }else{
@@ -183,7 +228,7 @@ public class ChatEvent extends TS3EventAdapter {
                                         MessageUtils.reverseList(s).forEach(x -> {
                                             sb.append(x);
                                         });
-                                        TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[b]Ostatnie wiadomości z kanału [color=#f4511e]#" + args[1].toLowerCase() + "[/color] ([color=#43a047]" + UserUtils.online.get(args[1].toLowerCase()) + "/" + UserUtils.max.get(args[1].toLowerCase()) + " online[/color]):[/b]", "[b]Last messages from the channel [color=#f4511e]#" + args[1].toLowerCase() + "[/color] ([color=#43a047]" + UserUtils.online.get(args[1].toLowerCase()) + "/" + UserUtils.max.get(args[1].toLowerCase()) + " online[/color]):[/b]", "brak"}, c);
+                                        TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[b]Ostatnie wiadomości z kanału [color=#f4511e]#" + args[1].toLowerCase() + "[/color] ([color=#43a047]" + UserUtils.online.get(args[1].toLowerCase()) + "/" + UserUtils.max.get(args[1].toLowerCase()) + " online[/color]):[/b]\n" + sb.toString(), "[b]Last messages from the channel [color=#f4511e]#" + args[1].toLowerCase() + "[/color] ([color=#43a047]" + UserUtils.online.get(args[1].toLowerCase()) + "/" + UserUtils.max.get(args[1].toLowerCase()) + " online[/color]):[/b]\n" + sb.toString(), "brak"}, c);
                                     }else{
                                         TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Nie masz uprawnień, aby przeglądać wiadomości z tego kanału!", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]You do not have permission to view messages from this channel!", "brak"}, c);
                                     }
@@ -223,15 +268,29 @@ public class ChatEvent extends TS3EventAdapter {
                             JSONObject jsonObject = (JSONObject) parseJSONFile("channelconfig.json");
                             Arrays.stream(Main.channels.split("@")).forEach(x -> {
                                 if (!x.equals("")) {
-                                    if (c.isInServerGroup(6) || c.isInServerGroup(16)){
-                                        channel.append(!u.getChannels().contains(x) ? "[b][[color=#ff1744]✖[/color]]  [color=#f4511e]#" + x + "[/color] ([color=#43a047]" + UserUtils.online.get(x.toLowerCase()) + "/" + UserUtils.max.get(x.toLowerCase()) + " online[/color]) - " + jsonObject.getJSONObject(x.toLowerCase()).getString("description") + "[/b] [color=orange][b](private ? [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("private")  + "[/u], imprecation ? [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("imprecation") + "[/u], advertising ?[u] " + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("advertising") + "[/u])[/b]\n" : "[b][[color=#00e676]✔[/color]] [color=#f4511e]#" + x + "[/color] ([color=#43a047]" + UserUtils.online.get(x.toLowerCase()) + "/" + UserUtils.max.get(x.toLowerCase()) + " online[/color]) - " + jsonObject.getJSONObject(x.toLowerCase()).getString("description") + "[/b] [color=orange][b](private ? [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("private")  + "[/u], imprecation ? [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("imprecation") + "[/u], advertising ? [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("advertising") + "[/u])[/b][/color]\n");
-                                    }else {
-                                        if (jsonObject.getJSONObject(x.toLowerCase()).getBoolean("private")) {
-                                            if (u.getChannels().contains(x.toLowerCase())) {
+                                    if (u.getSelect().equalsIgnoreCase(x)) {
+                                        if (c.isInServerGroup(6) || c.isInServerGroup(16)) {
+                                            channel.append(!u.getChannels().contains(x) ? "[b][[color=#ff1744]✖[/color]]  [color=#f4511e]#" + x + "[/color] ([color=#43a047]" + UserUtils.online.get(x.toLowerCase()) + "/" + UserUtils.max.get(x.toLowerCase()) + " online[/color]) - " + jsonObject.getJSONObject(x.toLowerCase()).getString("description") + "[/b] [color=orange][b](private ? [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("private") + "[/u], imprecation ? [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("imprecation") + "[/u], advertising ?[u] " + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("advertising") + "[/u])[/b][/color]\n" : "[b]➡️[[color=#00e676]✔[/color]] [color=#f4511e]#" + x + "[/color] ([color=#43a047]" + UserUtils.online.get(x.toLowerCase()) + "/" + UserUtils.max.get(x.toLowerCase()) + " online[/color]) - " + jsonObject.getJSONObject(x.toLowerCase()).getString("description") + "[/b] [color=orange][b](private ? [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("private") + "[/u], imprecation ? [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("imprecation") + "[/u], advertising ? [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("advertising") + "[/u])[/b][/color]\n");
+                                        } else {
+                                            if (jsonObject.getJSONObject(x.toLowerCase()).getBoolean("private")) {
+                                                if (u.getChannels().contains(x.toLowerCase())) {
+                                                    channel.append(!u.getChannels().contains(x) ? "[b][[color=#ff1744]✖[/color]]  [color=#f4511e]#" + x + "[/color] ([color=#43a047]" + UserUtils.online.get(x.toLowerCase()) + "/" + UserUtils.max.get(x.toLowerCase()) + " online[/color]) - " + jsonObject.getJSONObject(x.toLowerCase()).getString("description") + "[/b] \n" : "[b]➡️[[color=#00e676]✔[/color]] [color=#f4511e]#" + x + "[/color] ([color=#43a047]" + UserUtils.online.get(x.toLowerCase()) + "/" + UserUtils.max.get(x.toLowerCase()) + " online[/color]) - " + jsonObject.getJSONObject(x.toLowerCase()).getString("description") + "[/b]\n");
+                                                }
+                                            } else {
+                                                channel.append(!u.getChannels().contains(x) ? "[b][[color=#ff1744]✖[/color]]  [color=#f4511e]#" + x + "[/color] ([color=#43a047]" + UserUtils.online.get(x.toLowerCase()) + "/" + UserUtils.max.get(x.toLowerCase()) + " online[/color]) - " + jsonObject.getJSONObject(x.toLowerCase()).getString("description") + "[/b] \n" : "[b]➡️[[color=#00e676]✔[/color]] [color=#f4511e]#" + x + "[/color] ([color=#43a047]" + UserUtils.online.get(x.toLowerCase()) + "/" + UserUtils.max.get(x.toLowerCase()) + " online[/color]) - " + jsonObject.getJSONObject(x.toLowerCase()).getString("description") + "[/b]\n");
+                                            }
+                                        }
+                                    }else{
+                                        if (c.isInServerGroup(6) || c.isInServerGroup(16)) {
+                                            channel.append(!u.getChannels().contains(x) ? "[b][[color=#ff1744]✖[/color]]  [color=#f4511e]#" + x + "[/color] ([color=#43a047]" + UserUtils.online.get(x.toLowerCase()) + "/" + UserUtils.max.get(x.toLowerCase()) + " online[/color]) - " + jsonObject.getJSONObject(x.toLowerCase()).getString("description") + "[/b] [color=orange][b](private ? [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("private") + "[/u], imprecation ? [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("imprecation") + "[/u], advertising ?[u] " + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("advertising") + "[/u])[/b][/color]\n" : "[b][[color=#00e676]✔[/color]] [color=#f4511e]#" + x + "[/color] ([color=#43a047]" + UserUtils.online.get(x.toLowerCase()) + "/" + UserUtils.max.get(x.toLowerCase()) + " online[/color]) - " + jsonObject.getJSONObject(x.toLowerCase()).getString("description") + "[/b] [color=orange][b](private ? [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("private") + "[/u], imprecation ? [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("imprecation") + "[/u], advertising ? [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("advertising") + "[/u])[/b][/color]\n");
+                                        } else {
+                                            if (jsonObject.getJSONObject(x.toLowerCase()).getBoolean("private")) {
+                                                if (u.getChannels().contains(x.toLowerCase())) {
+                                                    channel.append(!u.getChannels().contains(x) ? "[b][[color=#ff1744]✖[/color]]  [color=#f4511e]#" + x + "[/color] ([color=#43a047]" + UserUtils.online.get(x.toLowerCase()) + "/" + UserUtils.max.get(x.toLowerCase()) + " online[/color]) - " + jsonObject.getJSONObject(x.toLowerCase()).getString("description") + "[/b] \n" : "[b][[color=#00e676]✔[/color]] [color=#f4511e]#" + x + "[/color] ([color=#43a047]" + UserUtils.online.get(x.toLowerCase()) + "/" + UserUtils.max.get(x.toLowerCase()) + " online[/color]) - " + jsonObject.getJSONObject(x.toLowerCase()).getString("description") + "[/b]\n");
+                                                }
+                                            } else {
                                                 channel.append(!u.getChannels().contains(x) ? "[b][[color=#ff1744]✖[/color]]  [color=#f4511e]#" + x + "[/color] ([color=#43a047]" + UserUtils.online.get(x.toLowerCase()) + "/" + UserUtils.max.get(x.toLowerCase()) + " online[/color]) - " + jsonObject.getJSONObject(x.toLowerCase()).getString("description") + "[/b] \n" : "[b][[color=#00e676]✔[/color]] [color=#f4511e]#" + x + "[/color] ([color=#43a047]" + UserUtils.online.get(x.toLowerCase()) + "/" + UserUtils.max.get(x.toLowerCase()) + " online[/color]) - " + jsonObject.getJSONObject(x.toLowerCase()).getString("description") + "[/b]\n");
                                             }
-                                        }else{
-                                            channel.append(!u.getChannels().contains(x) ? "[b][[color=#ff1744]✖[/color]]  [color=#f4511e]#" + x + "[/color] ([color=#43a047]" + UserUtils.online.get(x.toLowerCase()) + "/" + UserUtils.max.get(x.toLowerCase()) + " online[/color]) - " + jsonObject.getJSONObject(x.toLowerCase()).getString("description") + "[/b] \n" : "[b][[color=#00e676]✔[/color]] [color=#f4511e]#" + x + "[/color] ([color=#43a047]" + UserUtils.online.get(x.toLowerCase()) + "/" + UserUtils.max.get(x.toLowerCase()) + " online[/color]) - " + jsonObject.getJSONObject(x.toLowerCase()).getString("description") + "[/b]\n");
                                         }
                                     }
                                 }
@@ -283,7 +342,6 @@ public class ChatEvent extends TS3EventAdapter {
                             long czas = System.currentTimeMillis() + TeamSpeakUtils.getTimeWithString(args[1]);
                             u.setMute(czas);
                             slowdown.put(c.getUniqueIdentifier(), System.currentTimeMillis());
-                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=red]Czat został wyciszony do " + TeamSpeakUtils.getDate(czas));
                             TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#00bcd4]Chat został wyciszony do [B]" + TeamSpeakUtils.getDate(czas), "[color=#00bcd4]Chat has been muted to [B]" + TeamSpeakUtils.getDate(czas), "brak"}, c);
                         } else {
                             TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !mute <czas>", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]Correct use: !mute <time>", "brak"}, c);
@@ -434,36 +492,40 @@ public class ChatEvent extends TS3EventAdapter {
                                         if (message.length() > charlimit * 2) {
                                             TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Ostrzeżenie:[/B][/color] [color=#00bcd4]Twoja wiadomość zawiera zbyt dużą ilość znaków! (" + message.length() + "/" + charlimit * 2 + ")", "[color=#d50000][B]Warning:[/B][/color] [color=#00bcd4]Your message contains too many characters! (" + message.length() + "/" + charlimit * 2 + ")", "brak"}, c);
                                         } else {
-                                            if (URL_PATTERN.matcher(message).find() || IPPATTERN.matcher(message).find() && !jsonObject.getJSONObject(u.getSelect().toLowerCase()).getBoolean("advertising")) {
-                                                TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Ostrzeżenie:[/B][/color] [color=#00bcd4]Twoja wiadomość zawiera reklamę!", "[color=#d50000][B]Warning:[/B][/color] [color=#00bcd4]Your message contains an advertisement!", "brak"}, c);
-                                            } else {
-                                                if (BANNED_WORDS.matcher(message).find() && !jsonObject.getJSONObject(u.getSelect().toLowerCase()).getBoolean("imprecation")) {
-                                                    TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Ostrzeżenie:[/B][/color] [color=#00bcd4]Przeklinanie nie jest tutaj dozwolone!", "[color=#d50000][B]Warning:[/B][/color] [color=#00bcd4]Swearing is not allowed here!", "brak"}, c);
+                                            if (System.currentTimeMillis() > u.getTimeout()) {
+                                                if (URL_PATTERN.matcher(message).find() || IPPATTERN.matcher(message).find() && !jsonObject.getJSONObject(u.getSelect().toLowerCase()).getBoolean("advertising")) {
+                                                    TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Ostrzeżenie:[/B][/color] [color=#00bcd4]Twoja wiadomość zawiera reklamę!", "[color=#d50000][B]Warning:[/B][/color] [color=#00bcd4]Your message contains an advertisement!", "brak"}, c);
                                                 } else {
-                                                    if (Main.channels.contains(u.getSelect())) {
-                                                        String parse = MessageUtils.parserMessage(c, u, message, new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
-                                                        slowdown.put(c.getUniqueIdentifier(), System.currentTimeMillis());
-                                                        if (System.currentTimeMillis() > u.getMute()) {
-                                                            TeamSpeakUtils.api.getClients().forEach(x -> {
-                                                                if (x.isRegularClient()) {
-                                                                    User ux = UserUtils.get(x.getUniqueIdentifier());
-                                                                    if (System.currentTimeMillis() > ux.getMute()) {
-                                                                        if (!x.isInServerGroup(115)) {
-                                                                            if (ux.getChannels().contains(u.getSelect())) {
-                                                                                TeamSpeakUtils.api.sendPrivateMessage(x.getId(), parse.replace("@" + x.getNickname(), "[b][color=orange]@" + x.getNickname() + "[/color][/b]").replace(":shrug:", "¯\\_(ツ)_/¯").replace(":lenny:", "( ͡° ͜ʖ ͡°)").replace(":take:", "༼ つ ◕_◕ ༽つ").replace(":dolar:", "[̲̅$̲̅(̲̅5̲̅)̲̅$̲̅]").replace(":lennydolar:", "[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]").replace("<3", "[b][color=red]❤[/color][/b]"));
+                                                    if (BANNED_WORDS.matcher(message).find() && !jsonObject.getJSONObject(u.getSelect().toLowerCase()).getBoolean("imprecation")) {
+                                                        TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Ostrzeżenie:[/B][/color] [color=#00bcd4]Przeklinanie nie jest tutaj dozwolone!", "[color=#d50000][B]Warning:[/B][/color] [color=#00bcd4]Swearing is not allowed here!", "brak"}, c);
+                                                    } else {
+                                                        if (Main.channels.contains(u.getSelect())) {
+                                                            String parse = MessageUtils.parserMessage(c, u, message, new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
+                                                            slowdown.put(c.getUniqueIdentifier(), System.currentTimeMillis());
+                                                            if (System.currentTimeMillis() > u.getMute()) {
+                                                                TeamSpeakUtils.api.getClients().forEach(x -> {
+                                                                    if (x.isRegularClient()) {
+                                                                        User ux = UserUtils.get(x.getUniqueIdentifier());
+                                                                        if (System.currentTimeMillis() > ux.getMute()) {
+                                                                            if (!x.isInServerGroup(115)) {
+                                                                                if (ux.getChannels().contains(u.getSelect())) {
+                                                                                    TeamSpeakUtils.api.sendPrivateMessage(x.getId(), parse.replace("@" + x.getNickname(), "[b][color=orange]@" + x.getNickname() + "[/color][/b]").replace(":shrug:", "¯\\_(ツ)_/¯").replace(":lenny:", "( ͡° ͜ʖ ͡°)").replace(":take:", "༼ つ ◕_◕ ༽つ").replace(":dolar:", "[̲̅$̲̅(̲̅5̲̅)̲̅$̲̅]").replace(":lennydolar:", "[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]").replace("<3", "[b][color=red]❤[/color][/b]"));
+                                                                                }
                                                                             }
                                                                         }
                                                                     }
-                                                                }
-                                                            });
-                                                            MessageUtils.saveMessageToFile(c, u, message.replace(":shrug:", "¯\\_(ツ)_/¯").replace(":lenny:", "( ͡° ͜ʖ ͡°)").replace(":take:", "༼ つ ◕_◕ ༽つ").replace(":dolar:", "[̲̅$̲̅(̲̅5̲̅)̲̅$̲̅]").replace(":lennydolar:", "[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]").replace("<3", "[b][color=red]❤[/color][/b]"), new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
+                                                                });
+                                                                MessageUtils.saveMessageToFile(c, u, message.replace(":shrug:", "¯\\_(ツ)_/¯").replace(":lenny:", "( ͡° ͜ʖ ͡°)").replace(":take:", "༼ つ ◕_◕ ༽つ").replace(":dolar:", "[̲̅$̲̅(̲̅5̲̅)̲̅$̲̅]").replace(":lennydolar:", "[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]").replace("<3", "[b][color=red]❤[/color][/b]"), new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
                                                             } else {
                                                                 TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Ostrzeżenie:[/B][/color] [color=#00bcd4]Masz wyciszony chat użyj komendy !unmute aby go odsiczyć!", "[color=#d50000][B]Warning:[/B][/color] [color=#00bcd4]You have muted chat, please use the !unmute command to unmute!", "brak"}, c);
                                                             }
-                                                    } else {
-                                                        TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Spróbuj jeszcze raz wybrać kanał oraz dołączyć do kanału, który wybrałeś/aś.", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]Try again to choose a channel and join the channel you have chosen.", "bral"}, c);
+                                                        } else {
+                                                            TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Spróbuj jeszcze raz wybrać kanał oraz dołączyć do kanału, który wybrałeś/aś.", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]Try again to choose a channel and join the channel you have chosen.", "bral"}, c);
+                                                        }
                                                     }
                                                 }
+                                            }else{
+                                                TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Zostałeś wyciszony do " + TeamSpeakUtils.getDate(u.getTimeout()), "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]You have been silenced for " + TeamSpeakUtils.getDate(u.getTimeout()), "bral"}, c);
                                             }
                                         }
                                     } else {
@@ -471,36 +533,40 @@ public class ChatEvent extends TS3EventAdapter {
                                         if (message.length() > charlimit) {
                                             TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Błąd! Zbyt duża ilośc znaków! (" + message.length() + "/" + charlimit + ")");
                                         } else {
-                                            if (URL_PATTERN.matcher(message).find() || IPPATTERN.matcher(message).find() && !jsonObject.getJSONObject(u.getSelect().toLowerCase()).getBoolean("advertising")) {
-                                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Nie reklamuj się!");
-                                            } else {
-                                                if (BANNED_WORDS.matcher(message).find() && !jsonObject.getJSONObject(u.getSelect().toLowerCase()).getBoolean("imprecation")) {
-                                                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Przeklinanie jest dowolone wyłącznie na kanale #NSFW");
+                                            if (System.currentTimeMillis() > u.getTimeout()) {
+                                                if (URL_PATTERN.matcher(message).find() || IPPATTERN.matcher(message).find() && !jsonObject.getJSONObject(u.getSelect().toLowerCase()).getBoolean("advertising")) {
+                                                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Nie reklamuj się!");
                                                 } else {
-                                                    if (Main.channels.contains(u.getSelect())) {
-                                                        String parse = MessageUtils.parserMessage(c, u, message.replace("[", "[ ").replace("]", " ]"), new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
-                                                        slowdown.put(c.getUniqueIdentifier(), System.currentTimeMillis());
-                                                        if (System.currentTimeMillis() > u.getMute()) {
-                                                            TeamSpeakUtils.api.getClients().forEach(x -> {
-                                                                if (x.isRegularClient()) {
-                                                                    User ux = UserUtils.get(x.getUniqueIdentifier());
-                                                                    if (System.currentTimeMillis() > ux.getMute()) {
-                                                                        if (!x.isInServerGroup(115)) {
-                                                                            if (ux.getChannels().contains(u.getSelect())) {
-                                                                                TeamSpeakUtils.api.sendPrivateMessage(x.getId(), parse.replace("@" + x.getNickname(), "[b][color=orange]@" + x.getNickname() + "[/color][/b]").replace(":shrug:", "¯\\_(ツ)_/¯").replace(":lenny:", "( ͡° ͜ʖ ͡°)").replace(":take:", "༼ つ ◕_◕ ༽つ").replace(":dolar:", "[̲̅$̲̅(̲̅5̲̅)̲̅$̲̅]").replace(":lennydolar:", "[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]").replace("<3", "[b][color=red]❤[/color][/b]"));
+                                                    if (BANNED_WORDS.matcher(message).find() && !jsonObject.getJSONObject(u.getSelect().toLowerCase()).getBoolean("imprecation")) {
+                                                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Przeklinanie jest dowolone wyłącznie na kanale #NSFW");
+                                                    } else {
+                                                        if (Main.channels.contains(u.getSelect())) {
+                                                            String parse = MessageUtils.parserMessage(c, u, message.replace("[", "[ ").replace("]", " ]"), new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
+                                                            slowdown.put(c.getUniqueIdentifier(), System.currentTimeMillis());
+                                                            if (System.currentTimeMillis() > u.getMute()) {
+                                                                TeamSpeakUtils.api.getClients().forEach(x -> {
+                                                                    if (x.isRegularClient()) {
+                                                                        User ux = UserUtils.get(x.getUniqueIdentifier());
+                                                                        if (System.currentTimeMillis() > ux.getMute()) {
+                                                                            if (!x.isInServerGroup(115)) {
+                                                                                if (ux.getChannels().contains(u.getSelect())) {
+                                                                                    TeamSpeakUtils.api.sendPrivateMessage(x.getId(), parse.replace("@" + x.getNickname(), "[b][color=orange]@" + x.getNickname() + "[/color][/b]").replace(":shrug:", "¯\\_(ツ)_/¯").replace(":lenny:", "( ͡° ͜ʖ ͡°)").replace(":take:", "༼ つ ◕_◕ ༽つ").replace(":dolar:", "[̲̅$̲̅(̲̅5̲̅)̲̅$̲̅]").replace(":lennydolar:", "[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]").replace("<3", "[b][color=red]❤[/color][/b]"));
+                                                                                }
                                                                             }
                                                                         }
                                                                     }
-                                                                }
-                                                            });
-                                                            MessageUtils.saveMessageToFile(c, u, message.replace("[", "[ ").replace("]", " ]").replace(":shrug:", "¯\\_(ツ)_/¯").replace(":lenny:", "( ͡° ͜ʖ ͡°)").replace(":take:", "༼ つ ◕_◕ ༽つ").replace(":dolar:", "[̲̅$̲̅(̲̅5̲̅)̲̅$̲̅]").replace(":lennydolar:", "[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]").replace("<3", "[b][color=red]❤[/color][/b]"), new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
+                                                                });
+                                                                MessageUtils.saveMessageToFile(c, u, message.replace("[", "[ ").replace("]", " ]").replace(":shrug:", "¯\\_(ツ)_/¯").replace(":lenny:", "( ͡° ͜ʖ ͡°)").replace(":take:", "༼ つ ◕_◕ ༽つ").replace(":dolar:", "[̲̅$̲̅(̲̅5̲̅)̲̅$̲̅]").replace(":lennydolar:", "[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]").replace("<3", "[b][color=red]❤[/color][/b]"), new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
                                                             } else {
                                                                 TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=red]Blad! [color=pink]Masz wyciszony chat użyj komendy !unmute aby go odsiczyć!");
                                                             }
-                                                    } else {
-                                                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=red]Blad! [color=pink]Wystąpił błąd, spróbuj jeszcze raz wybrać kanał oraz dołączyć do kanału, który wybrałeś/aś.");
+                                                        } else {
+                                                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=red]Blad! [color=pink]Wystąpił błąd, spróbuj jeszcze raz wybrać kanał oraz dołączyć do kanału, który wybrałeś/aś.");
+                                                        }
                                                     }
                                                 }
+                                            }else {
+                                                TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Zostałeś wyciszony do " + TeamSpeakUtils.getDate(u.getTimeout()), "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]You have been silenced for " + TeamSpeakUtils.getDate(u.getTimeout()), "bral"}, c);
                                             }
                                         }
                                     }

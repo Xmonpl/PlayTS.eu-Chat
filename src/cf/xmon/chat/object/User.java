@@ -20,6 +20,7 @@ public class User {
     private String username;
     private String password;
     private long mute;
+    private long timeout;
 
     public User(@NotNull Client c){
         new User(c.getUniqueIdentifier());
@@ -35,6 +36,7 @@ public class User {
         this.username = "null";
         this.password = "null";
         this.mute = System.currentTimeMillis();
+        this.timeout = 0;
         UserUtils.addUser(this);
         this.insert();
     }
@@ -48,6 +50,7 @@ public class User {
         this.mute = rs.getLong("mute");
         this.username = rs.getString("username");
         this.password = rs.getString("password");
+        this.timeout = rs.getLong("timeout");
         UserUtils.addUser(this);
     }
     public String getName(){return this.name;}
@@ -59,6 +62,7 @@ public class User {
     public long getMute(){return this.mute;}
     public String getUsername(){return this.username;}
     public String getPassword(){return this.password;}
+    public long getTimeout(){return this.timeout;}
 
     public void setSelect(String select){
         this.select = select;
@@ -73,6 +77,11 @@ public class User {
     public void setColor(String color){
         this.color = color;
         Main.getStore().update(false, "UPDATE `{P}users` SET `color`='" + this.getColor() + "' WHERE `uuid`='" + this.getUuid() + "'");
+    }
+
+    public void setTimeout(long timeout){
+        this.timeout = timeout;
+        Main.getStore().update(false, "UPDATE `{P}users` SET `timeout`='" + this.getTimeout() + "' WHERE `uuid`='" + this.getUuid() + "'");
     }
 
     public void setMute(long mute){
@@ -90,7 +99,7 @@ public class User {
         Main.getStore().update(false, "UPDATE `{P}users` SET `password`='" + this.getPassword() + "' WHERE `uuid`='" + this.getUuid() + "'");
     }
     private void insert() {
-        Main.getStore().update(false, "INSERT INTO `{P}users`(`id`, `name`, `uuid`, `dbid`, `select`, `channels`, `color`, `mute`, `username`, `password`) VALUES (NULL, '"
-                + this.getName() + "','" + this.getUuid() + "','" + this.getDbid() + "','" + this.getSelect()  + "','" + this.getChannels()  + "','" + this.getColor()  + "','" + this.getMute() + "','" + this.getUsername() + "','" + this.getPassword() + "')");
+        Main.getStore().update(false, "INSERT INTO `{P}users`(`id`, `name`, `uuid`, `dbid`, `select`, `channels`, `color`, `mute`, `username`, `password`, `timeout`) VALUES (NULL, '"
+                + this.getName() + "','" + this.getUuid() + "','" + this.getDbid() + "','" + this.getSelect()  + "','" + this.getChannels()  + "','" + this.getColor()  + "','" + this.getMute() + "','" + this.getUsername() + "','" + this.getPassword() + "','" + this.getTimeout() + "')");
     }
 }

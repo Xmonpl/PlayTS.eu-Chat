@@ -32,7 +32,7 @@ public class JoinEvent extends TS3EventAdapter {
                 if (u == null){
                     Logger.info("New User[" + e.getClientNickname() + "]");
                     new User(e.getUniqueClientIdentifier());
-                    TeamSpeakUtils.api.sendPrivateMessage(e.getClientId(), "\n " + MessageUtils.getTime() + " ⚙ [color=#2580c3][b]\"System\"[/b][/color]: [b][color=#76ff03]Nowość![/color] Kanały tekstowe jak na [color=#7289da]Discord[/color]zie. Wybierz kanał wpisując [u][color=#8d6e63]!channels[/color][/u] lub [u][color=#795548]!help[/color][/u].\n" +
+                    TeamSpeakUtils.api.sendPrivateMessage(e.getClientId(), "\n " + MessageUtils.getTime() + " ⚙️ [color=#2580c3][b]\"System\"[/b][/color]: [b][color=#76ff03]Nowość![/color] Kanały tekstowe jak na [color=#7289da]Discord[/color]zie. Wybierz kanał wpisując [u][color=#8d6e63]!channels[/color][/u] lub [u][color=#795548]!help[/color][/u].\n" +
                             "Automatycznie dołączono" +
                             " do kanału [color=#f4511e]#playts[/color] ([color=#43a047]" + UserUtils.online.get("playts") + "/" + UserUtils.max.get("playts") + "[/color]). [i]Ostatnie 5 wiadomości z kanału [color=#f4511e]#playts[/color]:[/i][/b]\n");
                     File file = new File(jsonObject.getJSONObject("playts").getString("file"));

@@ -21,22 +21,39 @@ public class MessageUtils {
         String write = null;
         if (c.isInServerGroup(6) || c.isInServerGroup(16)) {
                 write = "\uD83D\uDCAC [color=#5e6165]" + getTime() + "[/color] \uD83D\uDEE0 [b][URL=client://0/" +
-                        c.getUniqueIdentifier() + "~" + c.getNickname().replace(" ", "%20").replace("/", "%2F").replace("[", "%5C%5B").replace("]", "%5C%5D") + "][color=" + setColor(u) + "]\"" + c.getNickname() + "\"[/color][/URL][/b]: " + message + "[/color]\n";
+                        c.getUniqueIdentifier() + "~" + c.getNickname().replace(" ", "%20").replace("/", "%2F").replace("[", "%5C%5B").replace("]", "%5C%5D") + "][color=" + setColor(u) + "]\"" + c.getNickname() + "\"[/color][/URL][/b]: " + message + "\n";
         }else if(c.isInServerGroup(17) || c.isInServerGroup(26) || c.isInServerGroup(75)) {
             write = "\uD83D\uDCAC [color=#5e6165]" + getTime() + "[/color] \uD83D\uDD27 [b][URL=client://0/" +
-                    c.getUniqueIdentifier() + "~" + c.getNickname().replace(" ", "%20").replace("/", "%2F").replace("[", "%5C%5B").replace("]", "%5C%5D") + "][color=" + setColor(u) + "]\"" + c.getNickname() + "\"[/color][/URL][/b]: " + message + "[/color]\n";
+                    c.getUniqueIdentifier() + "~" + c.getNickname().replace(" ", "%20").replace("/", "%2F").replace("[", "%5C%5B").replace("]", "%5C%5D") + "][color=" + setColor(u) + "]\"" + c.getNickname() + "\"[/color][/URL][/b]: " + message + "\n";
         }else if(c.isInServerGroup(122)){
             write = "\uD83D\uDCAC [color=#5e6165]" + getTime() + "[/color] \uD83D\uDCB2 [b][URL=client://0/" +
-                    c.getUniqueIdentifier() + "~" + c.getNickname().replace(" ", "%20").replace("/", "%2F").replace("[", "%5C%5B").replace("]", "%5C%5D") + "][color=" + setColor(u) + "]\"" + c.getNickname() + "\"[/color][/URL][/b]: " + message + "[/color]\n";
+                    c.getUniqueIdentifier() + "~" + c.getNickname().replace(" ", "%20").replace("/", "%2F").replace("[", "%5C%5B").replace("]", "%5C%5D") + "][color=" + setColor(u) + "]\"" + c.getNickname() + "\"[/color][/URL][/b]: " + message + "\n";
         }else if(c.isInServerGroup(123)){
             write = "\uD83D\uDCAC [color=#5e6165]" + getTime() + "[/color] \uD83E\uDD11 [b][URL=client://0/" +
-                    c.getUniqueIdentifier() + "~" + c.getNickname().replace(" ", "%20").replace("/", "%2F").replace("[", "%5C%5B").replace("]", "%5C%5D") + "][color=" + setColor(u) + "]\"" + c.getNickname() + "\"[/color][/URL][/b]: " + message + "[/color]\n";
+                    c.getUniqueIdentifier() + "~" + c.getNickname().replace(" ", "%20").replace("/", "%2F").replace("[", "%5C%5B").replace("]", "%5C%5D") + "][color=" + setColor(u) + "]\"" + c.getNickname() + "\"[/color][/URL][/b]: " + message + "\n";
         }else if (c.isInServerGroup(76)) {
             write = "\uD83D\uDCAC [color=#5e6165]" + getTime() + "[/color] \uD83D\uDC6D [b][URL=client://0/" +
-                    c.getUniqueIdentifier() + "~" + c.getNickname().replace(" ", "%20").replace("/", "%2F").replace("[", "%5C%5B").replace("]", "%5C%5D") + "][color=" + setColor(u) + "]\"" + c.getNickname() + "\"[/color][/URL][/b]: " + message + "[/color]\n";
+                    c.getUniqueIdentifier() + "~" + c.getNickname().replace(" ", "%20").replace("/", "%2F").replace("[", "%5C%5B").replace("]", "%5C%5D") + "][color=" + setColor(u) + "]\"" + c.getNickname() + "\"[/color][/URL][/b]: " + message + "\n";
         } else{
                 write = "\uD83D\uDCAC [color=#5e6165]" + getTime() + "[/color][b][URL=client://0/" +
-                        c.getUniqueIdentifier() + "~" + c.getNickname().replace(" ", "%20").replace("/", "%2F").replace("[", "%5C%5B").replace("]", "%5C%5D") + "][color=" + setColor(u) + "]\"" + c.getNickname() + "\"[/color][/URL][/b]: " + message + "[/color]\n";
+                        c.getUniqueIdentifier() + "~" + c.getNickname().replace(" ", "%20").replace("/", "%2F").replace("[", "%5C%5B").replace("]", "%5C%5D") + "][color=" + setColor(u) + "]\"" + c.getNickname() + "\"[/color][/URL][/b]: " + message + "\n";
+        }
+        try {
+            if (!channel.exists()) {
+                Files.write(Paths.get(channel.getName(), new String[0]), write.getBytes(), StandardOpenOption.CREATE_NEW);
+            } else {
+                Files.write(Paths.get(channel.getName(), new String[0]), write.getBytes(), StandardOpenOption.APPEND);
+            }
+        }catch (IOException e){
+            Logger.warning(e.getMessage());
+        }
+    }
+    public static void saveMessageToFile(@NotNull String user, @NotNull String message, @NotNull File channel){
+        String write = null;
+        if (user.equalsIgnoreCase("System")){
+            write = "\uD83D\uDCAC [color=#5e6165]" + getTime() + "[/color] ⚙️\"[color=#2580c3]System[/color]\": " + message + "\n";
+        }else{
+            write = null;
         }
         try {
             if (!channel.exists()) {
@@ -74,6 +91,14 @@ public class MessageUtils {
         }else {
             return "[b]Kanał: [color=#f4511e]#" + channel.getName().replace(".txt", "") + "[/color] ([color=#43a047]" + UserUtils.online.get(channel.getName().replace(".txt", "").toLowerCase()) + "/" + UserUtils.max.get(channel.getName().replace(".txt", "").toLowerCase()) + "[/color])[/b]\n\uD83D\uDCAC [color=#5e6165]" + getTime() + "[/color] [b][URL=client://0/" +
                     c.getUniqueIdentifier() + "~" + c.getNickname().replace(" ", "%20").replace("/", "%2F").replace("[", "%5C%5B").replace("]", "%5C%5D") + "][color=" + setColor(u) +"]\"" + c.getNickname() + "\"[/color][/URL][/b]: " + message;
+        }
+    }
+    @NotNull
+    public static String parserMessage(@NotNull String user, @NotNull String message, @NotNull File channel){
+        if (user.equalsIgnoreCase("System")){
+            return "[b]Kanał: [color=#f4511e]#" + channel.getName().replace(".txt", "") + "[/color] ([color=#43a047]" + UserUtils.online.get(channel.getName().replace(".txt", "").toLowerCase()) + "/" + UserUtils.max.get(channel.getName().replace(".txt", "").toLowerCase()) + "[/color])[/b]\n\uD83D\uDCAC [color=#5e6165]" + getTime() + "[/color] ⚙️\"[color=#2580c3]System[/color]\": " + message + "\n";
+        }else{
+            return null;
         }
     }
     public static String getTime(){
