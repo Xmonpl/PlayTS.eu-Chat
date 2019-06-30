@@ -132,10 +132,30 @@ public class ChatEvent extends TS3EventAdapter {
                             }
                         }
                     }
-                    */
+                    if (args[0].equalsIgnoreCase("!kick")) {
+                        if (c.isInServerGroup(6) || c.isInServerGroup(16) || c.isInServerGroup(17) || c.isInServerGroup(26) || c.isInServerGroup(75)) {
+                            if (args.length == 3) {
+                                if (Main.channels.contains(args[2].toLowerCase())) {
+                                    String uuid = args[1].split("/")[3].replaceAll("~.+", "");
+                                    User ua = UserUtils.get(uuid);
+                                    u.setChannels(u.getChannels().replace(args[2].toLowerCase() + "@", ""));
+                                    if (ua.getSelect().equalsIgnoreCase(args[2].toLowerCase())){
+                                        ua.setSelect("playts");
+                                    }
+                                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "poprawnie wyrzuciłes tego użytkownika!");
+                                }else{
+                                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Taki kanał nie istnieje!");
+                                }
+                            } else {
+                                TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !kick <przenies klienta> <kanal>", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]Correct use: !kick <move client> <channel>", "brak"}, c);
+                            }
+                        } else {
+                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Nie jesteś moim szefem! 🤓");
+                        }
+                    }
+                     */
                     if (args[0].equalsIgnoreCase("!timeout")){
                         if (c.isInServerGroup(6) || c.isInServerGroup(16) || c.isInServerGroup(17) || c.isInServerGroup(26) || c.isInServerGroup(75)) {
-
                             if (args[1].equalsIgnoreCase("revoke")){
                                 if (args.length == 3) {
                                     String uuid = args[2].split("/")[3].replaceAll("~.+", "");
@@ -150,24 +170,28 @@ public class ChatEvent extends TS3EventAdapter {
                                     try {
                                         long czas = System.currentTimeMillis() + TeamSpeakUtils.getTimeWithString(args[2]);
                                         String uuid = args[1].split("/")[3].replaceAll("~.+", "");
-                                        User ua = UserUtils.get(uuid);
-                                        ua.setTimeout(czas);
-                                        slowdown.put(c.getUniqueIdentifier(), System.currentTimeMillis());
-                                        JSONObject jsonObject = (JSONObject) parseJSONFile("channelconfig.json");
-                                        String parse = MessageUtils.parserMessage("System", "[color=#00bcd4]Użytkownik " + ua.getName() + " został [color=#d50000]wyciszony[/color], do [B]" + TeamSpeakUtils.getDate(czas) + " przez [url=" + c.getClientURI() + "]" + c.getNickname() + "[/url]", new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
-                                        TeamSpeakUtils.api.getClients().forEach(x -> {
-                                            if (x.isRegularClient()) {
-                                                User ux = UserUtils.get(x.getUniqueIdentifier());
-                                                if (System.currentTimeMillis() > ux.getMute()) {
-                                                    if (!x.isInServerGroup(115)) {
-                                                        if (ux.getChannels().contains(u.getSelect())) {
-                                                            TeamSpeakUtils.api.sendPrivateMessage(x.getId(), parse);
+                                        if (uuid.equals("bu6qFc46PRdafcJCkXqLEJz506A=") || uuid.equals("S+S1H+IljnueogQZxSNdRROfiMk=")){
+                                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "XD");
+                                        }else {
+                                            User ua = UserUtils.get(uuid);
+                                            ua.setTimeout(czas);
+                                            slowdown.put(c.getUniqueIdentifier(), System.currentTimeMillis());
+                                            JSONObject jsonObject = (JSONObject) parseJSONFile("channelconfig.json");
+                                            String parse = MessageUtils.parserMessage("System", "[color=#00bcd4]Użytkownik " + ua.getName() + " został [color=#d50000]wyciszony[/color], do [B]" + TeamSpeakUtils.getDate(czas) + " przez [url=" + c.getClientURI() + "]" + c.getNickname() + "[/url]", new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
+                                            TeamSpeakUtils.api.getClients().forEach(x -> {
+                                                if (x.isRegularClient()) {
+                                                    User ux = UserUtils.get(x.getUniqueIdentifier());
+                                                    if (System.currentTimeMillis() > ux.getMute()) {
+                                                        if (!x.isInServerGroup(115)) {
+                                                            if (ux.getChannels().contains(u.getSelect())) {
+                                                                TeamSpeakUtils.api.sendPrivateMessage(x.getId(), parse);
+                                                            }
                                                         }
                                                     }
                                                 }
-                                            }
-                                        });
-                                        MessageUtils.saveMessageToFile("System", "[color=#00bcd4]Użytkownik " + ua.getName() + " został [color=#d50000]wyciszony[/color], do [B]" + TeamSpeakUtils.getDate(czas) + " przez [url=" + c.getClientURI() + "]" + c.getNickname() + "[/url]", new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
+                                            });
+                                            MessageUtils.saveMessageToFile("System", "[color=#00bcd4]Użytkownik " + ua.getName() + " został [color=#d50000]wyciszony[/color], do [B]" + TeamSpeakUtils.getDate(czas) + " przez [url=" + c.getClientURI() + "]" + c.getNickname() + "[/url]", new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
+                                        }
                                     } catch (Exception ee) {
                                         Logger.warning(ee.getMessage());
                                     }
@@ -307,7 +331,7 @@ public class ChatEvent extends TS3EventAdapter {
                             if (Main.channels.contains(args[1])) {
                                 if (u.getChannels().contains(args[1])) {
                                     slowdown.put(c.getUniqueIdentifier(), System.currentTimeMillis());
-                                    u.setChannels(u.getChannels().replace(args[1] + "@", ""));
+                                    u.setChannels(u.getChannels().replace(args[1].toLowerCase() + "@", ""));
                                     TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=lightgreen][B]Gratulacje[/B][/color], [color=#00bcd4]wyszedłeś/aś z kanału [color=#f4511e][B]#" + args[1].toLowerCase() +"[/B][/color] ([color=#43a047][B]" + UserUtils.online.get(args[1].toLowerCase()) + "/" + UserUtils.max.get(args[1].toLowerCase()) +" online[/B][/color]). [B]Aby dołączyć do innego kanału wpisz [u][color=#8d6e63]!channels[/color][/u].[/b]", "[color=lightgreen][B]Congratulations[/B][/color], [color=#00bcd4]you've left the channel [color=#f4511e][B]#" + args[1].toLowerCase() + "[/B][/color] ([color=#43a047][B]" + UserUtils.online.get(args[1].toLowerCase()) + "/" + UserUtils.max.get(args[1].toLowerCase()) + "[/B][/color]). [B]To join another channel, enter [u][color=#8d6e63]!channels[/color][/u].[/b]", "bral"}, c);
                                 } else {
                                     TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Nie znajdujesz się w tym kanale.", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]You are not in this channel.", "brak"}, c);

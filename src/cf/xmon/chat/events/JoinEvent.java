@@ -24,7 +24,6 @@ public class JoinEvent extends TS3EventAdapter {
     @Override
     public void onClientJoin(@NotNull ClientJoinEvent e){
         Client c = TeamSpeakUtils.api.getClientByUId(e.getUniqueClientIdentifier());
-        //@TODO wiadomosci na multilanguage
         if (c.isRegularClient()) {
             try {
                 JSONObject jsonObject = (JSONObject) parseJSONFile("channelconfig.json");
@@ -32,9 +31,16 @@ public class JoinEvent extends TS3EventAdapter {
                 if (u == null){
                     Logger.info("New User[" + e.getClientNickname() + "]");
                     new User(e.getUniqueClientIdentifier());
+                    /*
                     TeamSpeakUtils.api.sendPrivateMessage(e.getClientId(), "\n " + MessageUtils.getTime() + " ⚙️ [color=#2580c3][b]\"System\"[/b][/color]: [b][color=#76ff03]Nowość![/color] Kanały tekstowe jak na [color=#7289da]Discord[/color]zie. Wybierz kanał wpisując [u][color=#8d6e63]!channels[/color][/u] lub [u][color=#795548]!help[/color][/u].\n" +
                             "Automatycznie dołączono" +
                             " do kanału [color=#f4511e]#playts[/color] ([color=#43a047]" + UserUtils.online.get("playts") + "/" + UserUtils.max.get("playts") + "[/color]). [i]Ostatnie 5 wiadomości z kanału [color=#f4511e]#playts[/color]:[/i][/b]\n");
+                     */
+                    TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"\n " + MessageUtils.getTime() + " ⚙️ [color=#2580c3][b]\"System\"[/b][/color]: [b][color=#76ff03]Nowość![/color] Kanały tekstowe jak na [color=#7289da]Discord[/color]zie. Wybierz kanał wpisując [u][color=#8d6e63]!channels[/color][/u] lub [u][color=#795548]!help[/color][/u].\n" +
+                            "Automatycznie dołączono" +
+                            " do kanału [color=#f4511e]#playts[/color] ([color=#43a047]" + UserUtils.online.get("playts") + "/" + UserUtils.max.get("playts") + "[/color]). [i]Ostatnie 5 wiadomości z kanału [color=#f4511e]#playts[/color]:[/i][/b]\n", "\n " + MessageUtils.getTime() + " ⚙️ [color=#2580c3][b]\"System\"[/b][/color]: [b][color=#76ff03]News![/color] Text channels as on [color=#7289da]Discord[/color]. Select the channel by typing [u][color=#8d6e63]!channels[/color][/u] or [u][color=#795548]!help[/color][/u].\n" +
+                            "Automatically joined" +
+                            " to the channel [color=#f4511e]#playts[/color] ([color=#43a047]" + UserUtils.online.get("playts") + "/" + UserUtils.max.get("playts") + "[/color]). [i]Last 5 messages from the channel [color=#f4511e]#playts[/color]:[/i][/b]\n", ""}, c);
                     File file = new File(jsonObject.getJSONObject("playts").getString("file"));
                     int n_lines = 5;
                     int counter = 0;
@@ -57,8 +63,13 @@ public class JoinEvent extends TS3EventAdapter {
                     Arrays.stream(u.getChannels().split("@")).forEach(x ->{
                         sbb.append("[color=#f4511e]#" + x.toLowerCase() + "[/color] ([color=#43a047]" + UserUtils.online.get(x.toLowerCase()) + "/" + UserUtils.max.get(x.toLowerCase()) + "[/color]), ");
                     });
+                    /*
                     TeamSpeakUtils.api.sendPrivateMessage(e.getClientId(), "\n " + MessageUtils.getTime() + " ⚙️ [color=#2580c3][b]\"System\"[/b][/color]: [b][color=#76ff03]Nowość![/color] Kanały tekstowe jak na [color=#7289da]Discord[/color]zie. Wybierz kanał wpisując [u][color=#8d6e63]!channels[/color][/u] lub [u][color=#795548]!help[/color][/u].\n" +
                             "Znajdujesz się w kanałach: " + sbb.toString() + " [i]Ostatnie 5 wiadomości z kanału [color=#f4511e]#" + u.getSelect().toLowerCase() + "[/color]:[/i][/b]\n");
+                                   */
+                    TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"\n " + MessageUtils.getTime() + " ⚙️ [color=#2580c3][b]\"System\"[/b][/color]: [b][color=#76ff03]Nowość![/color] Kanały tekstowe jak na [color=#7289da]Discord[/color]zie. Wybierz kanał wpisując [u][color=#8d6e63]!channels[/color][/u] lub [u][color=#795548]!help[/color][/u].\n" +
+                            "Znajdujesz się w kanałach: " + sbb.toString() + " [i]Ostatnie 5 wiadomości z kanału [color=#f4511e]#" + u.getSelect().toLowerCase() + "[/color]:[/i][/b]\n", "\n " + MessageUtils.getTime() + " ⚙️ [color=#2580c3][b]\"System\"[/b][/color]: [b][color=#76ff03]News![/color] Text channels as on [color=#7289da]Discord[/color]. Select the channel by typing [u][color=#8d6e63]!channels[/color][/u] or [u][color=#795548]!help[/color][/u].\n" +
+                            "You are in the channels: " + sbb.toString() + " [i]Last 5 messages from the channel [color=#f4511e]#" + u.getSelect().toLowerCase() + "[/color]:[/i][/b]\n", "brak"}, c);
                     File file = new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file"));
                     int n_lines = 5;
                     int counter = 0;

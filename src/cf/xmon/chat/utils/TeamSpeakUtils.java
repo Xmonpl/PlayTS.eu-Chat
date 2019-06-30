@@ -37,7 +37,7 @@ public class TeamSpeakUtils {
         System.out.println("Trwa logowanie..");
         (TeamSpeakUtils.api = TeamSpeakUtils.query.getApi()).login(querylogin, querypassword);
         TeamSpeakUtils.api.selectVirtualServerById(virtualserverid, "Chat");
-        //TeamSpeakUtils.api.moveClient(TeamSpeakUtils.api.whoAmI().getId(), 5270);
+        TeamSpeakUtils.api.moveClient(TeamSpeakUtils.api.whoAmI().getId(), 5270);
         System.out.println("Logowanie przebiegło pomyślnie!");
         api.registerEvent(TS3EventType.TEXT_PRIVATE);
         api.registerEvent(TS3EventType.SERVER);
@@ -56,7 +56,7 @@ public class TeamSpeakUtils {
         if (country.equalsIgnoreCase("pl")){
             api.sendPrivateMessage(c.getId(), Poland$English$Niemcy[0]);
         }else if(country.equalsIgnoreCase("de")){
-            api.sendPrivateMessage(c.getId(), Poland$English$Niemcy[2]);
+            api.sendPrivateMessage(c.getId(), Poland$English$Niemcy[1]);
         }else{
             api.sendPrivateMessage(c.getId(), Poland$English$Niemcy[1]);
         }

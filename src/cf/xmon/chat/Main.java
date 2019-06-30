@@ -7,6 +7,7 @@ import cf.xmon.chat.database.StoreMode;
 import cf.xmon.chat.database.StoreMySQL;
 import cf.xmon.chat.database.StoreSQLITE;
 import cf.xmon.chat.object.User;
+import cf.xmon.chat.tasks.AutoClearChannelsTask;
 import cf.xmon.chat.utils.Logger;
 import cf.xmon.chat.utils.MessageUtils;
 import cf.xmon.chat.utils.TeamSpeakUtils;
@@ -43,6 +44,7 @@ public class Main {
         UserUtils.loadOnline();
         onload();
         //ServerCreator.createServer();
+        AutoClearChannelsTask.update();
         System.out.println("Uruchomiono w " + (System.currentTimeMillis() - start) + "ms!");
         System.out.println("x-Chat created by Xmon for PlayTS.eu (https://github.com/xmonpl)");
     }
