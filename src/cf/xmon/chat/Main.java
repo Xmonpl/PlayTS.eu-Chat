@@ -1,5 +1,6 @@
 package cf.xmon.chat;
 
+import cf.xmon.chat.api.ServerCreator;
 import cf.xmon.chat.config.Config;
 import cf.xmon.chat.config.ConfigManager;
 import cf.xmon.chat.database.Store;
@@ -43,7 +44,7 @@ public class Main {
         TeamSpeakUtils.TeamSpeakConnect(c.getInstance().getQueryIp(), c.getInstance().getPort(), c.getInstance().getDebug(), c.getInstance().getQueryLogin(), c.getInstance().getPassword(), c.getInstance().getVirtualServerId());
         UserUtils.loadOnline();
         onload();
-        //ServerCreator.createServer();
+        ServerCreator.createServer();
         AutoClearChannelsTask.update();
         System.out.println("Uruchomiono w " + (System.currentTimeMillis() - start) + "ms!");
         System.out.println("x-Chat created by Xmon for PlayTS.eu (https://github.com/xmonpl)");

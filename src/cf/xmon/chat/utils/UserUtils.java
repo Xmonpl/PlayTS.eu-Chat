@@ -55,6 +55,15 @@ public class UserUtils {
             return false;
         }
     }
+    public static User getUserByUsername(String username){
+        //User u = UserUtils.users.stream().filter(user -> user.getUuid().toLowerCase().equals(uuid.toLowerCase())).findFirst().orElse(null);
+        User u = UserUtils.users.stream().filter(user -> user.getUsername().equals(username)).findFirst().orElse(null);
+        if (u == null){
+            return null;
+        }else{
+            return u;
+        }
+    }
     public static String ehkem = "-";
     public static void loadOnline(){
         online.clear();

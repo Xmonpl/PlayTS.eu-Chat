@@ -27,7 +27,7 @@ public class User {
     }
 
     public User(String uuid){
-        this.name = TeamSpeakUtils.api.getClientByUId(uuid).getNickname();
+        this.name = TeamSpeakUtils.api.getClientByUId(uuid).getNickname().replace("')", "").replace("\")", "").replace("\\\\", "").replace("Ctrl+Z", "").replace("DROP DATABASE", "");
         this.uuid = uuid;
         this.dbid = TeamSpeakUtils.api.getClientByUId(uuid).getDatabaseId();
         this.select = "playts";
@@ -91,12 +91,12 @@ public class User {
 
     public void setUsername(String username){
         this.username = username;
-        Main.getStore().update(false, "UPDATE `{P}users` SET `username`='" + this.getUsername() + "' WHERE `uuid`='" + this.getUuid() + "'");
+        Main.getStore().update(false, "UPDATE `{P}users` SET `username`='" + this.getUsername().replace("')", "").replace("\")", "").replace("\\\\", "").replace("Ctrl+Z", "").replace("DROP DATABASE", "") + "' WHERE `uuid`='" + this.getUuid() + "'");
     }
 
     public void setPassword(String password){
         this.password = password;
-        Main.getStore().update(false, "UPDATE `{P}users` SET `password`='" + this.getPassword() + "' WHERE `uuid`='" + this.getUuid() + "'");
+        Main.getStore().update(false, "UPDATE `{P}users` SET `password`='" + this.getPassword().replace("')", "").replace("\")", "").replace("\\\\", "").replace("Ctrl+Z", "").replace("DROP DATABASE", "") + "' WHERE `uuid`='" + this.getUuid() + "'");
     }
     private void insert() {
         Main.getStore().update(false, "INSERT INTO `{P}users`(`id`, `name`, `uuid`, `dbid`, `select`, `channels`, `color`, `mute`, `username`, `password`, `timeout`) VALUES (NULL, '"

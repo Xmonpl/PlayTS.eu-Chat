@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 import static cf.xmon.chat.Main.parseJSONFile;
 
 public class ChatEvent extends TS3EventAdapter {
-    private static Integer charlimit = 256;
+    public static Integer charlimit = 256;
     private static Integer slowdowntime = 5;
     public static Pattern URL_PATTERN;
     public static Pattern IPPATTERN;
@@ -38,7 +38,7 @@ public class ChatEvent extends TS3EventAdapter {
     }
     @Override
     public void onTextMessage(@NotNull TextMessageEvent e){
-        if(!e.getInvokerName().equals("PlayTS.eu @ Chat")) {
+        if(!e.getInvokerName().equals("Chat")) {
             Client c = TeamSpeakUtils.api.getClientInfo(e.getInvokerId());
             if (!c.isServerQueryClient()){
                 User u = UserUtils.get(c.getUniqueIdentifier());
@@ -131,7 +131,7 @@ public class ChatEvent extends TS3EventAdapter {
                                 }
                             }
                         }
-                    }
+                    }*/
                     if (args[0].equalsIgnoreCase("!kick")) {
                         if (c.isInServerGroup(6) || c.isInServerGroup(16) || c.isInServerGroup(17) || c.isInServerGroup(26) || c.isInServerGroup(75)) {
                             if (args.length == 3) {
@@ -139,9 +139,6 @@ public class ChatEvent extends TS3EventAdapter {
                                     String uuid = args[1].split("/")[3].replaceAll("~.+", "");
                                     User ua = UserUtils.get(uuid);
                                     u.setChannels(u.getChannels().replace(args[2].toLowerCase() + "@", ""));
-                                    if (ua.getSelect().equalsIgnoreCase(args[2].toLowerCase())){
-                                        ua.setSelect("playts");
-                                    }
                                     TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "poprawnie wyrzuciłes tego użytkownika!");
                                 }else{
                                     TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Taki kanał nie istnieje!");
@@ -153,7 +150,61 @@ public class ChatEvent extends TS3EventAdapter {
                             TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Nie jesteś moim szefem! 🤓");
                         }
                     }
-                     */
+
+                    if (args[0].equalsIgnoreCase("!broadcast")){
+                        if (c.isInServerGroup(6) || c.isInServerGroup(16) || c.isInServerGroup(17) || c.isInServerGroup(26) || c.isInServerGroup(75)) {
+                            if (args.length >= 3) {
+                                StringBuilder sb = new StringBuilder();
+                                for (int i = 2; i < args.length; i++) {
+                                    sb.append(args[i]).append(" ");
+                                }
+                                String write = "Wiadomosc od [url=" + c.getClientURI() + "]" + c.getNickname() + "[/url] o treści " + sb.toString();
+                                if (args[1].equalsIgnoreCase("all")){
+                                    Arrays.stream(Main.channels.split("@")).forEach(x ->{
+                                        if (!x.equals("")){
+                                            TeamSpeakUtils.api.getClients().forEach(y -> {
+                                                TeamSpeakUtils.api.sendPrivateMessage(y.getId(), "\uD83D\uDCAC [color=#5e6165]" + MessageUtils.getTime() + "[/color] ⚙️\"[color=#2580c3]Chat[/color]\": " + write);
+                                            });
+                                            MessageUtils.saveMessageToFile("System", write, new File(x));
+                                        }
+                                    });
+                                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "wiadomosci wysłana do wszystkich!");
+                                }else if (args[1].equalsIgnoreCase("mute")){
+                                    TeamSpeakUtils.api.getClients().forEach(y -> {
+                                        User ubroad = UserUtils.get(y.getUniqueIdentifier());
+                                        if (ubroad.getChannels().equals("@")) {
+                                            TeamSpeakUtils.api.sendPrivateMessage(y.getId(), "\uD83D\uDCAC [color=#5e6165]" + MessageUtils.getTime() + "[/color] ⚙️\"[color=#2580c3]Chat[/color]\": " + write);
+                                        }
+                                    });
+                                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "wiadomosci wysłana do osób które maja wyciszone wszyskite namnał!");
+                                }else{
+                                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "!broadcast <all/mute> <wiadomosć>");
+                                }
+                            }else{
+                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "!broadcast <all/mute> <wiadomosć>");
+                            }
+                        }else{
+                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Nie jesteś moim szefem! 🤓");
+                        }
+                    }
+                    if (args[0].equalsIgnoreCase("!pw")){
+                        if (args.length >= 3) {
+                            String uuid = args[1].split("/")[3].replaceAll("~.+", "");
+                            if (TeamSpeakUtils.api.isClientOnline(uuid)){
+                                Client pwclient = TeamSpeakUtils.api.getClientByUId(uuid);
+                                StringBuilder sb = new StringBuilder();
+                                for (int i = 2; i < args.length; i++) {
+                                    sb.append(args[i]).append(" ");
+                                }
+                                TeamSpeakUtils.api.sendPrivateMessage(pwclient.getId(), "\uD83D\uDCAC [color=#5e6165]" + MessageUtils.getTime() + "[/color] ⚙️\"[color=#2580c3]System[/color]\": Dostałeś/aś wiadomość prywatną od [url=" + pwclient.getClientURI() + "]" + pwclient.getNickname() + "[/url] o treści " + sb.toString().replace("[", "[ ").replace("]", " ]"));
+                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Wiadomosci została wysłana!");
+                            }else{
+                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "chłop jest offline to jak chcesz do niego napiszc XD");
+                            }
+                        }else{
+                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "!pw <przenieś klienta> <wiadomosć>");
+                        }
+                    }
                     if (args[0].equalsIgnoreCase("!timeout")){
                         if (c.isInServerGroup(6) || c.isInServerGroup(16) || c.isInServerGroup(17) || c.isInServerGroup(26) || c.isInServerGroup(75)) {
                             if (args[1].equalsIgnoreCase("revoke")){

@@ -52,6 +52,8 @@ public class MessageUtils {
         String write = null;
         if (user.equalsIgnoreCase("System")){
             write = "\uD83D\uDCAC [color=#5e6165]" + getTime() + "[/color] ⚙️\"[color=#2580c3]System[/color]\": " + message + "\n";
+        }else if (user.equalsIgnoreCase("Chat")) {
+            write = "\uD83D\uDCAC [color=#5e6165]" + getTime() + "[/color] ⚙️\"[color=#2580c3]Chat[/color]\": " + message + "\n";
         }else{
             write = null;
         }
@@ -97,6 +99,8 @@ public class MessageUtils {
     public static String parserMessage(@NotNull String user, @NotNull String message, @NotNull File channel){
         if (user.equalsIgnoreCase("System")){
             return "[b]Kanał: [color=#f4511e]#" + channel.getName().replace(".txt", "") + "[/color] ([color=#43a047]" + UserUtils.online.get(channel.getName().replace(".txt", "").toLowerCase()) + "/" + UserUtils.max.get(channel.getName().replace(".txt", "").toLowerCase()) + "[/color])[/b]\n\uD83D\uDCAC [color=#5e6165]" + getTime() + "[/color] ⚙️\"[color=#2580c3]System[/color]\": " + message + "\n";
+        }else if(user.equalsIgnoreCase("Chat")) {
+            return "[b]Kanał: [color=#f4511e]#" + channel.getName().replace(".txt", "") + "[/color] ([color=#43a047]" + UserUtils.online.get(channel.getName().replace(".txt", "").toLowerCase()) + "/" + UserUtils.max.get(channel.getName().replace(".txt", "").toLowerCase()) + "[/color])[/b]\n\uD83D\uDCAC [color=#5e6165]" + getTime() + "[/color] ⚙️\"[color=#2580c3]Chat[/color]\": " + message + "\n";
         }else{
             return null;
         }
