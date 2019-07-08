@@ -1,7 +1,9 @@
 package cf.xmon.chat.api;
 
+import cf.xmon.chat.Main;
 import cf.xmon.chat.events.ChatEvent;
 import cf.xmon.chat.object.User;
+import cf.xmon.chat.utils.MessageUtils;
 import cf.xmon.chat.utils.TeamSpeakUtils;
 import cf.xmon.chat.utils.UserUtils;
 import com.github.theholywaffle.teamspeak3.api.wrapper.DatabaseClient;
@@ -12,6 +14,7 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
@@ -40,30 +43,101 @@ public class ServerCreator {
                         if (u != null){
                             if (t.getRequestHeaders().get("password").toString().replace("[", "").replace("]", "").equals(u.getPassword())) {
                                 DatabaseClientInfo dbc = TeamSpeakUtils.api.getDatabaseClientByUId(u.getUuid());
-                                if (isinServerGroup(dbc)){
-                                    String selectchannel = u.getSelect();
-                                    String message = t.getRequestHeaders().get("message").toString().replace("[", "").replace("]", "");
-                                    if (message != null) {
-                                        if (isinPremium(dbc)){
-                                            if (message.length() > ChatEvent.charlimit * 2){
-                                                response = "Stary... zbyt długa ta twoja wiadmosc!";
-                                            }else{
-                                                JSONObject jsonObject = (JSONObject) parseJSONFile("channelconfig.json");
-                                                response = "porpawne";
+                                if (!isinSG(dbc, 133)) {
+                                    if (isinServerGroup(dbc)) {
+                                        String message = t.getRequestHeaders().get("message").toString().replace("[", "").replace("]", "");
+                                        if (message != null) {
+                                            if (isinPremium(dbc)) {
+                                                if (message.length() > ChatEvent.charlimit * 2) {
+                                                    response = "Stary... zbyt dluga ta twoja wiadmosc!";
+                                                } else {
+                                                    if (System.currentTimeMillis() > u.getTimeout()) {
+                                                        JSONObject jsonObject = (JSONObject) parseJSONFile("channelconfig.json");
+                                                        if (ChatEvent.URL_PATTERN.matcher(message).find() || ChatEvent.IPPATTERN.matcher(message).find() && !jsonObject.getJSONObject(u.getSelect().toLowerCase()).getBoolean("advertising")) {
+                                                            response = "Stary.. twoja wiadomosci zawiera reklame";
+                                                        }else{
+                                                            if (ChatEvent.BANNED_WORDS.matcher(message).find() && !jsonObject.getJSONObject(u.getSelect().toLowerCase()).getBoolean("imprecation")) {
+                                                                response = "Stary.. twoja wiadomosci zawiera przeklensta";
+                                                            }else {
+                                                                if (Main.channels.contains(u.getSelect())) {
+                                                                    String parse = MessageUtils.parserMessage(dbc, u, message, new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
+                                                                    ChatEvent.slowdown.put(dbc.getUniqueIdentifier(), System.currentTimeMillis());
+                                                                    if (System.currentTimeMillis() > u.getMute()) {
+                                                                        TeamSpeakUtils.api.getClients().forEach(x -> {
+                                                                            if (x.isRegularClient()) {
+                                                                                User ux = UserUtils.get(x.getUniqueIdentifier());
+                                                                                if (System.currentTimeMillis() > ux.getMute()) {
+                                                                                    if (!x.isInServerGroup(115)) {
+                                                                                        if (ux.getChannels().contains(u.getSelect())) {
+                                                                                            TeamSpeakUtils.api.sendPrivateMessage(x.getId(), parse.replace("@" + x.getNickname(), "[b][color=orange]@" + x.getNickname() + "[/color][/b]").replace(":shrug:", "¯\\_(ツ)_/¯").replace(":lenny:", "( ͡° ͜ʖ ͡°)").replace(":take:", "༼ つ ◕_◕ ༽つ").replace(":dolar:", "[̲̅$̲̅(̲̅5̲̅)̲̅$̲̅]").replace(":lennydolar:", "[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]").replace("<3", "[b][color=red]❤[/color][/b]"));
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        });
+                                                                        MessageUtils.saveMessageToFile(dbc, u, message.replace(":shrug:", "¯\\_(ツ)_/¯").replace(":lenny:", "( ͡° ͜ʖ ͡°)").replace(":take:", "༼ つ ◕_◕ ༽つ").replace(":dolar:", "[̲̅$̲̅(̲̅5̲̅)̲̅$̲̅]").replace(":lennydolar:", "[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]").replace("<3", "[b][color=red]❤[/color][/b]"), new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
+                                                                    }else{
+                                                                        response = "Stary.. masz zmutowany czat! !unmute";
+                                                                    }
+                                                                }else {
+                                                                    response = "Stary.. sprobuj jeszcze raz wybrac kanał!";
+                                                                }
+                                                            }
+                                                        }
+                                                    }else{
+                                                        response = "Stary... zostales wyciszony do " + TeamSpeakUtils.getDate(u.getTimeout());
+                                                    }
+                                                }
+                                            } else {
+                                                if (message.length() > ChatEvent.charlimit) {
+                                                    response = "Stary... zbyt dluga ta twoja wiadmosc!";
+                                                } else {
+                                                    if (System.currentTimeMillis() > u.getTimeout()) {
+                                                        JSONObject jsonObject = (JSONObject) parseJSONFile("channelconfig.json");
+                                                        if (ChatEvent.URL_PATTERN.matcher(message).find() || ChatEvent.IPPATTERN.matcher(message).find() && !jsonObject.getJSONObject(u.getSelect().toLowerCase()).getBoolean("advertising")) {
+                                                            response = "Stary.. twoja wiadomosci zawiera reklame";
+                                                        }else{
+                                                            if (ChatEvent.BANNED_WORDS.matcher(message).find() && !jsonObject.getJSONObject(u.getSelect().toLowerCase()).getBoolean("imprecation")) {
+                                                                response = "Stary.. twoja wiadomosci zawiera przeklensta";
+                                                            }else {
+                                                                if (Main.channels.contains(u.getSelect())) {
+                                                                    String parse = MessageUtils.parserMessage(dbc, u, message, new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
+                                                                    ChatEvent.slowdown.put(dbc.getUniqueIdentifier(), System.currentTimeMillis());
+                                                                    if (System.currentTimeMillis() > u.getMute()) {
+                                                                        TeamSpeakUtils.api.getClients().forEach(x -> {
+                                                                            if (x.isRegularClient()) {
+                                                                                User ux = UserUtils.get(x.getUniqueIdentifier());
+                                                                                if (System.currentTimeMillis() > ux.getMute()) {
+                                                                                    if (!x.isInServerGroup(115)) {
+                                                                                        if (ux.getChannels().contains(u.getSelect())) {
+                                                                                            TeamSpeakUtils.api.sendPrivateMessage(x.getId(), parse.replace("@" + x.getNickname(), "[b][color=orange]@" + x.getNickname() + "[/color][/b]").replace(":shrug:", "¯\\_(ツ)_/¯").replace(":lenny:", "( ͡° ͜ʖ ͡°)").replace(":take:", "༼ つ ◕_◕ ༽つ").replace(":dolar:", "[̲̅$̲̅(̲̅5̲̅)̲̅$̲̅]").replace(":lennydolar:", "[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]").replace("<3", "[b][color=red]❤[/color][/b]"));
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        });
+                                                                        MessageUtils.saveMessageToFile(dbc, u, message.replace(":shrug:", "¯\\_(ツ)_/¯").replace(":lenny:", "( ͡° ͜ʖ ͡°)").replace(":take:", "༼ つ ◕_◕ ༽つ").replace(":dolar:", "[̲̅$̲̅(̲̅5̲̅)̲̅$̲̅]").replace(":lennydolar:", "[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]").replace("<3", "[b][color=red]❤[/color][/b]"), new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
+                                                                    }else{
+                                                                        response = "Stary.. masz zmutowany czat";
+                                                                    }
+                                                                }else {
+                                                                    response = "Stary.. sprobuj jeszcze raz wybrac kanal!";
+                                                                }
+                                                            }
+                                                        }
+                                                    }else{
+                                                        response = "Stary... zostales wyciszony do " + TeamSpeakUtils.getDate(u.getTimeout());
+                                                    }
+                                                }
                                             }
-                                        }else{
-                                            if (message.length() > ChatEvent.charlimit){
-                                                response = "Stary... zbyt długa ta twoja wiadmosc!";
-                                            }else{
-                                                JSONObject jsonObject = (JSONObject) parseJSONFile("channelconfig.json");
-                                                response = "porpawne";
-                                            }
+                                        } else {
+                                            response = "Stary... Musisz wyslac mi wiadomosc ktora ma porosylac!";
                                         }
-                                    }else{
-                                        response = "Stary... Musisz wysłać mi wiadomosc która ma porosyłąc!";
+                                    } else {
+                                        response = "Uzytkownik musi byc zarejestrowany!";
                                     }
                                 }else{
-                                    response = "Uzytkownik musi byc zarejestrowany!";
+                                    response = "Administrator naloxyl na ciebie blokade";
                                 }
                             }else{
                                 response = "Stary... Podales mi zle haslo do tego konta!";
@@ -72,9 +146,9 @@ public class ServerCreator {
                             response = "Stary... Taki username nie istnieje!";
                         }
                     } else if (t.getRequestHeaders().get("method").toString().replace("[", "").replace("]", "").equalsIgnoreCase("command")) {
-                        response = "Stary... Nie znam tej metody co mi podałeś kurde blaszka.";
+                        response = "Stary... Nie znam tej metody co mi podales kurde blaszka.";
                     } else {
-                        response = "Stary... Nie znam tej metody co mi podałeś kurde blaszka.";
+                        response = "Stary... Nie znam tej metody co mi podales kurde blaszka.";
                     }
                 }else{
                     response = "Stary... podaj mi username.";
@@ -108,6 +182,18 @@ public class ServerCreator {
         ServerGroup sg = TeamSpeakUtils.api.getServerGroupsByClientId(db.getDatabaseId()).stream().filter(serverGroup -> (serverGroup.getId() == 122)).findFirst().orElse(TeamSpeakUtils.api.getServerGroupsByClientId(db.getDatabaseId()).stream().filter(serverGroup -> (serverGroup.getId() == 123)).findFirst().orElse(null));
         if (sg != null) {
             if (sg.getId() == 122 || sg.getId() == 123) {
+                return true;
+            } else {
+                return false;
+            }
+        }else{
+            return false;
+        }
+    }
+    private static boolean isinSG(DatabaseClient db, Integer id){
+        ServerGroup sg = TeamSpeakUtils.api.getServerGroupsByClientId(db.getDatabaseId()).stream().filter(serverGroup -> (serverGroup.getId() == id)).findFirst().orElse(null);
+        if (sg != null) {
+            if (sg.getId() == id) {
                 return true;
             } else {
                 return false;

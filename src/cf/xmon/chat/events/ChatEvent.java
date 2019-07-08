@@ -28,7 +28,7 @@ public class ChatEvent extends TS3EventAdapter {
     public static Pattern URL_PATTERN;
     public static Pattern IPPATTERN;
     public static Pattern uppercase;
-    private Map<String, Long> slowdown = new HashMap<>();
+    public static Map<String, Long> slowdown = new HashMap<>();
     public static Pattern BANNED_WORDS;
     static {
         URL_PATTERN = Pattern.compile("(.*(www\\.|http://|https://|ftp://).*|.*\\.(com|pl|eu|org|net|yt|tk|ga|cf|me|ml|gq|xyz|online).*|.*ser[vw]er.*|.*s e r [vw] e r.*|.*info.*)");

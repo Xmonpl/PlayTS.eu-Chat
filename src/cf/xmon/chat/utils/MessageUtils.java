@@ -3,6 +3,7 @@ package cf.xmon.chat.utils;
 
 import cf.xmon.chat.object.User;
 import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
+import com.github.theholywaffle.teamspeak3.api.wrapper.DatabaseClient;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -38,6 +39,19 @@ public class MessageUtils {
                 write = "\uD83D\uDCAC [color=#5e6165]" + getTime() + "[/color][b][URL=client://0/" +
                         c.getUniqueIdentifier() + "~" + c.getNickname().replace(" ", "%20").replace("/", "%2F").replace("[", "%5C%5B").replace("]", "%5C%5D") + "][color=" + setColor(u) + "]\"" + c.getNickname() + "\"[/color][/URL][/b]: " + message + "\n";
         }
+        try {
+            if (!channel.exists()) {
+                Files.write(Paths.get(channel.getName(), new String[0]), write.getBytes(), StandardOpenOption.CREATE_NEW);
+            } else {
+                Files.write(Paths.get(channel.getName(), new String[0]), write.getBytes(), StandardOpenOption.APPEND);
+            }
+        }catch (IOException e){
+            Logger.warning(e.getMessage());
+        }
+    }
+    public static void saveMessageToFile(@NotNull DatabaseClient c, @NotNull User u, @NotNull String message, @NotNull File channel){
+        String write = "\uD83D\uDCAC [color=#5e6165]" + getTime() + "[/color] \uD83C\uDF0E [b][URL=client://0/" +
+                    c.getUniqueIdentifier() + "~" + c.getNickname().replace(" ", "%20").replace("/", "%2F").replace("[", "%5C%5B").replace("]", "%5C%5D") + "][color=" + setColor(u) + "]\"" + c.getNickname() + "\"[/color][/URL][/b]: " + message + "\n";
         try {
             if (!channel.exists()) {
                 Files.write(Paths.get(channel.getName(), new String[0]), write.getBytes(), StandardOpenOption.CREATE_NEW);
@@ -94,6 +108,11 @@ public class MessageUtils {
             return "[b]Kanał: [color=#f4511e]#" + channel.getName().replace(".txt", "") + "[/color] ([color=#43a047]" + UserUtils.online.get(channel.getName().replace(".txt", "").toLowerCase()) + "/" + UserUtils.max.get(channel.getName().replace(".txt", "").toLowerCase()) + "[/color])[/b]\n\uD83D\uDCAC [color=#5e6165]" + getTime() + "[/color] [b][URL=client://0/" +
                     c.getUniqueIdentifier() + "~" + c.getNickname().replace(" ", "%20").replace("/", "%2F").replace("[", "%5C%5B").replace("]", "%5C%5D") + "][color=" + setColor(u) +"]\"" + c.getNickname() + "\"[/color][/URL][/b]: " + message;
         }
+    }
+    @NotNull
+    public static String parserMessage(@NotNull DatabaseClient c, @NotNull User u, @NotNull String message, @NotNull File channel){
+            return "[b]Kanał: [color=#f4511e]#" + channel.getName().replace(".txt", "") + "[/color] ([color=#43a047]" + UserUtils.online.get(channel.getName().replace(".txt", "").toLowerCase()) + "/" + UserUtils.max.get(channel.getName().replace(".txt", "").toLowerCase()) + "[/color])[/b]\n\uD83D\uDCAC [color=#5e6165]" + getTime() + "[/color] \uD83C\uDF0E [b][URL=client://0/" +
+                    c.getUniqueIdentifier() + "~" + c.getNickname().replace(" ", "%20").replace("/", "%2F").replace("[", "%5C%5B").replace("]", "%5C%5D") + "][color=" + setColor(u) +"]\"" + c.getNickname() + "\"[/color][/URL][/b]: " + message;
     }
     @NotNull
     public static String parserMessage(@NotNull String user, @NotNull String message, @NotNull File channel){
