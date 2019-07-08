@@ -61,6 +61,15 @@ public class TeamSpeakUtils {
             api.sendPrivateMessage(c.getId(), Poland$English$Niemcy[1]);
         }
     }
+    public static String sendMultiLanguagePrivateMessage(@NotNull String[] Poland$English$Niemcy, @NotNull String c){
+        if (c.equalsIgnoreCase("pl")){
+            return Poland$English$Niemcy[0];
+        }else if(c.equalsIgnoreCase("de")){
+            return Poland$English$Niemcy[1];
+        }else{
+            return Poland$English$Niemcy[1];
+        }
+    }
     public static boolean canUse(final long saveTime, final long time) {
         return System.currentTimeMillis() - saveTime >= time;
     }
