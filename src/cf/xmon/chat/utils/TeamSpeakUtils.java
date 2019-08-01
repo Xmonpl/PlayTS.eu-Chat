@@ -2,7 +2,6 @@ package cf.xmon.chat.utils;
 
 import cf.xmon.chat.events.ChatEvent;
 import cf.xmon.chat.events.JoinEvent;
-import cf.xmon.chat.tasks.OnlineTask;
 import com.github.theholywaffle.teamspeak3.TS3Api;
 import com.github.theholywaffle.teamspeak3.TS3Config;
 import com.github.theholywaffle.teamspeak3.TS3Query;
@@ -37,13 +36,12 @@ public class TeamSpeakUtils {
         System.out.println("Trwa logowanie..");
         (TeamSpeakUtils.api = TeamSpeakUtils.query.getApi()).login(querylogin, querypassword);
         TeamSpeakUtils.api.selectVirtualServerById(virtualserverid, "Chat");
-        //TeamSpeakUtils.api.moveClient(TeamSpeakUtils.api.whoAmI().getId(), 5270);
+        TeamSpeakUtils.api.moveClient(TeamSpeakUtils.api.whoAmI().getId(), 5270);
         System.out.println("Logowanie przebiegło pomyślnie!");
         api.registerEvent(TS3EventType.TEXT_PRIVATE);
         api.registerEvent(TS3EventType.SERVER);
         TeamSpeakUtils.api.addTS3Listeners(new ChatEvent());
         TeamSpeakUtils.api.addTS3Listeners(new JoinEvent());
-        OnlineTask.update();
     }
     public static String getRainbowColor(){
         Random random = new Random();

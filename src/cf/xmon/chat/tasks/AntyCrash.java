@@ -8,8 +8,9 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 public class AntyCrash {
+    public static Timer timer;
     public static void update() {
-        final Timer timer = new Timer();
+        timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {

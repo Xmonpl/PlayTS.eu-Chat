@@ -3,7 +3,6 @@ package cf.xmon.chat.utils;
 import cf.xmon.chat.Main;
 import cf.xmon.chat.object.User;
 import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
@@ -16,7 +15,6 @@ public class UserUtils {
     public static Map<String, Integer> max = new HashMap<>();
     public static Map<String, Integer> online = new HashMap<>();
     private static List<User> users = new ArrayList<User>();
-    @Contract(pure = true)
     public static List<User> getUsers() {
         return users;
     }
@@ -64,7 +62,6 @@ public class UserUtils {
             return u;
         }
     }
-    public static String ehkem = "-";
     public static void loadOnline(){
         online.clear();
         max.clear();
@@ -79,19 +76,23 @@ public class UserUtils {
             }
         });
         users.forEach(u ->{
-            if (!ehkem.equals(u.getName())) {
-                if (!u.getChannels().equals("")) {
-                    Arrays.stream(u.getChannels().split("@")).forEach(y -> {
-                        if (!y.equals("")) {
-                            if (TeamSpeakUtils.api.isClientOnline(u.getUuid())) {
-                                online.put(y.toLowerCase(), online.get(y.toLowerCase()) + 1);
-                            }
-                            max.put(y.toLowerCase(), max.get(y.toLowerCase()) + 1);
+            if (!u.getChannels().equals("")) {
+                Arrays.stream(u.getChannels().split("@")).forEach(y -> {
+                    if (!y.equals("")) {
+                        if (TeamSpeakUtils.api.isClientOnline(u.getUuid())) {
+                            online.put(y.toLowerCase(), online.get(y.toLowerCase()) + 1);
                         }
-                    });
-                    ehkem = u.getName();
-                }
+                        max.put(y.toLowerCase(), max.get(y.toLowerCase()) + 1);
+                    }
+                });
             }
         });
+        Arrays.stream(channels.split("@")).forEach(x ->{
+            if (!x.equals("")) {
+                online.put(x.toLowerCase(), online.get(x)/2);
+                max.put(x.toLowerCase(), max.get(x)/2);
+            }
+        });
+
     }
 }
