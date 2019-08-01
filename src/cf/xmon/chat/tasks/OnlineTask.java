@@ -14,6 +14,6 @@ public class OnlineTask {
             public void run() {
                 UserUtils.loadOnline();
             }
-        }, TimeUnit.MINUTES.toMillis(1), TimeUnit.MINUTES.toMillis(1));
+        }, TimeUnit.SECONDS.toMillis(30) + 15, TimeUnit.SECONDS.toMillis(30) + 15);
     }
 }

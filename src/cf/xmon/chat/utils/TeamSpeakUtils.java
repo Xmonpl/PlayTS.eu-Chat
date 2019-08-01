@@ -37,7 +37,7 @@ public class TeamSpeakUtils {
         System.out.println("Trwa logowanie..");
         (TeamSpeakUtils.api = TeamSpeakUtils.query.getApi()).login(querylogin, querypassword);
         TeamSpeakUtils.api.selectVirtualServerById(virtualserverid, "Chat");
-        TeamSpeakUtils.api.moveClient(TeamSpeakUtils.api.whoAmI().getId(), 5270);
+        //TeamSpeakUtils.api.moveClient(TeamSpeakUtils.api.whoAmI().getId(), 5270);
         System.out.println("Logowanie przebiegło pomyślnie!");
         api.registerEvent(TS3EventType.TEXT_PRIVATE);
         api.registerEvent(TS3EventType.SERVER);

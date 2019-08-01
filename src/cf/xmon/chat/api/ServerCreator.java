@@ -27,11 +27,27 @@ public class ServerCreator {
     public static void createServer() throws IOException {
         HttpServer server = HttpServer.create(new InetSocketAddress(5669), 0);
         server.createContext("/send", new MyHandler());
+        server.createContext("/getmessage", new getmessage());
         server.setExecutor(null);
         server.start();
         System.out.println("Uruchomiono serwer!");
     }
+    static class getmessage implements HttpHandler {
+        @Override
+        public void handle(HttpExchange t) throws IOException {
+            String response = "Błąd wewnetrzny api!";
+            if (t.getRequestHeaders().get("apikey").toString().replace("[", "").replace("]", "").equals(apikey)){
 
+            }else{
+                response = "incorrect-apikey";
+            }
+            t.sendResponseHeaders(0, response.length());
+            OutputStream os = t.getResponseBody();
+            os.write(response.getBytes());
+            os.close();
+            t.close();
+        }
+    }
     static class MyHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange t) throws IOException {
@@ -50,15 +66,15 @@ public class ServerCreator {
                                         if (message != null) {
                                             if (isinPremium(dbc)) {
                                                 if (message.length() > ChatEvent.charlimit * 2) {
-                                                    response = "Stary... zbyt dluga ta twoja wiadmosc!";
+                                                    response = "Charlimit Premium " + message.length() + "/" + ChatEvent.charlimit *2;
                                                 } else {
                                                     if (System.currentTimeMillis() > u.getTimeout()) {
                                                         JSONObject jsonObject = (JSONObject) parseJSONFile("channelconfig.json");
                                                         if (ChatEvent.URL_PATTERN.matcher(message).find() || ChatEvent.IPPATTERN.matcher(message).find() && !jsonObject.getJSONObject(u.getSelect().toLowerCase()).getBoolean("advertising")) {
-                                                            response = "Stary.. twoja wiadomosci zawiera reklame";
+                                                            response = "advertisement";
                                                         }else{
                                                             if (ChatEvent.BANNED_WORDS.matcher(message).find() && !jsonObject.getJSONObject(u.getSelect().toLowerCase()).getBoolean("imprecation")) {
-                                                                response = "Stary.. twoja wiadomosci zawiera przeklensta";
+                                                                response = "imprecation";
                                                             }else {
                                                                 if (Main.channels.contains(u.getSelect())) {
                                                                     String parse = MessageUtils.parserMessage(dbc, u, message, new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
@@ -77,29 +93,30 @@ public class ServerCreator {
                                                                             }
                                                                         });
                                                                         MessageUtils.saveMessageToFile(dbc, u, message.replace(":shrug:", "¯\\_(ツ)_/¯").replace(":lenny:", "( ͡° ͜ʖ ͡°)").replace(":take:", "༼ つ ◕_◕ ༽つ").replace(":dolar:", "[̲̅$̲̅(̲̅5̲̅)̲̅$̲̅]").replace(":lennydolar:", "[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]").replace("<3", "[b][color=red]❤[/color][/b]"), new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
+                                                                        response = "success";
                                                                     }else{
-                                                                        response = "Stary.. masz zmutowany czat! !unmute";
+                                                                        response = "mute";
                                                                     }
                                                                 }else {
-                                                                    response = "Stary.. sprobuj jeszcze raz wybrac kanał!";
+                                                                    response = "idiot error#1";
                                                                 }
                                                             }
                                                         }
                                                     }else{
-                                                        response = "Stary... zostales wyciszony do " + TeamSpeakUtils.getDate(u.getTimeout());
+                                                        response = "timeout " + TeamSpeakUtils.getDate(u.getTimeout());
                                                     }
                                                 }
                                             } else {
                                                 if (message.length() > ChatEvent.charlimit) {
-                                                    response = "Stary... zbyt dluga ta twoja wiadmosc!";
+                                                    response = "Charlimit " + message.length() + "/" + ChatEvent.charlimit;
                                                 } else {
                                                     if (System.currentTimeMillis() > u.getTimeout()) {
                                                         JSONObject jsonObject = (JSONObject) parseJSONFile("channelconfig.json");
                                                         if (ChatEvent.URL_PATTERN.matcher(message).find() || ChatEvent.IPPATTERN.matcher(message).find() && !jsonObject.getJSONObject(u.getSelect().toLowerCase()).getBoolean("advertising")) {
-                                                            response = "Stary.. twoja wiadomosci zawiera reklame";
+                                                            response = "advertisement";
                                                         }else{
                                                             if (ChatEvent.BANNED_WORDS.matcher(message).find() && !jsonObject.getJSONObject(u.getSelect().toLowerCase()).getBoolean("imprecation")) {
-                                                                response = "Stary.. twoja wiadomosci zawiera przeklensta";
+                                                                response = "imprecation";
                                                             }else {
                                                                 if (Main.channels.contains(u.getSelect())) {
                                                                     String parse = MessageUtils.parserMessage(dbc, u, message, new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
@@ -118,33 +135,34 @@ public class ServerCreator {
                                                                             }
                                                                         });
                                                                         MessageUtils.saveMessageToFile(dbc, u, message.replace(":shrug:", "¯\\_(ツ)_/¯").replace(":lenny:", "( ͡° ͜ʖ ͡°)").replace(":take:", "༼ つ ◕_◕ ༽つ").replace(":dolar:", "[̲̅$̲̅(̲̅5̲̅)̲̅$̲̅]").replace(":lennydolar:", "[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]").replace("<3", "[b][color=red]❤[/color][/b]"), new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
+                                                                        response = "success";
                                                                     }else{
-                                                                        response = "Stary.. masz zmutowany czat";
+                                                                        response = "mute";
                                                                     }
                                                                 }else {
-                                                                    response = "Stary.. sprobuj jeszcze raz wybrac kanal!";
+                                                                    response = "idiot error#1";
                                                                 }
                                                             }
                                                         }
                                                     }else{
-                                                        response = "Stary... zostales wyciszony do " + TeamSpeakUtils.getDate(u.getTimeout());
+                                                        response = "timeout " + TeamSpeakUtils.getDate(u.getTimeout());
                                                     }
                                                 }
                                             }
                                         } else {
-                                            response = "Stary... Musisz wyslac mi wiadomosc ktora ma porosylac!";
+                                            response = "no-message";
                                         }
                                     } else {
-                                        response = "Uzytkownik musi byc zarejestrowany!";
+                                        response = "no-register";
                                     }
                                 }else{
-                                    response = "Administrator naloxyl na ciebie blokade";
+                                    response = "global-block";
                                 }
                             }else{
-                                response = "Stary... Podales mi zle haslo do tego konta!";
+                                response = "incorrect-password";
                             }
                         }else {
-                            response = "Stary... Taki username nie istnieje!";
+                            response = "incorrect-username";
                         }
                     }else if (t.getRequestHeaders().get("method").toString().replace("[", "").replace("]", "").equalsIgnoreCase("command")) {
                         User u = UserUtils.getUserByUsername(username);
@@ -356,6 +374,7 @@ public class ServerCreator {
             return false;
         }
     }
+
     private static boolean isinSG(DatabaseClient db, Integer id){
         ServerGroup sg = TeamSpeakUtils.api.getServerGroupsByClientId(db.getDatabaseId()).stream().filter(serverGroup -> (serverGroup.getId() == id)).findFirst().orElse(null);
         if (sg != null) {

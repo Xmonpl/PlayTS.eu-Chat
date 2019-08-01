@@ -1,0 +1,38 @@
+([::1]:5669/send)
+
+<--MESSAGE-->
+<parameters>
+key:    value:
+apikey      GHW$gjDB0-j4n42i0gj-PMFO9234j90hyw
+username    z formu username
+method      message
+password    z formu password
+message    <wiadomosc która wyśle użytkownik>
+
+<errors>
+Błąd wewnetrzny api! - ogólny błąd
+Charlimit Premium x/x - zbyt duża ilość znaków w wiadomosci gdy ktoś ma premium
+advertisement - wykryto reklame
+imprecation - wykryto przekleństwo
+success - wszystko zostało wysłane poprawnie
+mute - uzytkownik ma wyciszony chat musi wpisać komende !unmute
+idiot error#1 - błąd jakby się w aplikacji coś zjebalo wystary jeszcze raz dołaczyć do kanału !join
+timeout <DATE> - użytkownik został wyciszony przez admina
+Charlimit x/x - zbyt duża ilość znaków w wiadomosci gdy ktoś nie ma premium
+no-message - wiadomosc nie została przesłana metodą post
+no-register - użytkownik nie jest zarejestowany
+global-block - użytkownik zablokowany rangą (globalnie)
+incorrect-password - nie poprawne hasło do konta
+incorrect-username - nie poprawny username
+
+<--COMMAND-->
+<parameters>
+key:    value:
+apikey      GHW$gjDB0-j4n42i0gj-PMFO9234j90hyw
+username    z formu username
+method      command
+password    z formu password
+command     <wiadomosc która wyśle uzytkownik>
+language    <pl/en/de> (other = en)
+<errors>
+

@@ -1,6 +1,5 @@
 package cf.xmon.chat;
 
-import cf.xmon.chat.api.ServerCreator;
 import cf.xmon.chat.config.Config;
 import cf.xmon.chat.config.ConfigManager;
 import cf.xmon.chat.database.Store;
@@ -8,6 +7,7 @@ import cf.xmon.chat.database.StoreMode;
 import cf.xmon.chat.database.StoreMySQL;
 import cf.xmon.chat.database.StoreSQLITE;
 import cf.xmon.chat.object.User;
+import cf.xmon.chat.tasks.AntyCrash;
 import cf.xmon.chat.tasks.AutoClearChannelsTask;
 import cf.xmon.chat.utils.Logger;
 import cf.xmon.chat.utils.MessageUtils;
@@ -44,8 +44,9 @@ public class Main {
         TeamSpeakUtils.TeamSpeakConnect(c.getInstance().getQueryIp(), c.getInstance().getPort(), c.getInstance().getDebug(), c.getInstance().getQueryLogin(), c.getInstance().getPassword(), c.getInstance().getVirtualServerId());
         UserUtils.loadOnline();
         onload();
-        ServerCreator.createServer();
+        //ServerCreator.createServer();
         AutoClearChannelsTask.update();
+        AntyCrash.update();
         System.out.println("Uruchomiono w " + (System.currentTimeMillis() - start) + "ms!");
         System.out.println("x-Chat created by Xmon for PlayTS.eu (https://github.com/xmonpl)");
     }
@@ -53,7 +54,8 @@ public class Main {
     private static void onload() throws IOException {
         JSONObject jsonObject = (JSONObject) parseJSONFile("channelconfig.json");
         TeamSpeakUtils.api.getClients().forEach(x ->{
-            if (!x.getUniqueIdentifier().equals("ServerQuery") || !x.getUniqueIdentifier().equals("serveradmin")) {
+            if (x.isRegularClient() && !x.isInServerGroup(36) && !x.isInServerGroup(92)) {
+                System.out.println(x.getNickname());
                 try {
                     User u = UserUtils.getUsers().stream().filter(user -> user.getUuid().toLowerCase().equals(x.getUniqueIdentifier().toLowerCase())).findFirst().orElse(null);
                     if (u == null) {
@@ -172,13 +174,22 @@ public class Main {
                 }
             });
             if (!new File("rules_PL.txt").exists()){
-                Files.write(Paths.get("rules_PL.txt", new String[0]), "1. nie ma zasad".getBytes(), StandardOpenOption.CREATE_NEW);
+                Files.write(Paths.get("rules_PL.txt", new String[0]), "[b]1. nie ma zasad[/b]{NEW}[b]Edit. jednak są ale Xmonowi się nie chce pisać (Matis ma napisac)[/b]".getBytes(), StandardOpenOption.CREATE_NEW);
             }
             if (!new File("rules_DE.txt").exists()){
-                Files.write(Paths.get("rules_DE.txt", new String[0]), "1. nie ma zasad".getBytes(), StandardOpenOption.CREATE_NEW);
+                Files.write(Paths.get("rules_DE.txt", new String[0]), "[b]1. nie ma zasad[/b]{NEW}[b]Edit. jednak są ale Xmonowi się nie chce pisać (Matis ma napisac)[/b]".getBytes(), StandardOpenOption.CREATE_NEW);
             }
             if (!new File("rules_EN.txt").exists()){
-                Files.write(Paths.get("rules_EN.txt", new String[0]), "1. nie ma zasad".getBytes(), StandardOpenOption.CREATE_NEW);
+                Files.write(Paths.get("rules_EN.txt", new String[0]), "[b]1. nie ma zasad[/b]{NEW}[b]Edit. jednak są ale Xmonowi się nie chce pisać (Matis ma napisac)[/b]".getBytes(), StandardOpenOption.CREATE_NEW);
+            }
+            if (!new File("help_PL.txt").exists()){
+                Files.write(Paths.get("help_PL.txt", new String[0]), "[b]Dostępne komendy:[/b]{NEW}[b]!channels[/b] — Wyświetla wszystkie dostępne kanały.{NEW}[b]!join <nazwa>[/b] — Dołącza do wybranego kanału{NEW}[b]!leave <nazwa>[/b] — Wychodzi z wybranego kanału tekstowego.{NEW}[b]!mute <3s/5m/6h>[/b] — Wycisza chat na podaną ilość sekund/minut/godzin.{NEW}[b]!switch <nazwa>[/b] — Przełącza twoje odpowiedzi na wybrany kanał.{NEW}[b]!check <nazwa>[/b] — Sprawdza ostatnie 15 wiadomości, bez dołączania do kanału.{NEW}[b]!rainbow on/off[/b] — Zmienia kolor twoich wiadomosci na tęczowy. [Premium]{NEW}[b]!admin[/b] — Wyświetla pomoc dostępną tylko dla Administratorów.{NEW}[b]!botinfo[/b] — Wyswietla informacje dotyczące autora.".getBytes(), StandardOpenOption.CREATE_NEW);
+            }
+            if (!new File("help_EN.txt").exists()){
+                Files.write(Paths.get("help_EN.txt", new String[0]), "[b]Available commands:[/b]{NEW}[b]!channels[/b] — Displays all available channels.{NEW}[b]!join <nazwa>[/b] — Joins the selected channel.{NEW}[b]!leave <nazwa>[/b] — Exits from the selected text channel.{NEW}[b]!mute <3s/5m/6h>[/b] — Mute the chat to the specified number of seconds / minutes / hours.{NEW}[b]!switch <nazwa>[/b] — Switches your answers to the selected channel.{NEW}[b]!check <nazwa>[/b] — Checks the last 15 messages without joining the channel.{NEW}[b]!color <#ffea00>[/b] — Changes the color of your messages. [Plus/Premium]{NEW}[b]!rainbow on/off[/b] — Changes the color of your messages to the rainbow. [Premium]{NEW}[b]!admin[/b] — Displays help available only to Administrators.{NEW}[b]!botinfo[/b] — Displays information about the author.".getBytes(), StandardOpenOption.CREATE_NEW);
+            }
+            if (!new File("help_DE.txt").exists()){
+                Files.write(Paths.get("help_DE.txt", new String[0]), "[b]Dostępne komendy:[/b]{NEW}[b]!channels[/b] — Wyświetla wszystkie dostępne kanały.{NEW}[b]!join <nazwa>[/b] — Dołącza do wybranego kanału{NEW}[b]!leave <nazwa>[/b] — Wychodzi z wybranego kanału tekstowego.{NEW}[b]!mute <3s/5m/6h>[/b] — Wycisza chat na podaną ilość sekund/minut/godzin.{NEW}[b]!switch <nazwa>[/b] — Przełącza twoje odpowiedzi na wybrany kanał.{NEW}[b]!check <nazwa>[/b] — Sprawdza ostatnie 15 wiadomości, bez dołączania do kanału.{NEW}[b]!rainbow on/off[/b] — Zmienia kolor twoich wiadomosci na tęczowy. [Premium]{NEW}[b]!admin[/b] — Wyświetla pomoc dostępną tylko dla Administratorów.{NEW}[b]!botinfo[/b] — Wyswietla informacje dotyczące autora.".getBytes(), StandardOpenOption.CREATE_NEW);
             }
         } catch (IOException e) {
             e.printStackTrace();

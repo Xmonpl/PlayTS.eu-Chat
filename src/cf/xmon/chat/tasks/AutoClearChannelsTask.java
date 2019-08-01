@@ -31,7 +31,7 @@ public class AutoClearChannelsTask {
                                 FileWriter writer = new FileWriter(path);
                                 Integer lines = 0;
                                 for (String line : coll) {
-                                    if (lines >= 4092) {
+                                    if (lines >= 2048) {
                                         writer.write(line);
                                     }
                                     lines++;
