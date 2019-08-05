@@ -7,13 +7,17 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static cf.xmon.chat.Main.channels;
 
 public class UserUtils {
-    public static Map<String, Integer> max = new HashMap<>();
-    public static Map<String, Integer> online = new HashMap<>();
+    public static Map<String, Integer> max = new ConcurrentHashMap<>();
+    public static Map<String, Integer> online = new ConcurrentHashMap<>();
     private static List<User> users = new ArrayList<User>();
     public static List<User> getUsers() {
         return users;
@@ -63,8 +67,11 @@ public class UserUtils {
         }
     }
     public static void loadOnline(){
+        long start = System.currentTimeMillis();
         online.clear();
         max.clear();
+        System.out.println("Czyszczenie online oraz max: " + (System.currentTimeMillis() - start) + "ms");
+        start = System.currentTimeMillis();
         Arrays.stream(channels.split("@")).forEach(x ->{
             if (!x.equals("")) {
                 if (online.get(x) == null) {
@@ -75,24 +82,25 @@ public class UserUtils {
                 }
             }
         });
-        users.forEach(u ->{
-            if (!u.getChannels().equals("")) {
-                Arrays.stream(u.getChannels().split("@")).forEach(y -> {
-                    if (!y.equals("")) {
-                        if (TeamSpeakUtils.api.isClientOnline(u.getUuid())) {
-                            online.put(y.toLowerCase(), online.get(y.toLowerCase()) + 1);
+        System.out.println("Pierwszy forEach(channel == null? online 0; max 0): " + (System.currentTimeMillis() - start) + "ms");
+        start = System.currentTimeMillis();
+        // Teraz mnie kurwa nie wkurwiaj, ze to nie dziala. EDIT DZIALA !!!!!!!!
+        String chujcieto = "-";
+        for (User u : new ArrayList<User>(users)){
+            if (!chujcieto.equals(u.getName())) {
+                chujcieto = u.getName();
+                if (!u.getChannels().equals("")) {
+                    Arrays.stream(u.getChannels().split("@")).forEach(y -> {
+                        if (!y.equals("")) {
+                            if (TeamSpeakUtils.api.isClientOnline(u.getUuid())) {
+                                online.put(y.toLowerCase(), online.get(y.toLowerCase()) + 1);
+                            }
+                            max.put(y.toLowerCase(), max.get(y.toLowerCase()) + 1);
                         }
-                        max.put(y.toLowerCase(), max.get(y.toLowerCase()) + 1);
-                    }
-                });
+                    });
+                }
             }
-        });
-        Arrays.stream(channels.split("@")).forEach(x ->{
-            if (!x.equals("")) {
-                online.put(x.toLowerCase(), online.get(x)/2);
-                max.put(x.toLowerCase(), max.get(x)/2);
-            }
-        });
-
+        }
+        System.out.println("For: " + (System.currentTimeMillis() - start)  + "ms");
     }
 }

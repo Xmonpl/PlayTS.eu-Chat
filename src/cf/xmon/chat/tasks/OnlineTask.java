@@ -15,8 +15,8 @@ public class OnlineTask {
             public void run() {
                 final long start = System.currentTimeMillis();
                 UserUtils.loadOnline();
-                System.out.println("Załadowano online w " + (System.currentTimeMillis() - start) + "ms!");
+                System.out.println("Suma " + (System.currentTimeMillis() - start)  + "ms");
             }
-        }, TimeUnit.SECONDS.toMillis(30) + 15, TimeUnit.SECONDS.toMillis(30) + 15);
+        }, TimeUnit.SECONDS.toMillis(55) + 15, TimeUnit.SECONDS.toMillis(55) + 15);
     }
 }
