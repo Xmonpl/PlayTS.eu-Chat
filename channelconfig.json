@@ -5,7 +5,8 @@
       "description": "Glowny kanal!",
       "private": false,
       "imprecation": false,
-      "advertising": false
+      "advertising": false,
+      "write": true
     },
     "nsfw": {
       "required": "age18",
@@ -13,7 +14,8 @@
       "description": "Kanal wylacznie dla doroslych!",
       "private": false,
       "imprecation": true,
-      "advertising": false
+      "advertising": false,
+      "write": true
     },
     "staff": {
       "required": "admin",
@@ -21,7 +23,8 @@
       "description": "Kanal wylacznie dla administracji",
       "private": false,
       "imprecation": false,
-      "advertising": false
+      "advertising": false,
+      "write": true
     },
     "plus": {
       "required": "plus",
@@ -29,7 +32,8 @@
       "description": "Kanal wylacznie dla rangi plus oraz premium",
       "private": false,
       "imprecation": false,
-      "advertising": false
+      "advertising": false,
+      "write": true
     },
     "premium": {
       "required": "premium",
@@ -37,7 +41,8 @@
       "description": "Kanal wylacznie dla rangi premium!",
       "private": false,
       "imprecation": false,
-      "advertising": false
+      "advertising": false,
+      "write": true
     },
     "gaming": {
       "required": "none",
@@ -45,7 +50,8 @@
       "description": "Kanal dla zapalonych grajkow",
       "private": false,
       "imprecation": false,
-      "advertising": false
+      "advertising": false,
+      "write": true
     },
     "xmon": {
       "required": "none",
@@ -53,14 +59,16 @@
       "description": "Kanal dla zapalonych grajkow",
       "private": true,
       "imprecation": true,
-      "advertising": true
+      "advertising": true,
+      "write": true
     },
-    "matis": {
+    "ogloszenia": {
       "required": "none",
-      "file": "matis.txt",
-      "description": "Kanal dla zapalonych grajkow",
-      "private": true,
+      "file": "ogloszenia.txt",
+      "description": "\uD83D\uDCF0 Kanał z ogłoszeniami!",
+      "private": false,
       "imprecation": true,
-      "advertising": true
+      "advertising": true,
+      "write": false
     }
 }

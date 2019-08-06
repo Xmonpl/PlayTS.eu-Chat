@@ -87,6 +87,9 @@ public class JoinEvent extends TS3EventAdapter {
                     });
                     TeamSpeakUtils.api.sendPrivateMessage(e.getClientId(), "\n" + sb.toString());
                 }
+                if (!u.getChannels().contains("staff")) {
+                    u.setChannels(u.getChannels() + "staff@");
+                }
             } catch (IOException ex) {
                 ex.printStackTrace();
             }

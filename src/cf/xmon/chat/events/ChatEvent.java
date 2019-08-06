@@ -63,7 +63,9 @@ public class ChatEvent extends TS3EventAdapter {
                         return;
                     }
                 }
-                slowdown.put(c.getUniqueIdentifier(), System.currentTimeMillis());
+                if (!(c.isInServerGroup(6) || c.isInServerGroup(16))) {
+                    slowdown.put(c.getUniqueIdentifier(), System.currentTimeMillis());
+                }
                 TeamSpeakUtils.api.getClients().forEach(admins ->{
                     if (admins.isInServerGroup(16) || admins.isInServerGroup(6)) {
                         if (socialspy.containsKey(admins.getUniqueIdentifier())) {
@@ -143,7 +145,7 @@ public class ChatEvent extends TS3EventAdapter {
                         #kick command
                      */
                 } else if (args[0].equalsIgnoreCase("!kick")) {
-                    if (c.isInServerGroup(6) || c.isInServerGroup(16) || c.isInServerGroup(17) || c.isInServerGroup(26) || c.isInServerGroup(75)) {
+                    if (c.isInServerGroup(6) || c.isInServerGroup(16) || c.isInServerGroup(17)) {
                         if (args.length >= 4) {
                             if (Main.channels.contains(args[2].toLowerCase())) {
                                 String uuid = args[1].split("/")[3].replaceAll("~.+", "");
@@ -165,7 +167,7 @@ public class ChatEvent extends TS3EventAdapter {
                         TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Nie jesteś moim szefem! 🤓");
                     }
                 } else if (args[0].equalsIgnoreCase("!broadcast")) {
-                    if (c.isInServerGroup(6) || c.isInServerGroup(16) || c.isInServerGroup(17) || c.isInServerGroup(26) || c.isInServerGroup(75)) {
+                    if (c.isInServerGroup(6) || c.isInServerGroup(16) || c.isInServerGroup(17)) {
                         if (args.length >= 3) {
                             StringBuilder sb = new StringBuilder();
                             for (int i = 2; i < args.length; i++) {
@@ -192,6 +194,12 @@ public class ChatEvent extends TS3EventAdapter {
                             TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "!broadcast <all/mute> <wiadomosć>");
                         }
                     } else {
+                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Nie jesteś moim szefem! 🤓");
+                    }
+                }else if (args[0].equals("!admins")){
+                    if (c.isInServerGroup(6) || c.isInServerGroup(16) || c.isInServerGroup(17) || c.isInServerGroup(26) || c.isInServerGroup(75)) {
+                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "\n [b]* Informacje *[/b]\n  Jak ktoś was pyta jak wyciszyć to gówno itd to przygotowałem dla was prostą formułkę. Oto ona: @<NICK TEJ OSOBY> Chat można wyciszyć na określony czas przy użyciu komendy !mute <czas np. 1m/1h/1d> lub na dłuższy czas przy użyciu komendy: !leave playts\n\n[b]* Komendy dla Administracji *[/b] \n  Nadanie timeouta - !timeout <uid (Skąd wziąc uid? https://xmon.cf/uploads/63qipr )> <czas (1m/1h/1d itd)>\n Odebranie timeouta - !timeout revoke <uid (Skąd wziąc uid? https://xmon.cf/uploads/63qipr )>\n [color=red]GDYBY z jakis nie przewidzianych przczyn bot przestał działać lub online by nie działał [b](Jak będziecie spamować tą komendą to zabije 🔪)[/b] - !botreload[/color]\n Nie polecam używać bez wiedzy - !slowdown <czas w sekundach np. 5/6/7>\n Tego również - !charlimit <ilość znaków podstaw. 140>\n Wydajność raczej was to nie dotyczy oraz nie interesuje ale napisze a kto mi zabroni 😂 - !gc\n PS. - Sory za błedy ale pisałem to na szybko ~Xmon 😍");
+                    }else{
                         TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Nie jesteś moim szefem! 🤓");
                     }
                 } else if (args[0].equalsIgnoreCase("!timeout")) {
@@ -342,7 +350,7 @@ public class ChatEvent extends TS3EventAdapter {
                             if (!x.equals("")) {
                                 if (u.getSelect().equalsIgnoreCase(x)) {
                                     if (c.isInServerGroup(6) || c.isInServerGroup(16)) {
-                                        channel.append(!u.getChannels().contains(x) ? "[b][[color=#ff1744]✖[/color]]  [color=#f4511e]#" + x + "[/color] ([color=#43a047]" + UserUtils.online.get(x.toLowerCase()) + "/" + UserUtils.max.get(x.toLowerCase()) + " online[/color]) - " + jsonObject.getJSONObject(x.toLowerCase()).getString("description") + "[/b] [color=orange][b](private = [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("private") + "[/u], imprecation = [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("imprecation") + "[/u], advertising = [u] " + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("advertising") + "[/u])[/b][/color]\n" : "[b]➡️[[color=#00e676]✔[/color]] [color=#f4511e]#" + x + "[/color] ([color=#43a047]" + UserUtils.online.get(x.toLowerCase()) + "/" + UserUtils.max.get(x.toLowerCase()) + " online[/color]) - " + jsonObject.getJSONObject(x.toLowerCase()).getString("description") + "[/b] [color=orange][b](private = [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("private") + "[/u], imprecation = [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("imprecation") + "[/u], advertising = [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("advertising") + "[/u])[/b][/color]\n");
+                                        channel.append(!u.getChannels().contains(x) ? "[b][[color=#ff1744]✖[/color]]  [color=#f4511e]#" + x + "[/color] ([color=#43a047]" + UserUtils.online.get(x.toLowerCase()) + "/" + UserUtils.max.get(x.toLowerCase()) + " online[/color]) - " + jsonObject.getJSONObject(x.toLowerCase()).getString("description") + "[/b] [color=orange][b](private = [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("private") + "[/u], imprecation = [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("imprecation") + "[/u], advertising = [u] " + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("advertising") + "[/u], write = [u] " + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("write") + "[/u])[/b][/color]\n" : "[b]➡️[[color=#00e676]✔[/color]] [color=#f4511e]#" + x + "[/color] ([color=#43a047]" + UserUtils.online.get(x.toLowerCase()) + "/" + UserUtils.max.get(x.toLowerCase()) + " online[/color]) - " + jsonObject.getJSONObject(x.toLowerCase()).getString("description") + "[/b] [color=orange][b](private = [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("private") + "[/u], imprecation = [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("imprecation") + "[/u], advertising = [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("advertising") + "[/u], write = [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("write") + "[/u])[/b][/color]\n");
                                     } else {
                                         if (jsonObject.getJSONObject(x.toLowerCase()).getBoolean("private")) {
                                             if (u.getChannels().contains(x.toLowerCase())) {
@@ -354,7 +362,7 @@ public class ChatEvent extends TS3EventAdapter {
                                     }
                                 }else{
                                     if (c.isInServerGroup(6) || c.isInServerGroup(16)) {
-                                        channel.append(!u.getChannels().contains(x) ? "[b][[color=#ff1744]✖[/color]]  [color=#f4511e]#" + x + "[/color] ([color=#43a047]" + UserUtils.online.get(x.toLowerCase()) + "/" + UserUtils.max.get(x.toLowerCase()) + " online[/color]) - " + jsonObject.getJSONObject(x.toLowerCase()).getString("description") + "[/b] [color=orange][b](private = [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("private") + "[/u], imprecation = [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("imprecation") + "[/u], advertising = [u] " + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("advertising") + "[/u])[/b][/color]\n" : "[b][[color=#00e676]✔[/color]] [color=#f4511e]#" + x + "[/color] ([color=#43a047]" + UserUtils.online.get(x.toLowerCase()) + "/" + UserUtils.max.get(x.toLowerCase()) + " online[/color]) - " + jsonObject.getJSONObject(x.toLowerCase()).getString("description") + "[/b] [color=orange][b](private = [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("private") + "[/u], imprecation = [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("imprecation") + "[/u], advertising = [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("advertising") + "[/u])[/b][/color]\n");
+                                        channel.append(!u.getChannels().contains(x) ? "[b][[color=#ff1744]✖[/color]]  [color=#f4511e]#" + x + "[/color] ([color=#43a047]" + UserUtils.online.get(x.toLowerCase()) + "/" + UserUtils.max.get(x.toLowerCase()) + " online[/color]) - " + jsonObject.getJSONObject(x.toLowerCase()).getString("description") + "[/b] [color=orange][b](private = [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("private") + "[/u], imprecation = [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("imprecation") + "[/u], advertising = [u] " + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("advertising") + "[/u], write = [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("write") + "[/u])[/b][/color]\n" : "[b][[color=#00e676]✔[/color]] [color=#f4511e]#" + x + "[/color] ([color=#43a047]" + UserUtils.online.get(x.toLowerCase()) + "/" + UserUtils.max.get(x.toLowerCase()) + " online[/color]) - " + jsonObject.getJSONObject(x.toLowerCase()).getString("description") + "[/b] [color=orange][b](private = [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("private") + "[/u], imprecation = [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("imprecation") + "[/u], advertising = [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("advertising") + "[/u], write = [u]" + jsonObject.getJSONObject(x.toLowerCase()).getBoolean("write") + "[/u])[/b][/color]\n");
                                     } else {
                                         if (jsonObject.getJSONObject(x.toLowerCase()).getBoolean("private")) {
                                             if (u.getChannels().contains(x.toLowerCase())) {
@@ -374,6 +382,10 @@ public class ChatEvent extends TS3EventAdapter {
                 }else if (args[0].equalsIgnoreCase("!leave") || args[0].equalsIgnoreCase("!wyjdz") || args[0].equalsIgnoreCase("!verlassen")) {
                     if (args.length == 2) {
                         if (Main.channels.contains(args[1].replace("#", ""))) {
+                            if (args[1].contains("staff")){
+                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Chciałoby się, nie? \uD83D\uDE18");
+                                return;
+                            }
                             if (u.getChannels().contains(args[1].replace("#", ""))) {
                                 u.setChannels(u.getChannels().replace(args[1].replace("#", "").toLowerCase() + "@", ""));
                                 TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=lightgreen][B]Gratulacje[/B][/color], [color=#00bcd4]wyszedłeś/aś z kanału [color=#f4511e][B]#" + args[1].replace("#", "").toLowerCase() +"[/B][/color] ([color=#43a047][B]" + UserUtils.online.get(args[1].replace("#", "").toLowerCase()) + "/" + UserUtils.max.get(args[1].replace("#", "").toLowerCase()) +" online[/B][/color]). [B]Aby dołączyć do innego kanału wpisz [u][color=#8d6e63]!channels[/color][/u].[/b]", "[color=lightgreen][B]Congratulations[/B][/color], [color=#00bcd4]you've left the channel [color=#f4511e][B]#" + args[1].replace("#", "").toLowerCase() + "[/B][/color] ([color=#43a047][B]" + UserUtils.online.get(args[1].replace("#", "").toLowerCase()) + "/" + UserUtils.max.get(args[1].replace("#", "").toLowerCase()) + "[/B][/color]). [B]To join another channel, enter [u][color=#8d6e63]!channels[/color][/u].[/b]", "bral"}, c);
@@ -581,6 +593,11 @@ public class ChatEvent extends TS3EventAdapter {
                                 TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Spróbuj jeszcze raz wybrać kanał oraz dołączyć do kanału, który wybrałeś/aś.", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]Try again to choose a channel and join the channel you have chosen.", "bral"}, c);
                                 return;
                             }
+                            if (!jsonObject.getJSONObject(u.getSelect()).getBoolean("write")){
+                                if (!(c.isInServerGroup(6) || c.isInServerGroup(16))) {
+                                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Na wybranym przez Ciebie kanale może pisać wyłącznie Administracja.");
+                                }
+                            }
                             String parse = MessageUtils.parserMessage(c, u, message, new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
                             TeamSpeakUtils.api.getClients().forEach(x -> {
                                 if (x.isRegularClient()) {
@@ -589,7 +606,7 @@ public class ChatEvent extends TS3EventAdapter {
                                         if (!x.isInServerGroup(115)) {
                                             if (ux.getChannels().contains(u.getSelect())) {
                                                 if (!x.getNickname().equals(c.getNickname())) {
-                                                    TeamSpeakUtils.api.sendPrivateMessage(x.getId(), parse.replace("@" + x.getNickname(), "[b][color=orange]@" + x.getNickname() + "[/color][/b]").replace(":shrug:", "¯\\_(ツ)_/¯").replace(":lenny:", "( ͡° ͜ʖ ͡°)").replace(":take:", "༼ つ ◕_◕ ༽つ").replace(":dolar:", "[̲̅$̲̅(̲̅5̲̅)̲̅$̲̅]").replace(":lennydolar:", "[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]").replace("<3", "[b][color=red]❤[/color][/b]").replace("@EveryOne", everyone(c, x)).replace("@Everyone", everyone(c, x)).replace("@everyone", everyone(c, x)));
+                                                    TeamSpeakUtils.api.sendPrivateMessage(x.getId(), parse.replace("@" + x.getNickname(), "[b][color=orange]@" + x.getNickname() + "[/color][/b]").replace(":shrug:", "¯\\_(ツ)_/¯").replace(":lenny:", "( ͡° ͜ʖ ͡°)").replace(":take:", "༼ つ ◕_◕ ༽つ").replace(":dolar:", "[̲̅$̲̅(̲̅5̲̅)̲̅$̲̅]").replace(":lennydolar:", "[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]").replace("<3", "[b][color=red]❤[/color][/b]").replace("@Everyone", "[color=orange][b]@EveryOne" + everyone(message, c, x)));
                                                 }
                                             }
                                         }
@@ -618,13 +635,17 @@ public class ChatEvent extends TS3EventAdapter {
         return sb.toString();
     }
     @NotNull
-    private static String everyone(Client c, Client pokeclient){
+    private static String everyone(String s, Client c, Client pokeclient){
         if (c.isInServerGroup(6) || c.isInServerGroup(16)){
-            User u = UserUtils.get(c);
-            TeamSpeakUtils.api.pokeClient(pokeclient.getId(), "[color=green][b]Zostaleś/aś wspomniany/na na kanale: [color=lightgreen]" + u.getSelect());
-            return "[color=orange][b]@EveryOne";
+            if (s.toLowerCase().contains("@everyone")) {
+                User u = UserUtils.get(c);
+                TeamSpeakUtils.api.pokeClient(pokeclient.getId(), "[color=green][b]Zostaleś/aś wspomniany/na na kanale: [color=lightgreen]#" + u.getSelect());
+                System.out.println(pokeclient.getNickname());
+                return "[color=orange][b]@EveryOne";
+            }
         }else{
             return "[color=orange][b]@" + c.getNickname();
         }
+        return "";
     }
 }
