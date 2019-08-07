@@ -17,7 +17,9 @@ import static cf.xmon.chat.Main.channels;
 
 public class UserUtils {
     public static Map<String, Integer> max = new ConcurrentHashMap<>();
+    public static Map<String, Integer> maxnew = new ConcurrentHashMap<>();
     public static Map<String, Integer> online = new ConcurrentHashMap<>();
+    public static Map<String, Integer> onlinenew = new ConcurrentHashMap<>();
     private static List<User> users = new ArrayList<User>();
     public static List<User> getUsers() {
         return users;
@@ -68,17 +70,17 @@ public class UserUtils {
     }
     public static void loadOnline(){
         long start = System.currentTimeMillis();
-        online.clear();
-        max.clear();
+        onlinenew.clear();
+        maxnew.clear();
         System.out.println("Czyszczenie online oraz max: " + (System.currentTimeMillis() - start) + "ms");
         start = System.currentTimeMillis();
         Arrays.stream(channels.split("@")).forEach(x ->{
             if (!x.equals("")) {
-                if (online.get(x) == null) {
-                    online.put(x.toLowerCase(), 0);
+                if (onlinenew.get(x) == null) {
+                    onlinenew.put(x.toLowerCase(), 0);
                 }
-                if (max.get(x) == null) {
-                    max.put(x.toLowerCase(), 0);
+                if (maxnew.get(x) == null) {
+                    maxnew.put(x.toLowerCase(), 0);
                 }
             }
         });
@@ -93,14 +95,17 @@ public class UserUtils {
                     Arrays.stream(u.getChannels().split("@")).forEach(y -> {
                         if (!y.equals("")) {
                             if (TeamSpeakUtils.api.isClientOnline(u.getUuid())) {
-                                online.put(y.toLowerCase(), online.get(y.toLowerCase()) + 1);
+                                onlinenew.put(y.toLowerCase(), onlinenew.get(y.toLowerCase()) + 1);
                             }
-                            max.put(y.toLowerCase(), max.get(y.toLowerCase()) + 1);
+                            maxnew.put(y.toLowerCase(), maxnew.get(y.toLowerCase()) + 1);
                         }
                     });
                 }
             }
         }
+        online = onlinenew;
+        max = maxnew;
         System.out.println("For: " + (System.currentTimeMillis() - start)  + "ms");
+
     }
 }

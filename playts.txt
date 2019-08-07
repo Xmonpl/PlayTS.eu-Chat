@@ -104,3 +104,6 @@
 💬 [color=#5e6165]<01;24;24>[/color] 🛠 [b][URL=client://0/S+S1H+IljnueogQZxSNdRROfiMk=~Xmon][color=#b08e1f]"Xmon"[/color][/URL][/b]: @everyone test
 💬 [color=#5e6165]<01;25;20>[/color] 🛠 [b][URL=client://0/S+S1H+IljnueogQZxSNdRROfiMk=~Xmon][color=#067114]"Xmon"[/color][/URL][/b]: @everyone test
 💬 [color=#5e6165]<01;27;18>[/color][b][URL=client://0/cSVnouSvYSUQ8cu16rr6x4ow/ck=~asdasdasdadsdas][color=#2580c3]"asdasdasdadsdas"[/color][/URL][/b]: @Everyone
+💬 [color=#5e6165]<05;58;56>[/color] 🛠 [b][URL=client://0/S+S1H+IljnueogQZxSNdRROfiMk=~Xmon][color=#a4a98d]"Xmon"[/color][/URL][/b]: @Everyone
+💬 [color=#5e6165]<06;00;17>[/color] 🛠 [b][URL=client://0/S+S1H+IljnueogQZxSNdRROfiMk=~Xmon][color=#3759bf]"Xmon"[/color][/URL][/b]: @Everyone
+💬 [color=#5e6165]<06;00;36>[/color] 🛠 [b][URL=client://0/S+S1H+IljnueogQZxSNdRROfiMk=~Xmon][color=#efccb4]"Xmon"[/color][/URL][/b]: @Everyone :D

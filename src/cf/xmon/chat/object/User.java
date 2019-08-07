@@ -21,6 +21,7 @@ public class User {
     private String password;
     private long mute;
     private long timeout;
+    private Integer money;
 
     public User(@NotNull Client c){
         new User(c.getUniqueIdentifier());
@@ -37,6 +38,7 @@ public class User {
         this.password = "null";
         this.mute = System.currentTimeMillis();
         this.timeout = 0;
+        this.money = 200;
         UserUtils.addUser(this);
         this.insert();
     }
@@ -51,6 +53,7 @@ public class User {
         this.username = rs.getString("username");
         this.password = rs.getString("password");
         this.timeout = rs.getLong("timeout");
+        this.money = rs.getInt("money");
         UserUtils.addUser(this);
     }
     public String getName(){return this.name;}
@@ -99,7 +102,16 @@ public class User {
         Main.getStore().update(false, "UPDATE `{P}users` SET `password`='" + this.getPassword().replace("')", "").replace("\")", "").replace("\\\\", "").replace("Ctrl+Z", "").replace("DROP DATABASE", "") + "' WHERE `uuid`='" + this.getUuid() + "'");
     }
     private void insert() {
-        Main.getStore().update(false, "INSERT INTO `{P}users`(`id`, `name`, `uuid`, `dbid`, `select`, `channels`, `color`, `mute`, `username`, `password`, `timeout`) VALUES (NULL, '"
-                + this.getName() + "','" + this.getUuid() + "','" + this.getDbid() + "','" + this.getSelect()  + "','" + this.getChannels()  + "','" + this.getColor()  + "','" + this.getMute() + "','" + this.getUsername() + "','" + this.getPassword() + "','" + this.getTimeout() + "')");
+        Main.getStore().update(false, "INSERT INTO `{P}users`(`id`, `name`, `uuid`, `dbid`, `select`, `channels`, `color`, `mute`, `username`, `password`, `timeout`, `money`) VALUES (NULL, '"
+                + this.getName() + "','" + this.getUuid() + "','" + this.getDbid() + "','" + this.getSelect()  + "','" + this.getChannels()  + "','" + this.getColor()  + "','" + this.getMute() + "','" + this.getUsername() + "','" + this.getPassword() + "','" + this.getTimeout() + "','" + this.getMoney() + "')");
+    }
+
+    public Integer getMoney() {
+        return money;
+    }
+
+    public void setMoney(Integer money) {
+        this.money = money;
+        Main.getStore().update(false, "UPDATE `{P}users` SET `money`='" + this.getMoney() + "' WHERE `uuid`='" + this.getUuid() + "'");
     }
 }

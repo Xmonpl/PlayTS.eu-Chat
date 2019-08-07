@@ -87,8 +87,22 @@ public class JoinEvent extends TS3EventAdapter {
                     });
                     TeamSpeakUtils.api.sendPrivateMessage(e.getClientId(), "\n" + sb.toString());
                 }
-                if (!u.getChannels().contains("staff")) {
-                    u.setChannels(u.getChannels() + "staff@");
+                /*
+                    UPDATE 'chatusers'
+                    SET 'channels' = replace(channels, 'staff@', '')
+
+                    UPDATE 'chatusers'
+                    SET 'select' = replace("select", 'staff', '')
+
+                    Gandalf Tęczowy MOBILE select ustawić na staff
+                 */
+                if (c.isInServerGroup(6) || c.isInServerGroup(16) || c.isInServerGroup(17) || c.isInServerGroup(26) || c.isInServerGroup(75)) {
+                    if (!u.getChannels().contains("staff")) {
+                        u.setChannels(u.getChannels() + "staff@");
+                    }
+                }
+                if (!u.getChannels().contains("ogloszenia")) {
+                    u.setChannels(u.getChannels() + "ogloszenia@");
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();

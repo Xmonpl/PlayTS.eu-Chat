@@ -135,7 +135,7 @@ public class Main {
         }
         final boolean conn = Main.store.connect();
         if (conn) {
-            Main.store.update(true, "CREATE TABLE IF NOT EXISTS `{P}users` (" + ((Main.store.getStoreMode() == StoreMode.MYSQL) ? "`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT," : "`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, ") + "`name` varchar(30) NOT NULL, `uuid` varchar(29) NOT NULL, `dbid` int(11) NOT NULL, `select` varchar(32) NOT NULL, `channels` varchar(2048) NOT NULL, `color` varchar(32) NOT NULL, `mute` TIMESTAMP NOT NULL, `username` varchar(32) NOT NULL, `password` varchar(128) NOT NULL, `timeout` TIMESTAMP NOT NULL);");
+            Main.store.update(true, "CREATE TABLE IF NOT EXISTS `{P}users` (" + ((Main.store.getStoreMode() == StoreMode.MYSQL) ? "`id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT," : "`id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, ") + "`name` varchar(30) NOT NULL, `uuid` varchar(29) NOT NULL, `dbid` int(11) NOT NULL, `select` varchar(32) NOT NULL, `channels` varchar(2048) NOT NULL, `color` varchar(32) NOT NULL, `mute` TIMESTAMP NOT NULL, `username` varchar(32) NOT NULL, `password` varchar(128) NOT NULL, `timeout` TIMESTAMP NOT NULL, `money` INT(2147483646) NOT NULL);");
             return conn;
         }
         return conn;
