@@ -53,7 +53,11 @@ public class ChatEvent extends TS3EventAdapter {
       "Udało Ci się sprzedać kilka butelek za {MONEY}$",
       "Udało Ci się ukraść tacie z portfela {MONEY}$",
       "Matis Cię przejechał, kiedy przechodziłeś/aś przez ulicę, w zamian wypłaci Ci odszkodowanie w wysokości {MONEY}$",
-      "Zostałeś/aś zatrudniony jako osoba zajmująca się marketingiem u Matisa i otrzymałeś/aś {MONEY}$"
+      "Zostałeś/aś zatrudniony jako osoba zajmująca się marketingiem u Matisa i otrzymałeś/aś {MONEY}$",
+      "Sarna nadepneła Ci na stopę, wzamian Matis wypłacił Ci odszkodowaie w wysokości {MONEY}$",
+      "Xmon zapłacił Ci {MONEY}$ za boosting w CS:GO.",
+            "Znalazłeś/aś na ulicy bilon w wysokości {MONEY}$",
+            "Znalazłeś/aś bug'a w Chacie, Xmon wypłacił Ci zadoścuczynienie w wysokości {MONEY}$"
     };
     private final String[] crimeMessage = new String[]{
       "Postanowiłeś/aś wziąć udział, w nielegalnym piciu piwa na czas i zdobyłeś/aś {MONEY}$",
@@ -62,7 +66,12 @@ public class ChatEvent extends TS3EventAdapter {
       "Postanowiłeś/aś wziąć udział, w nielegalnych wyścigach samochodowych. Twoim przeciwnikiem jest Matis w swoim Matizie, niestety Matis w Matizie jest nie do prześcignięcia przegrywasz {BADMONEY}$",
       "Kupiłeś/aś rangę Premium w naszym [url=panel.playts.eu/shop]sklepie[/url], tracisz {BADMONEY}$",
       "Podczas okradania banku, 32 policjantów wbiło Ci na plecy i zabraci Ci {BADMONEY}$",
-      "Idąc ulicą, zostałeś/aś napadniety/ta przez wielkiego grubego Xmon' - ukradł Ci {BADMONEY}$"
+      "Idąc ulicą, zostałeś/aś napadniety/ta przez wielkiego grubego Xmon'a - ukradł Ci {BADMONEY}$",
+    };
+    private final String[] rouletteColors = new String[]{
+      "red",
+      "black",
+      "green"
     };
 
     static {
@@ -141,7 +150,88 @@ public class ChatEvent extends TS3EventAdapter {
                         TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !join <nazwa_kanału>", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]Correct use: !join <channel_name>", "brak"}, c);
                     }
                 }else if(args[0].equalsIgnoreCase("!ruletka")){
-                    System.out.println("Czarna: ⚫ Czerwona: \uD83D\uDD34 Zielona: \uD83D\uDFE2");
+                    if (args.length == 1) {
+                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !ruletka <black/red/green> <kwota>");
+                    }else if(args.length == 3){
+                        if (args[1].equalsIgnoreCase("black") || args[1].equalsIgnoreCase("red") || args[1].equalsIgnoreCase("green")){
+                            try {
+                                Integer kwota = Integer.parseInt(args[2]);
+                                if (kwota > u.getMoney()){
+                                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Nie posiadasz wystarczającej ilości środków!");
+                                    return;
+                                }
+                                if (kwota.toString().contains("-") || kwota.toString().contains("+") || kwota.toString().contains("*") || kwota.toString().contains(":")){
+                                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Sugaros już przetestował, nie musisz tego testować ;)");
+                                    return;
+                                }
+                                String kolor = args[1].toLowerCase();
+                                u.setMoney(u.getMoney() - kwota);
+                                String kod;
+                                if (RandomUtil.getChance(1.00)){
+                                    if (kolor.equals("green")) {
+                                        kod = "[color=lightgreen]Gratulacje! Wygrałeś/aś " + (kwota *14) + "$, wygrana została przelana na twoje konto bankowe. (!stankonta)";
+                                        u.setMoney(u.getMoney() + (kwota *14));
+                                    }else{
+                                        kod = "[color=red]Niestety, przegrałeś/aś " + kwota + "$, kwota została odjęta z twojego konta bankowego. (!stankonta)";
+                                    }
+                                    //green
+                                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), ("[b][color=red]Ruletka: " + kod + "\n" +
+                                            " ----\n" +
+                                            " | [color={COLOR1}]⬤[/color] |\n" +
+                                            " | [color={COLOR2}]⬤[/color] |\n" +
+                                            " | [color={COLOR3}]⬤[/color] |\n" +
+                                            " | [color=green]⬤[/color] | [color=gold]<-[/color]\n" +
+                                            " | [color={COLOR4}]⬤[/color] |\n" +
+                                            " | [color={COLOR5}]⬤[/color] |\n" +
+                                            " | [color={COLOR6}]⬤[/color] |\n" +
+                                            " ----").replace("{COLOR1}", rouletteColors[RandomUtil.getNextInt(rouletteColors.length)]).replace("{COLOR2}", rouletteColors[RandomUtil.getNextInt(rouletteColors.length)]).replace("{COLOR3}", rouletteColors[RandomUtil.getNextInt(rouletteColors.length)]).replace("{COLOR4}", rouletteColors[RandomUtil.getNextInt(rouletteColors.length)]).replace("{COLOR5}", rouletteColors[RandomUtil.getNextInt(rouletteColors.length)]).replace("{COLOR6}", rouletteColors[RandomUtil.getNextInt(rouletteColors.length)]));
+
+                                }else if (RandomUtil.getChance(65.50)){
+                                    if (kolor.equals("red")) {
+                                        kod = "[color=lightgreen]Gratulacje! Wygrałeś/aś " + (kwota *2) + "$, wygrana została przelana na twoje konto bankowe. (!stankonta)";
+                                        u.setMoney(u.getMoney() + (kwota *2));
+                                    }else{
+                                        kod = "[color=red]Niestety, przegrałeś/aś " + kwota + "$, kwota została odjęta z twojego konta bankowego. (!stankonta)";
+                                    }
+                                    //red
+                                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), ("[b][color=red]Ruletka: " + kod + "\n" +
+                                            " ----\n" +
+                                            " | [color={COLOR1}]⬤[/color] |\n" +
+                                            " | [color={COLOR2}]⬤[/color] |\n" +
+                                            " | [color={COLOR3}]⬤[/color] |\n" +
+                                            " | [color=red]⬤[/color] | [color=gold]<-[/color]\n" +
+                                            " | [color={COLOR4}]⬤[/color] |\n" +
+                                            " | [color={COLOR5}]⬤[/color] |\n" +
+                                            " | [color={COLOR6}]⬤[/color] |\n" +
+                                            " ----").replace("{COLOR1}", rouletteColors[RandomUtil.getNextInt(rouletteColors.length)]).replace("{COLOR2}", rouletteColors[RandomUtil.getNextInt(rouletteColors.length)]).replace("{COLOR3}", rouletteColors[RandomUtil.getNextInt(rouletteColors.length)]).replace("{COLOR4}", rouletteColors[RandomUtil.getNextInt(rouletteColors.length)]).replace("{COLOR5}", rouletteColors[RandomUtil.getNextInt(rouletteColors.length)]).replace("{COLOR6}", rouletteColors[RandomUtil.getNextInt(rouletteColors.length)]));
+                                }else{
+                                    if (kolor.equals("black")) {
+                                        kod = "[color=lightgreen]Gratulacje! Wygrałeś/aś " + (kwota *2) + "$, wygrana została przelana na twoje konto bankowe. (!stankonta)";
+                                        u.setMoney(u.getMoney() + (kwota *2));
+                                    }else{
+                                        kod = "[color=red]Niestety, przegrałeś/aś " + kwota + "$, kwota została odjęta z twojego konta bankowego. (!stankonta)";
+                                    }
+                                    //black
+                                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), ("[b][color=red]Ruletka: " + kod + "\n" +
+                                            " ----\n" +
+                                            " | [color={COLOR1}]⬤[/color] |\n" +
+                                            " | [color={COLOR2}]⬤[/color] |\n" +
+                                            " | [color={COLOR3}]⬤[/color] |\n" +
+                                            " | [color=black]⬤[/color] | [color=gold]<-[/color]\n" +
+                                            " | [color={COLOR4}]⬤[/color] |\n" +
+                                            " | [color={COLOR5}]⬤[/color] |\n" +
+                                            " | [color={COLOR6}]⬤[/color] |\n" +
+                                            " ----").replace("{COLOR1}", rouletteColors[RandomUtil.getNextInt(rouletteColors.length)]).replace("{COLOR2}", rouletteColors[RandomUtil.getNextInt(rouletteColors.length)]).replace("{COLOR3}", rouletteColors[RandomUtil.getNextInt(rouletteColors.length)]).replace("{COLOR4}", rouletteColors[RandomUtil.getNextInt(rouletteColors.length)]).replace("{COLOR5}", rouletteColors[RandomUtil.getNextInt(rouletteColors.length)]).replace("{COLOR6}", rouletteColors[RandomUtil.getNextInt(rouletteColors.length)]));
+                                }
+                            }catch (NumberFormatException ex){
+                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !ruletka <black/red/green> <kwota>");
+                            }
+                        }else{
+                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !ruletka <black/red/green> <kwota>");
+                        }
+                    }else{
+                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !ruletka <black/red/green> <kwota>");
+                    }
                 } else if(args[0].equalsIgnoreCase("!topka")){
                     try {
                         ResultSet rs = Main.getStore().query("Select * from chatusers ORDER by money DESC;");
@@ -152,7 +242,15 @@ public class ChatEvent extends TS3EventAdapter {
                         while (rs.next()) {
                             if (i < 11) {
                                 test = new User(rs);
-                                sb.append(i + ". " + test.getName() + " - " + test.getMoney() + "\n");
+                                if (i == 1){
+                                    sb.append("[b]" + i + ".[/b] [color=#56FA71]" + test.getName() + "[/color] - [b]" + test.getMoney() + "$[/b]\n");
+                                }else if (i == 2){
+                                    sb.append("[b]" + i + ".[/b] [color=#B0FF7B]" + test.getName() + "[/color] - [b]" + test.getMoney() + "$[/b]\n");
+                                }else if (i == 3){
+                                    sb.append("[b]" + i + ".[/b] [color=#A2FF00]" + test.getName() + "[/color] - [b]" + test.getMoney() + "$[/b]\n");
+                                }else {
+                                    sb.append("[b]" + i + ".[/b] " + test.getName() + " - [b]" + test.getMoney() + "[/b]\n");
+                                }
                                 ++i;
                             }else{
                                 rs.close();
@@ -173,6 +271,14 @@ public class ChatEvent extends TS3EventAdapter {
                             Integer kwota = Integer.parseInt(args[1]);
                             if (kwota > u.getMoney()){
                                 TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Nie posiadasz wystarczającej ilości środków!");
+                                return;
+                            }
+                            if (kwota.toString().contains("-") || kwota.toString().contains("+") || kwota.toString().contains("*") || kwota.toString().contains(":")){
+                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Sugaros już przetestował, nie musisz tego testować ;)");
+                                return;
+                            }
+                            if (kwota < 1000){
+                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Zbyt mała kwota przelewu. (min. 1000$)");
                                 return;
                             }
                             Client send = TeamSpeakUtils.api.getClientByNameExact(message.replace(args[0] + " " + args[1] + " ", ""), false);
@@ -225,7 +331,27 @@ public class ChatEvent extends TS3EventAdapter {
                         Random rand = new Random();
                         if (args.length == 1) {
                             //zasady do gier w kości
-                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=violet][b]Kostka: [" + (rand.nextInt(6) + 1) + "]");
+                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[b]Koścmi można grać w wiele gier jedną z nich jest poker oto jego zasady:\nNa start wybieramy osobę zaczynającą (zazwyczaj osoba która wygrała poprzednią gre). Osoba zaczynająca rzuca sześcioma kostkami, może rzucić jeszcze raz aby ułożyć odpowiednia figure.\n Kategoria „Małe figury” to:\n" +
+                                    "\n" +
+                                    "- „para” – dwie takie same kości, liczy się suma oczek z kości tworzących parę,\n" +
+                                    "\n" +
+                                    "- „dwie pary” – są to dwie pary (nie muszą być różne), liczy się suma oczek z kości tworzących dwie pary,\n" +
+                                    "\n" +
+                                    "- „trójka” – trzy takie same kości, liczy się suma oczek z kości tworzących trójkę.\n" +
+                                    "\n" +
+                                    "Jeśli mamy przykładowy układ 3, 3, 3, 3, 5 i wybieramy kategorię „trójki”, liczymy punkty tylko z trzech trójek, a nie czterech.\n" +
+                                    "\n" +
+                                    "Kategoria „Duże figury” to:\n" +
+                                    "\n" +
+                                    "- „mały strit” – jest to układ 1, 2, 3, 4, 5 (przykład na pierwszym zdjęciu), otrzymujemy 15 punktów,\n" +
+                                    "\n" +
+                                    "- „duży strit” – jest to układ 2, 3, 4, 5, 6, otrzymujemy 20 punktów,\n" +
+                                    "\n" +
+                                    "- „full” – jest to układ składający się z jednej pary i jednej trójki, liczy się suma wyrzuconych oczek plus 10 punktów,\n" +
+                                    "\n" +
+                                    "- „kareta” – cztery takie same kości, liczy się suma wszystkich oczek plus 20 punktów,\n" +
+                                    "\n" +
+                                    "- „generał” – pięć takich samych kości, liczy się suma wszystkich oczek plus 30 punktów[/b]");
                         } else if (args.length == 2) {
                             int lkosci = Integer.parseInt(args[1]);
                             if (lkosci == 0 || lkosci > 16){
@@ -243,7 +369,22 @@ public class ChatEvent extends TS3EventAdapter {
                                     sb.append(wylosowano + ", ");
                                 }
                             }
-                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=violet][b]Kostki: [" + sb.toString() + "]");
+                            if (u.getChannels().toLowerCase().contains("gry")) {
+                                TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Spróbuj jeszcze raz wybrać kanał oraz dołączyć do kanału, który wybrałeś/aś.", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]Try again to choose a channel and join the channel you have chosen.", "bral"}, c);
+                                return;
+                            }
+                            if (u.getSelect().toLowerCase().equals("gry")) {
+                                TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Spróbuj jeszcze raz wybrać kanał oraz dołączyć do kanału, który wybrałeś/aś.", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]Try again to choose a channel and join the channel you have chosen.", "bral"}, c);
+                                return;
+                            }
+                            TeamSpeakUtils.api.getClients().forEach(x ->{
+                                User ux = UserUtils.get(x);
+                                if (ux.getChannels().toLowerCase().contains("gry")){
+                                    if (System.currentTimeMillis() > ux.getMute()) {
+                                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#FF008A][b](" + c.getNickname() + ") [color=violet]Kostki: [" + sb.toString() + "]");
+                                    }
+                                }
+                            });
                         } else {
                             TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]" + args[0] + " <liczba kości>");
                         }
@@ -262,6 +403,7 @@ public class ChatEvent extends TS3EventAdapter {
                                 TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Nie posiadasz wystarczającej ilości środków!");
                                 return;
                             }
+                            u.setMoney(u.getMoney() - kwota);
                             Random rand = new Random();
                             String ala = emoji[rand.nextInt(emoji.length)];
                             String bob = emoji[rand.nextInt(emoji.length)];
@@ -286,7 +428,6 @@ public class ChatEvent extends TS3EventAdapter {
                                 u.setMoney(u.getMoney() + wygrana);
                                 TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=green][b]Para: " + ala + " " + bob + " " + jacek + "\n Wygrałeś/aś: " + wygrana + "$");
                             } else {
-                                u.setMoney(u.getMoney() - kwota);
                                 TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=red][b]UnLucky: " + ala + " " + bob + " " + jacek + "\n Przegrałeś/aś: " + kwota + "$");
                             }
                         }catch (NumberFormatException ex){
@@ -784,14 +925,14 @@ public class ChatEvent extends TS3EventAdapter {
                                         if (!x.isInServerGroup(115)) {
                                             if (ux.getChannels().contains(u.getSelect())) {
                                                 if (!x.getNickname().equals(c.getNickname())) {
-                                                    TeamSpeakUtils.api.sendPrivateMessage(x.getId(), parse.replace("[", "[ ").replace("]", " ]").replace("@" + x.getNickname(), "[b][color=orange]@" + x.getNickname() + "[/color][/b]").replace(":shrug:", "¯\\_(ツ)_/¯").replace(":lenny:", "( ͡° ͜ʖ ͡°)").replace(":take:", "༼ つ ◕_◕ ༽つ").replace(":dolar:", "[̲̅$̲̅(̲̅5̲̅)̲̅$̲̅]").replace(":lennydolar:", "[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]").replace("<3", "[b][color=red]❤[/color][/b]").replace("@Everyone", (everyone(message, c, x) + "[/b][/color]")));
+                                                    TeamSpeakUtils.api.sendPrivateMessage(x.getId(), parse.replace("@" + x.getNickname(), "[b][color=orange]@" + x.getNickname() + "[/color][/b]").replace(":shrug:", "¯\\_(ツ)_/¯").replace(":lenny:", "( ͡° ͜ʖ ͡°)").replace(":take:", "༼ つ ◕_◕ ༽つ").replace(":dolar:", "[̲̅$̲̅(̲̅5̲̅)̲̅$̲̅]").replace(":lennydolar:", "[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]").replace("<3", "[b][color=red]❤[/color][/b]").replace("@Everyone", (everyone(message, c, x) + "[/b][/color]")));
                                                 }
                                             }
                                         }
                                     }
                                 }
                             });
-                            MessageUtils.saveMessageToFile(c, u, message.replace("[", "[ ").replace("]", " ]").replace(":shrug:", "¯\\_(ツ)_/¯").replace(":lenny:", "( ͡° ͜ʖ ͡°)").replace(":take:", "༼ つ ◕_◕ ༽つ").replace(":dolar:", "[̲̅$̲̅(̲̅5̲̅)̲̅$̲̅]").replace(":lennydolar:", "[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]").replace("<3", "[b][color=red]❤[/color][/b]"), new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
+                            MessageUtils.saveMessageToFile(c, u, message.replace(":shrug:", "¯\\_(ツ)_/¯").replace(":lenny:", "( ͡° ͜ʖ ͡°)").replace(":take:", "༼ つ ◕_◕ ༽つ").replace(":dolar:", "[̲̅$̲̅(̲̅5̲̅)̲̅$̲̅]").replace(":lennydolar:", "[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]").replace("<3", "[b][color=red]❤[/color][/b]"), new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
                         }else{
                             TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Musisz być zarejestrowany!");
                         }
