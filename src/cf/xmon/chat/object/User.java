@@ -38,7 +38,7 @@ public class User {
         this.password = "null";
         this.mute = System.currentTimeMillis();
         this.timeout = 0;
-        this.money = 1000;
+        this.money = 1500;
         UserUtils.addUser(this);
         this.insert();
     }

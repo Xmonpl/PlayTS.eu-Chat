@@ -24,15 +24,17 @@ public class JackPotTask {
                 if (ChatEvent.jackpot != null){
                     if (ChatEvent.jackpot.size() == 1){
                         if (timetoEnd == 3) {
-                            ChatEvent.jackpot.forEach((c, kwota) -> {
-                                TeamSpeakUtils.api.getClients().forEach(x ->{
+                            TeamSpeakUtils.api.getClients().forEach(x ->{
+                                if (x.isRegularClient()) {
                                     User ux = UserUtils.get(x);
-                                    if (ux.getChannels().toLowerCase().contains("gry")) {
+                                    if (ux.getChannels().toLowerCase().contains("gaming")) {
                                         if (System.currentTimeMillis() > ux.getMute()) {
-                                            TeamSpeakUtils.api.sendPrivateMessage(x.getId(), "[b][color=gray][[color=gold]JACKPOT[color=gray]] [color=red]Przepraszamy, nikt nie dołączył do puli. Pięniądze wróciły do Ciebie.");
+                                            TeamSpeakUtils.api.sendPrivateMessage(x.getId(), "[b][color=gray][[color=gold]JACKPOT[color=gray]] [color=red]Przepraszamy, nikt nie dołączył do puli. Pięniądze wróciły do ");
                                         }
                                     }
-                                });
+                                }
+                            });
+                            ChatEvent.jackpot.forEach((c, kwota) -> {
                                 User u = UserUtils.get(c);
                                 u.setMoney(u.getMoney() + ChatEvent.jackpotKwota);
                             });
@@ -46,16 +48,21 @@ public class JackPotTask {
                         if (timetoEnd == 3) {
                             List<Client> winnerList = new ArrayList<>();
                             ChatEvent.jackpot.forEach((c, kwota) -> {
-                                winnerList.add(c);
+                                if (!winnerList.contains(c)) {
+                                    winnerList.add(c);
+                                }
                             });
-                            Client win = winnerList.get(RandomUtil.getNextInt(winnerList.size()));
+                            int ii = RandomUtil.getNextInt(winnerList.size());
+                            Client win = winnerList.get(ii);
                             User u = UserUtils.get(win);
                             u.setMoney(u.getMoney() + ChatEvent.jackpotKwota);
                             TeamSpeakUtils.api.getClients().forEach(x ->{
-                                User ux = UserUtils.get(x);
-                                if (ux.getChannels().toLowerCase().contains("gry")) {
-                                    if (System.currentTimeMillis() > ux.getMute()) {
-                                        TeamSpeakUtils.api.sendPrivateMessage(x.getId(), "[b][color=gray][[color=gold]JACKPOT[color=gray]] [color=green]Szcześliwym zwycieżcą puli o łącznej wartości " + ChatEvent.jackpotKwota + "$ jest " + win.getNickname());
+                                if (x.isRegularClient()) {
+                                    User ux = UserUtils.get(x);
+                                    if (ux.getChannels().toLowerCase().contains("gaming")) {
+                                        if (System.currentTimeMillis() > ux.getMute()) {
+                                            TeamSpeakUtils.api.sendPrivateMessage(x.getId(), "[b][color=gray][[color=gold]JACKPOT[color=gray]] [color=green]Szcześliwym zwycieżcą puli o łącznej wartości " + ChatEvent.jackpotKwota + "$ jest " + win.getNickname());
+                                        }
                                     }
                                 }
                             });
@@ -67,6 +74,12 @@ public class JackPotTask {
                         }
                     }
                     ++timetoEnd;
+                }else{
+                    ChatEvent.jackpotKwota = 0;
+                    ChatEvent.jackpot.clear();
+                    timetoEnd = 0;
+                    timer.cancel();
+                    timer.purge();
                 }
             }
         }, TimeUnit.SECONDS.toMillis(20) + 52, TimeUnit.SECONDS.toMillis(20) + 52);

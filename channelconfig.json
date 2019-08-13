@@ -70,5 +70,14 @@
       "imprecation": true,
       "advertising": true,
       "write": false
-    }
+    },
+  "gry": {
+    "required": "none",
+    "file": "gry.txt",
+    "description": "\uD83D\uDCF0 Kanał na którym dziala kasyno.!",
+    "private": false,
+    "imprecation": true,
+    "advertising": true,
+    "write": false
+  }
 }

@@ -17,6 +17,6 @@ public class OnlineTask {
                 UserUtils.loadOnline();
                 System.out.println("Suma " + (System.currentTimeMillis() - start)  + "ms");
             }
-        }, TimeUnit.SECONDS.toMillis(55) + 15, TimeUnit.SECONDS.toMillis(55) + 15);
+        }, TimeUnit.MINUTES.toMillis(2) + 15, TimeUnit.MINUTES.toMillis(2) + 15);
     }
 }
