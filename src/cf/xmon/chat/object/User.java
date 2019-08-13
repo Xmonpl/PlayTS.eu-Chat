@@ -82,6 +82,11 @@ public class User {
         Main.getStore().update(false, "UPDATE `{P}users` SET `color`='" + this.getColor() + "' WHERE `uuid`='" + this.getUuid() + "'");
     }
 
+    public void setName(String name){
+        this.name = name;
+        Main.getStore().update(false, "UPDATE `{P}users` SET `name`='" + this.getName() + "' WHERE `uuid`='" + this.getUuid() + "'");
+    }
+
     public void setTimeout(long timeout){
         this.timeout = timeout;
         Main.getStore().update(false, "UPDATE `{P}users` SET `timeout`='" + this.getTimeout() + "' WHERE `uuid`='" + this.getUuid() + "'");

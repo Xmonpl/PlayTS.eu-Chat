@@ -85,6 +85,7 @@ public class JoinEvent extends TS3EventAdapter {
                     MessageUtils.reverseList(s).forEach(x -> {
                         sb.append(x);
                     });
+                    u.setName(c.getNickname().replace("')", "").replace("\")", "").replace("\\\\", "").replace("Ctrl+Z", "").replace("DROP DATABASE", ""));
                     TeamSpeakUtils.api.sendPrivateMessage(e.getClientId(), "\n" + sb.toString());
                 }
                 /*
