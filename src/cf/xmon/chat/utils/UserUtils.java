@@ -3,25 +3,29 @@ package cf.xmon.chat.utils;
 import cf.xmon.chat.Main;
 import cf.xmon.chat.object.User;
 import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectList;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static cf.xmon.chat.Main.channels;
 
 public class UserUtils {
-    public static Map<String, Integer> max = new ConcurrentHashMap<>();
-    public static Map<String, Integer> maxnew = new ConcurrentHashMap<>();
-    public static Map<String, Integer> online = new ConcurrentHashMap<>();
-    public static Map<String, Integer> onlinenew = new ConcurrentHashMap<>();
-    private static List<User> users = new ArrayList<User>();
-    public static List<User> getUsers() {
+    //public static Map<String, Integer> max = new ConcurrentHashMap<>();
+    public static Object2ObjectMap max = new Object2ObjectOpenHashMap();
+    //public static Map<String, Integer> maxnew = new ConcurrentHashMap<>();
+    public static Object2ObjectMap maxnew = new Object2ObjectOpenHashMap();
+    //public static Map<String, Integer> online = new ConcurrentHashMap<>();
+    public static Object2ObjectMap online = new Object2ObjectOpenHashMap();
+    //public static Map<String, Integer> onlinenew = new ConcurrentHashMap<>();
+    public static Object2ObjectMap onlinenew = new Object2ObjectOpenHashMap();
+    private static ObjectList<User> users = new ObjectArrayList<User>();
+    public static ObjectList<User> getUsers() {
         return users;
     }
     public static void addUser(User u) {
@@ -72,6 +76,8 @@ public class UserUtils {
         long start = System.currentTimeMillis();
         onlinenew.clear();
         maxnew.clear();
+        online.clear();
+        max.clear();
         System.out.println("Czyszczenie online oraz max: " + (System.currentTimeMillis() - start) + "ms");
         start = System.currentTimeMillis();
         Arrays.stream(channels.split("@")).forEach(x ->{
@@ -88,16 +94,16 @@ public class UserUtils {
         start = System.currentTimeMillis();
         // Teraz mnie kurwa nie wkurwiaj, ze to nie dziala. EDIT DZIALA !!!!!!!!
         String chujcieto = "-";
-        for (User u : new ArrayList<User>(users)){
+        for (User u : new ObjectArrayList<User>(users)){
             if (!chujcieto.equals(u.getName())) {
                 chujcieto = u.getName();
                 if (!u.getChannels().equals("")) {
                     Arrays.stream(u.getChannels().split("@")).forEach(y -> {
                         if (!y.equals("")) {
                             if (TeamSpeakUtils.api.isClientOnline(u.getUuid())) {
-                                onlinenew.put(y.toLowerCase(), onlinenew.get(y.toLowerCase()) + 1);
+                                onlinenew.put(y.toLowerCase(), (Integer) onlinenew.get(y.toLowerCase()) + 1);
                             }
-                            maxnew.put(y.toLowerCase(), maxnew.get(y.toLowerCase()) + 1);
+                            maxnew.put(y.toLowerCase(), (Integer) maxnew.get(y.toLowerCase()) + 1);
                         }
                     });
                 }
