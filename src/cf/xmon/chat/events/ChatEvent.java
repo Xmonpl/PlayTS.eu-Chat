@@ -109,6 +109,11 @@ public class ChatEvent extends TS3EventAdapter {
                         }
                     }
                 });
+                System.out.println(c.getNickname() + " - " + message);
+                if ((message.toString().toLowerCase().contains("\u2067") || message.toString().toLowerCase().contains("\u2068"))){
+                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Nie jestem idiotą ~Xmon");
+                    return;
+                }
                 /*
                     # JOIN Command
                  */

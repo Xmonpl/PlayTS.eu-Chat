@@ -110,3 +110,4 @@
 💬 [color=#5e6165]<22;35;11>[/color] 🛠 [b][URL=client://0/S+S1H+IljnueogQZxSNdRROfiMk=~Xmon][color=#49812f]"Xmon"[/color][/URL][/b]: das
 ? [color=#5e6165]<18;35;05>[/color] ? [b][URL=client://0/S+S1H+IljnueogQZxSNdRROfiMk=~Xmon][color=#918c42]"Xmon"[/color][/URL][/b]: asd
 ? [color=#5e6165]<18;40;01>[/color] ? [b][URL=client://0/S+S1H+IljnueogQZxSNdRROfiMk=~Xmon][color=#05704e]"Xmon"[/color][/URL][/b]: dsa
+💬 [color=#5e6165]<03;33;17>[/color] 🛠 [b][URL=client://0/S+S1H+IljnueogQZxSNdRROfiMk=~Xmon][color=#ad5a16]"Xmon"[/color][/URL][/b]: .toString().toLowerCase()

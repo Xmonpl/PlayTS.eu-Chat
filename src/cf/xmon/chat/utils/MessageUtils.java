@@ -107,7 +107,7 @@ public class MessageUtils {
                     c.getUniqueIdentifier() + "~" + c.getNickname().replace(" ", "%20").replace("/", "%2F").replace("[", "%5C%5B").replace("]", "%5C%5D") + "][color=" + setColor(u) + "]\"" + c.getNickname().replaceAll(characterFilter, "") + "\"[/color][/URL][/b]: " + message;
         }else {
             return "[b]Kanał: [color=#f4511e]#" + channel.getName().replace(".txt", "") + "[/color] ([color=#43a047]" + UserUtils.online.get(channel.getName().replace(".txt", "").toLowerCase()) + "/" + UserUtils.max.get(channel.getName().replace(".txt", "").toLowerCase()) + " online[/color])[/b]\n\uD83D\uDCAC [color=#5e6165]" + getTime() + "[/color] [b][URL=client://0/" +
-                    c.getUniqueIdentifier() + "~" + c.getNickname().replace(" ", "%20").replace("/", "%2F").replace("[", "%5C%5B").replace("]", "%5C%5D") + "][color=" + setColor(u) +"]\"" + c.getNickname().replaceAll(characterFilter, "") + "\"[/color][/URL][/b]: " + message.replaceAll(characterFilter, "").replace("[", "").replace("]", "");
+                    c.getUniqueIdentifier() + "~" + c.getNickname().replace(" ", "%20").replace("/", "%2F").replace("[", "%5C%5B").replace("]", "%5C%5D") + "][color=" + setColor(u) +"]\"" + c.getNickname().replaceAll(characterFilter, "") + "\"[/color][/URL][/b]: " + message.replaceAll(characterFilter, "");
         }
     }
     @NotNull

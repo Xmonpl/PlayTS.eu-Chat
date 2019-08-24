@@ -3,29 +3,26 @@ package cf.xmon.chat.utils;
 import cf.xmon.chat.Main;
 import cf.xmon.chat.object.User;
 import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectList;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static cf.xmon.chat.Main.channels;
 
 public class UserUtils {
-    //public static Map<String, Integer> max = new ConcurrentHashMap<>();
-    public static Object2ObjectMap max = new Object2ObjectOpenHashMap();
-    //public static Map<String, Integer> maxnew = new ConcurrentHashMap<>();
-    public static Object2ObjectMap maxnew = new Object2ObjectOpenHashMap();
-    //public static Map<String, Integer> online = new ConcurrentHashMap<>();
-    public static Object2ObjectMap online = new Object2ObjectOpenHashMap();
-    //public static Map<String, Integer> onlinenew = new ConcurrentHashMap<>();
-    public static Object2ObjectMap onlinenew = new Object2ObjectOpenHashMap();
-    private static ObjectList<User> users = new ObjectArrayList<User>();
-    public static ObjectList<User> getUsers() {
+    public static Map<String, Integer> max = new ConcurrentHashMap<>();
+    //public static Object2ObjectMap max = new Object2ObjectOpenHashMap();
+    public static Map<String, Integer> maxnew = new ConcurrentHashMap<>();
+    //public static Object2ObjectMap maxnew = new Object2ObjectOpenHashMap();
+    public static Map<String, Integer> online = new ConcurrentHashMap<>();
+    //public static Object2ObjectMap online = new Object2ObjectOpenHashMap();
+    public static Map<String, Integer> onlinenew = new ConcurrentHashMap<>();
+    //public static Object2ObjectMap onlinenew = new Object2ObjectOpenHashMap();
+    private static List<User> users = new ArrayList<User>();
+    public static List<User> getUsers() {
         return users;
     }
     public static void addUser(User u) {
@@ -76,8 +73,6 @@ public class UserUtils {
         long start = System.currentTimeMillis();
         onlinenew.clear();
         maxnew.clear();
-        online.clear();
-        max.clear();
         System.out.println("Czyszczenie online oraz max: " + (System.currentTimeMillis() - start) + "ms");
         start = System.currentTimeMillis();
         Arrays.stream(channels.split("@")).forEach(x ->{
@@ -93,8 +88,21 @@ public class UserUtils {
         System.out.println("Pierwszy forEach(channel == null? online 0; max 0): " + (System.currentTimeMillis() - start) + "ms");
         start = System.currentTimeMillis();
         // Teraz mnie kurwa nie wkurwiaj, ze to nie dziala. EDIT DZIALA !!!!!!!!
-        String chujcieto = "-";
-        for (User u : new ObjectArrayList<User>(users)){
+        //String chujcieto = "-";
+        LinkedHashSet<User> uu = new LinkedHashSet<User>(users);
+        //.distinct().collect(Collectors.toList())
+        uu.stream().filter(x -> !(x.getChannels().equals(""))).forEach(u ->{
+            Arrays.stream(u.getChannels().split("@")).forEach(y -> {
+                if (!y.equals("")) {
+                    if (TeamSpeakUtils.api.isClientOnline(u.getUuid())) {
+                        onlinenew.put(y.toLowerCase(), (Integer) onlinenew.get(y.toLowerCase()) + 1);
+                    }
+                    maxnew.put(y.toLowerCase(), (Integer) maxnew.get(y.toLowerCase()) + 1);
+                }
+            });
+        });
+        /*
+        for (User u : new ArrayList<User>(users)){
             if (!chujcieto.equals(u.getName())) {
                 chujcieto = u.getName();
                 if (!u.getChannels().equals("")) {
@@ -109,6 +117,7 @@ public class UserUtils {
                 }
             }
         }
+         */
         online = onlinenew;
         max = maxnew;
         System.out.println("For: " + (System.currentTimeMillis() - start)  + "ms");
