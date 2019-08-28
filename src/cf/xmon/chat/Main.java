@@ -25,16 +25,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class Main {
     private static Store store;
     private static ConfigManager cm = new ConfigManager();
     private static Config c = ConfigManager.getConfig();
     public static String channels = null;
+    public static Map<String, Integer> max = new ConcurrentHashMap<>();
+    public static Map<String, Integer> online = new ConcurrentHashMap<>();
 
     public static void main(String[] args) throws IOException {
         final long start = System.currentTimeMillis();
@@ -44,11 +44,14 @@ public class Main {
         createFiles();
         TeamSpeakUtils.TeamSpeakConnect(c.getInstance().getQueryIp(), c.getInstance().getPort(), c.getInstance().getDebug(), c.getInstance().getQueryLogin(), c.getInstance().getPassword(), c.getInstance().getVirtualServerId());
         UserUtils.loadOnline();
+        online.putAll(UserUtils.onlinenew);
+        max.putAll(UserUtils.maxnew);
         onload(args);
         //ServerCreator.createServer();
         OnlineTask.update();
         AutoClearChannelsTask.update();
         AntyCrash.update();
+        AntyCrash.update1();
         System.out.println("Uruchomiono w " + (System.currentTimeMillis() - start) + "ms!");
         System.out.println("x-Chat created by Xmon for PlayTS.eu (https://github.com/xmonpl)");
     }
@@ -65,7 +68,7 @@ public class Main {
                         if (args.length == 0) {
                             TeamSpeakUtils.api.sendPrivateMessage(x.getId(), "\n " + MessageUtils.getTime() + " ⚙️ [color=#2580c3][b]\"System\"[/b][/color]: [b][color=#76ff03]Nowość![/color] Kanały tekstowe jak na [color=#7289da]Discord[/color]zie. Wybierz kanał wpisując [u][color=#8d6e63]!channels[/color][/u] lub [u][color=#795548]!help[/color][/u].\n" +
                                     "Automatycznie dołączono" +
-                                    " do kanału [color=#f4511e]#playts[/color] ([color=#43a047]" + UserUtils.online.get("playts") + "/" + UserUtils.max.get("playts") + " online[/color]). [i]Ostatnie 5 wiadomości z kanału [color=#f4511e]#playts[/color]:[/i][/b]\n");
+                                    " do kanału [color=#f4511e]#playts[/color] ([color=#43a047]" + online.get("playts") + "/" + max.get("playts") + " online[/color]). [i]Ostatnie 5 wiadomości z kanału [color=#f4511e]#playts[/color]:[/i][/b]\n");
                             File file = new File(jsonObject.getJSONObject("playts").getString("file"));
                             int n_lines = 5;
                             int counter = 0;
@@ -88,7 +91,7 @@ public class Main {
                             String sads = "";
                             StringBuilder sbb = new StringBuilder(sads);
                             Arrays.stream(u.getChannels().split("@")).forEach(y -> {
-                                sbb.append("[color=#f4511e]#" + y.toLowerCase() + "[/color] ([color=#43a047]" + UserUtils.online.get(y.toLowerCase()) + "/" + UserUtils.max.get(y.toLowerCase()) + " online[/color]), ");
+                                sbb.append("[color=#f4511e]#" + y.toLowerCase() + "[/color] ([color=#43a047]" + online.get(y.toLowerCase()) + "/" + max.get(y.toLowerCase()) + " online[/color]), ");
                             });
                             TeamSpeakUtils.api.sendPrivateMessage(x.getId(), "\n " + MessageUtils.getTime() + " ⚙️ [color=#2580c3][b]\"System\"[/b][/color]: [b][color=#76ff03]Nowość![/color] Kanały tekstowe jak na [color=#7289da]Discord[/color]zie. Wybierz kanał wpisując [u][color=#8d6e63]!channels[/color][/u] lub [u][color=#795548]!help[/color][/u].\n" +
                                     "Znajdujesz się w kanałach: " + sbb.toString() + " [i]Ostatnie 5 wiadomości z kanału [color=#f4511e]#" + u.getSelect().toLowerCase() + "[/color]:[/i][/b]\n");

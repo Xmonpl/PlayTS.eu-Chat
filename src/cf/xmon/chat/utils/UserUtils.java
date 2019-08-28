@@ -7,22 +7,18 @@ import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static cf.xmon.chat.Main.channels;
 
 public class UserUtils {
-    public static Map<String, Integer> max = new ConcurrentHashMap<>();
-    //public static Object2ObjectMap max = new Object2ObjectOpenHashMap();
     public static Map<String, Integer> maxnew = new ConcurrentHashMap<>();
-    //public static Object2ObjectMap maxnew = new Object2ObjectOpenHashMap();
-    public static Map<String, Integer> online = new ConcurrentHashMap<>();
-    //public static Object2ObjectMap online = new Object2ObjectOpenHashMap();
     public static Map<String, Integer> onlinenew = new ConcurrentHashMap<>();
-    //public static Object2ObjectMap onlinenew = new Object2ObjectOpenHashMap();
-    private static List<User> users = new ArrayList<User>();
-    public static List<User> getUsers() {
+    private static LinkedHashSet<User> users = new LinkedHashSet<User>();
+    public static LinkedHashSet<User> getUsers() {
         return users;
     }
     public static void addUser(User u) {
@@ -75,6 +71,7 @@ public class UserUtils {
         maxnew.clear();
         System.out.println("Czyszczenie online oraz max: " + (System.currentTimeMillis() - start) + "ms");
         start = System.currentTimeMillis();
+        /*
         Arrays.stream(channels.split("@")).forEach(x ->{
             if (!x.equals("")) {
                 if (onlinenew.get(x) == null) {
@@ -85,23 +82,51 @@ public class UserUtils {
                 }
             }
         });
+         */
+        Arrays.stream(channels.split("@")).filter(x -> !x.isEmpty()).forEach(x ->{
+            onlinenew.put(x.toLowerCase(), 0);
+            maxnew.put(x.toLowerCase(), 0);
+        });
         System.out.println("Pierwszy forEach(channel == null? online 0; max 0): " + (System.currentTimeMillis() - start) + "ms");
         start = System.currentTimeMillis();
         // Teraz mnie kurwa nie wkurwiaj, ze to nie dziala. EDIT DZIALA !!!!!!!!
         //String chujcieto = "-";
         LinkedHashSet<User> uu = new LinkedHashSet<User>(users);
-        //.distinct().collect(Collectors.toList())
+        //List<User> uu = new ArrayList<User>(users);
         uu.stream().filter(x -> !(x.getChannels().equals(""))).forEach(u ->{
-            Arrays.stream(u.getChannels().split("@")).forEach(y -> {
-                if (!y.equals("")) {
+            Arrays.stream(u.getChannels().split("@")).filter(y -> !y.isEmpty()).forEach(y -> {
+                if (TeamSpeakUtils.api.isClientOnline(u.getUuid())) {
+                    onlinenew.put(y.toLowerCase(), (Integer) onlinenew.get(y.toLowerCase()) + 1);
+                }
+                maxnew.put(y.toLowerCase(), (Integer) maxnew.get(y.toLowerCase()) + 1);
+            });
+        });
+
+        /*
+
+                uu.stream().filter(x -> !(x.getChannels().equals(""))).forEach(u ->{
+            Arrays.stream(u.getChannels().split("@")).filter(y -> !y.isEmpty()).forEach(y -> {
                     if (TeamSpeakUtils.api.isClientOnline(u.getUuid())) {
                         onlinenew.put(y.toLowerCase(), (Integer) onlinenew.get(y.toLowerCase()) + 1);
                     }
                     maxnew.put(y.toLowerCase(), (Integer) maxnew.get(y.toLowerCase()) + 1);
-                }
             });
         });
-        /*
+
+        uu.parallelStream()
+                .filter(user -> !user.getChannels().isEmpty())
+                .forEach(user -> {
+                    System.out.println(user.getName());
+                    Arrays.stream(user.getChannels().split("@"))
+                            .parallel()
+                            .filter(channel -> !channel.isEmpty())
+                            .forEach(channel -> {
+                                if (TeamSpeakUtils.api.isClientOnline(user.getUuid())){
+                                    onlinenew.put(channel.toLowerCase(), onlinenew.get(channel.toLowerCase()) + 1);
+                                }
+                                maxnew.put(channel.toLowerCase(), (Integer) maxnew.get(channel.toLowerCase()) + 1);
+                            });
+                });
         for (User u : new ArrayList<User>(users)){
             if (!chujcieto.equals(u.getName())) {
                 chujcieto = u.getName();
@@ -118,8 +143,6 @@ public class UserUtils {
             }
         }
          */
-        online = onlinenew;
-        max = maxnew;
         System.out.println("For: " + (System.currentTimeMillis() - start)  + "ms");
 
     }

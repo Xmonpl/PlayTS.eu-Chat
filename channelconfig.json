@@ -6,7 +6,7 @@
       "private": false,
       "imprecation": false,
       "advertising": false,
-      "write": true
+	  "write": true
     },
     "nsfw": {
       "required": "age18",
@@ -15,7 +15,7 @@
       "private": false,
       "imprecation": true,
       "advertising": false,
-      "write": true
+	  "write": true
     },
     "staff": {
       "required": "admin",
@@ -24,7 +24,7 @@
       "private": false,
       "imprecation": false,
       "advertising": false,
-      "write": true
+	  "write": true
     },
     "plus": {
       "required": "plus",
@@ -33,7 +33,7 @@
       "private": false,
       "imprecation": false,
       "advertising": false,
-      "write": true
+	  "write": true
     },
     "premium": {
       "required": "premium",
@@ -42,7 +42,7 @@
       "private": false,
       "imprecation": false,
       "advertising": false,
-      "write": true
+	  "write": true
     },
     "gaming": {
       "required": "none",
@@ -51,33 +51,33 @@
       "private": false,
       "imprecation": false,
       "advertising": false,
-      "write": true
+	  "write": true
     },
     "xmon": {
       "required": "none",
       "file": "xmon.txt",
-      "description": "Kanal dla zapalonych grajkow",
+      "description": "Tajny kanał Xmon",
       "private": true,
       "imprecation": true,
       "advertising": true,
-      "write": true
+	  "write": true
     },
-    "ogloszenia": {
+	"sklep": {
+      "required": "none",
+      "file": "sklep.txt",
+      "description": "Dyskusje na temat sklepu PlayTS.eu",
+      "private": false,
+      "imprecation": false,
+      "advertising": true,
+	  "write": true
+    },
+	"ogloszenia": {
       "required": "none",
       "file": "ogloszenia.txt",
-      "description": "\uD83D\uDCF0 Kanał z ogłoszeniami!",
+      "description": "📰 Kanał z ogłoszeniami!",
       "private": false,
-      "imprecation": true,
-      "advertising": true,
-      "write": false
-    },
-  "gry": {
-    "required": "none",
-    "file": "gry.txt",
-    "description": "\uD83D\uDCF0 Kanał na którym dziala kasyno.!",
-    "private": false,
-    "imprecation": true,
-    "advertising": true,
-    "write": false
-  }
+      "imprecation": false,
+      "advertising": false,
+	  "write": false
+    }
 }
