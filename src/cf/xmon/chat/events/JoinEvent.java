@@ -15,6 +15,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -106,7 +107,7 @@ public class JoinEvent extends TS3EventAdapter {
                 if (!u.getChannels().contains("ogloszenia")) {
                     u.setChannels(u.getChannels() + "ogloszenia@");
                 }
-            } catch (IOException ex) {
+            } catch (IOException | SQLException ex) {
                 ex.printStackTrace();
             }
         }

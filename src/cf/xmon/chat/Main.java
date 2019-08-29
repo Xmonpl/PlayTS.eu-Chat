@@ -31,7 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class Main {
     private static Store store;
     private static ConfigManager cm = new ConfigManager();
-    private static Config c = ConfigManager.getConfig();
+    public static Config c = ConfigManager.getConfig();
     public static String channels = null;
     public static Map<String, Integer> max = new ConcurrentHashMap<>();
     public static Map<String, Integer> online = new ConcurrentHashMap<>();
