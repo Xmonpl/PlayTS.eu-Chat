@@ -10,7 +10,6 @@ import cf.xmon.chat.object.User;
 import cf.xmon.chat.tasks.AntyCrash;
 import cf.xmon.chat.tasks.AutoClearChannelsTask;
 import cf.xmon.chat.tasks.OnlineTask;
-import cf.xmon.chat.utils.Logger;
 import cf.xmon.chat.utils.MessageUtils;
 import cf.xmon.chat.utils.TeamSpeakUtils;
 import cf.xmon.chat.utils.UserUtils;
@@ -113,8 +112,8 @@ public class Main {
                             TeamSpeakUtils.api.sendPrivateMessage(x.getId(), "\n" + sb.toString());
                         }
                     }
-                }catch (IOException e){
-                    Logger.warning(e.getMessage());
+                } catch (Exception ex) {
+                    TeamSpeakUtils.error(ex);
                 }
             }
         });
@@ -143,18 +142,22 @@ public class Main {
         }
         return conn;
     }
-    public static void registerChannels() throws IOException {
-        JSONObject jsonObject = (JSONObject) parseJSONFile("channelconfig.json");
-        Iterator<String> keys = jsonObject.keys();
-        String add = new String();
-        while(keys.hasNext()) {
-            String key = keys.next();
-            if (jsonObject.get(key) instanceof JSONObject) {
-                add +=  "@" + key;
+    public static void registerChannels() {
+        try {
+            JSONObject jsonObject = (JSONObject) parseJSONFile("channelconfig.json");
+            Iterator<String> keys = jsonObject.keys();
+            String add = new String();
+            while (keys.hasNext()) {
+                String key = keys.next();
+                if (jsonObject.get(key) instanceof JSONObject) {
+                    add += "@" + key;
+                }
             }
+            channels = add;
+            System.out.println(channels);
+        }catch (Exception e){
+            TeamSpeakUtils.error(e);
         }
-        channels = add;
-        System.out.println(channels);
     }
     @NotNull
     public static JSONObject parseJSONFile(String filename) throws JSONException, IOException {
@@ -200,8 +203,8 @@ public class Main {
             if (!new File("help_DE.txt").exists()){
                 Files.write(Paths.get("help_DE.txt", new String[0]), "[b]Dostępne komendy:[/b]{NEW}[b]!channels[/b] — Wyświetla wszystkie dostępne kanały.{NEW}[b]!join <nazwa>[/b] — Dołącza do wybranego kanału{NEW}[b]!leave <nazwa>[/b] — Wychodzi z wybranego kanału tekstowego.{NEW}[b]!mute <3s/5m/6h>[/b] — Wycisza chat na podaną ilość sekund/minut/godzin.{NEW}[b]!switch <nazwa>[/b] — Przełącza twoje odpowiedzi na wybrany kanał.{NEW}[b]!check <nazwa>[/b] — Sprawdza ostatnie 15 wiadomości, bez dołączania do kanału.{NEW}[b]!rainbow on/off[/b] — Zmienia kolor twoich wiadomosci na tęczowy. [Premium]{NEW}[b]!admin[/b] — Wyświetla pomoc dostępną tylko dla Administratorów.{NEW}[b]!botinfo[/b] — Wyswietla informacje dotyczące autora.".getBytes(), StandardOpenOption.CREATE_NEW);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            TeamSpeakUtils.error(ex);
         }
     }
 }

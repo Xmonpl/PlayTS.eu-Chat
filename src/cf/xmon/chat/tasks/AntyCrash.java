@@ -12,7 +12,7 @@ public class AntyCrash {
     public static Timer timer1;
     public static void update() {
         timer = new Timer();
-        timer.schedule(new TimerTask() {
+        timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 if (!TeamSpeakUtils.query.isConnected()){
@@ -23,7 +23,9 @@ public class AntyCrash {
                         Process pr = run.exec(cmd);
                         pr.waitFor();
                         System.exit(-1);
-                    }catch (Exception e){ }
+                    } catch (Exception ex) {
+                        TeamSpeakUtils.error(ex);
+                    }
                 }
             }
         }, TimeUnit.MINUTES.toMillis(1) + 52, TimeUnit.MINUTES.toMillis(1) + 52);
@@ -41,7 +43,9 @@ public class AntyCrash {
                     Process pr = run.exec(cmd);
                     pr.waitFor();
                     System.exit(-1);
-                }catch (Exception e){ }
+                } catch (Exception ex) {
+                    TeamSpeakUtils.error(ex);
+                }
             }
         }, TimeUnit.HOURS.toMillis(12) + 512, TimeUnit.HOURS.toMillis(12) + 512);
     }

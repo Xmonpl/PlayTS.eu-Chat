@@ -8,7 +8,6 @@ import com.github.theholywaffle.teamspeak3.api.wrapper.DatabaseClient;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -46,8 +45,8 @@ public class MessageUtils {
             } else {
                 Files.write(Paths.get(channel.getName(), new String[0]), write.getBytes(), StandardOpenOption.APPEND);
             }
-        }catch (IOException e){
-            Logger.warning(e.getMessage());
+        } catch (Exception ex) {
+            TeamSpeakUtils.error(ex);
         }
     }
     public static void saveMessageToFile(@NotNull DatabaseClient c, @NotNull User u, @NotNull String message, @NotNull File channel){
@@ -59,8 +58,8 @@ public class MessageUtils {
             } else {
                 Files.write(Paths.get(channel.getName(), new String[0]), write.getBytes(), StandardOpenOption.APPEND);
             }
-        }catch (IOException e){
-            Logger.warning(e.getMessage());
+        } catch (Exception ex) {
+            TeamSpeakUtils.error(ex);
         }
     }
     public static void saveMessageToFile(@NotNull String user, @NotNull String message, @NotNull File channel){
@@ -78,8 +77,8 @@ public class MessageUtils {
             } else {
                 Files.write(Paths.get(channel.getName(), new String[0]), write.getBytes(), StandardOpenOption.APPEND);
             }
-        }catch (IOException e){
-            Logger.warning(e.getMessage());
+        } catch (Exception ex) {
+            TeamSpeakUtils.error(ex);
         }
     }
     public static<T> List<T> reverseList(List<T> list)

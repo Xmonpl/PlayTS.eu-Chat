@@ -6,7 +6,6 @@ import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
 import org.jetbrains.annotations.NotNull;
 
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -42,10 +41,8 @@ public class UserUtils {
             }
             rs.close();
             Logger.info("Loaded " + UserUtils.users.size()/2 + " users");
-        }
-        catch (SQLException e) {
-            Logger.info("Can not load players Error " + e.getMessage());
-            e.printStackTrace();
+        } catch (Exception ex) {
+            TeamSpeakUtils.error(ex);
         }
     }
     public static boolean oneUsername(String nick){
@@ -54,6 +51,20 @@ public class UserUtils {
             return true;
         }else{
             return false;
+        }
+    }
+    public static User getUserByNickName(String username){
+        //User u = UserUtils.users.stream().filter(user -> user.getUuid().toLowerCase().equals(uuid.toLowerCase())).findFirst().orElse(null);
+        User u = UserUtils.users.stream().filter(user -> user.getName().equals(username)).findFirst().orElse(null);
+        if (u == null){
+            u = UserUtils.users.stream().filter(user -> user.getUuid().equals(username)).findFirst().orElse(null);
+            if (u == null) {
+                return null;
+            }else{
+                return u;
+            }
+        }else{
+            return u;
         }
     }
     public static User getUserByUsername(String username){

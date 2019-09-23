@@ -11,7 +11,7 @@ public class OnlineTask {
     public static Timer timer;
     public static void update() {
         timer = new Timer();
-        timer.schedule(new TimerTask() {
+        timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 final long start = System.currentTimeMillis();

@@ -2,11 +2,10 @@ package cf.xmon.chat.tasks;
 
 
 import cf.xmon.chat.Main;
+import cf.xmon.chat.utils.TeamSpeakUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -14,11 +13,11 @@ public class AutoClearChannelsTask {
     public static Timer timer;
     public static void update() {
         timer = new Timer();
-        timer.schedule(new TimerTask() {
+        timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 Arrays.stream(Main.channels.split("@")).forEach(x ->{
-                    if (!x.equals("")){
+                    if (!x.equals("")) {
                         try {
                             File path = new File(x + ".txt");
                             Scanner scanner = new Scanner(path);
@@ -39,10 +38,8 @@ public class AutoClearChannelsTask {
                                 }
                                 writer.close();
                             }
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                        } catch (Exception ex) {
+                            TeamSpeakUtils.error(ex);
                         }
                     }
                 });

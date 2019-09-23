@@ -18,7 +18,7 @@ public class JackPotTask {
     private static Integer timetoEnd = 0;
     public static void update() {
         timer = new Timer();
-        timer.schedule(new TimerTask() {
+        timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 if (ChatEvent.jackpot != null){

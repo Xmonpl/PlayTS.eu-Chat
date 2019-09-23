@@ -43,6 +43,33 @@ public class TeamSpeakUtils {
         TeamSpeakUtils.api.addTS3Listeners(new ChatEvent());
         TeamSpeakUtils.api.addTS3Listeners(new JoinEvent());
     }
+    public static void error (Exception e){
+        final SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        final Date now = new Date();
+        final String strDate = sdfDate.format(now);
+        error("[x-Chat]");
+        error(" Java: " + System.getProperty("java.version"));
+        error(" Thread: " + Thread.currentThread());
+        error(" Time: " + strDate);
+        error(" Błąd: " + e.toString());
+        for (int i = 0; i < e.getStackTrace().length; i++){
+            String[] splited = e.getStackTrace()[i].toString().split("\\(");
+            if (splited[0].contains("cf.xmon")) {
+                String line = splited[1];
+                line = line.replace(":",  " | Linijka: ");
+                line = line.replace("\\)", "");
+                error(" Klasa: " + line);
+            }
+        }
+    }
+    private static void error(String message){
+        System.err.println(message);
+        if (query.isConnected()) {
+            api.getClients().stream().filter(client -> client.isInServerGroup(6)).filter(client -> client.isInServerGroup(16)).forEach(client -> {
+                api.sendPrivateMessage(client.getId(), message);
+            });
+        }
+    }
     public static String getRainbowColor(){
         Random random = new Random();
         int nextInt = random.nextInt(0xffffff + 1);

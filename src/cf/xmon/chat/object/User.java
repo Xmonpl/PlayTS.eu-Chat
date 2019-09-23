@@ -75,8 +75,8 @@ public class User {
             PreparedStatement p = Main.getStore().getConnection().prepareStatement(sql);
             p.setString(1, this.getSelect());
             p.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            TeamSpeakUtils.error(ex);
         }
         //Main.getStore().update(false, "UPDATE `{P}users` SET `select`='" + this.getSelect() + "' WHERE `uuid`='" + this.getUuid() + "'");
     }
@@ -88,8 +88,8 @@ public class User {
             PreparedStatement p = Main.getStore().getConnection().prepareStatement(sql);
             p.setString(1, this.getChannels());
             p.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            TeamSpeakUtils.error(ex);
         }
         //Main.getStore().update(false, "UPDATE `{P}users` SET `channels`='" + this.getChannels() + "' WHERE `uuid`='" + this.getUuid() + "'");
     }
@@ -101,8 +101,8 @@ public class User {
             PreparedStatement p = Main.getStore().getConnection().prepareStatement(sql);
             p.setString(1, this.getColor());
             p.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            TeamSpeakUtils.error(ex);
         }
         //Main.getStore().update(false, "UPDATE `{P}users` SET `color`='" + this.getColor() + "' WHERE `uuid`='" + this.getUuid() + "'");
     }
@@ -122,8 +122,8 @@ public class User {
             PreparedStatement p = Main.getStore().getConnection().prepareStatement(sql);
             p.setLong(1, this.getTimeout());
             p.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            TeamSpeakUtils.error(ex);
         }
         //Main.getStore().update(false, "UPDATE `{P}users` SET `timeout`='" + this.getTimeout() + "' WHERE `uuid`='" + this.getUuid() + "'");
     }
@@ -135,8 +135,8 @@ public class User {
             PreparedStatement p = Main.getStore().getConnection().prepareStatement(sql);
             p.setLong(1, this.getMute());
             p.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            TeamSpeakUtils.error(ex);
         }
         //Main.getStore().update(false, "UPDATE `{P}users` SET `mute`='" + this.getMute() + "' WHERE `uuid`='" + this.getUuid() + "'");
     }
@@ -148,8 +148,8 @@ public class User {
             PreparedStatement p = Main.getStore().getConnection().prepareStatement(sql);
             p.setString(1, this.getUsername());
             p.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            TeamSpeakUtils.error(ex);
         }
         //Main.getStore().update(false, "UPDATE `{P}users` SET `username`='" + this.getUsername().replace("')", "").replace("\")", "").replace("\\\\", "").replace("Ctrl+Z", "").replace("DROP DATABASE", "") + "' WHERE `uuid`='" + this.getUuid() + "'");
     }
@@ -161,8 +161,8 @@ public class User {
             PreparedStatement p = Main.getStore().getConnection().prepareStatement(sql);
             p.setString(1, this.getPassword());
             p.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            TeamSpeakUtils.error(ex);
         }
         //Main.getStore().update(false, "UPDATE `{P}users` SET `password`='" + this.getPassword().replace("')", "").replace("\")", "").replace("\\\\", "").replace("Ctrl+Z", "").replace("DROP DATABASE", "") + "' WHERE `uuid`='" + this.getUuid() + "'");
     }
@@ -182,8 +182,8 @@ public class User {
             p.setLong(10, this.getTimeout());
             p.setInt(11, this.getMoney());
             p.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            TeamSpeakUtils.error(ex);
         }
 
 
@@ -198,5 +198,9 @@ public class User {
     public void setMoney(Integer money) {
         this.money = money;
         Main.getStore().update(false, "UPDATE `{P}users` SET `money`='" + this.getMoney() + "' WHERE `uuid`='" + this.getUuid() + "'");
+    }
+
+    public String toString(){
+        return "[name= " + name + ", uuid= " + uuid + ", dbid= " + dbid + ", select= " + select + ", channels= [" + channels.replace("@", ", ") + "], color= " + color + ", username= " + username + ", password= " + password + ", mute= " + mute + ", timeout= " + timeout + ", money= " + money + "]";
     }
 }

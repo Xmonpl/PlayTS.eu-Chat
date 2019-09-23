@@ -1,6 +1,7 @@
 package cf.xmon.chat.config;
 
 import cf.xmon.chat.utils.JsonUtil;
+import cf.xmon.chat.utils.TeamSpeakUtils;
 import org.jetbrains.annotations.Contract;
 
 import java.io.File;
@@ -12,9 +13,8 @@ public class ConfigManager
     public ConfigManager() {
         try {
             ConfigManager.botConfig = JsonUtil.readConfiguration(Config.class, new File("config.json"));
-        }
-        catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception ex) {
+            TeamSpeakUtils.error(ex);
             ConfigManager.botConfig = null;
         }
     }
