@@ -111,3 +111,8 @@
 ? [color=#5e6165]<18;35;05>[/color] ? [b][URL=client://0/S+S1H+IljnueogQZxSNdRROfiMk=~Xmon][color=#918c42]"Xmon"[/color][/URL][/b]: asd
 ? [color=#5e6165]<18;40;01>[/color] ? [b][URL=client://0/S+S1H+IljnueogQZxSNdRROfiMk=~Xmon][color=#05704e]"Xmon"[/color][/URL][/b]: dsa
 💬 [color=#5e6165]<03;33;17>[/color] 🛠 [b][URL=client://0/S+S1H+IljnueogQZxSNdRROfiMk=~Xmon][color=#ad5a16]"Xmon"[/color][/URL][/b]: .toString().toLowerCase()
+💬 [color=#5e6165]<19;19;00>[/color] 🛠 [b][URL=client://0/S+S1H+IljnueogQZxSNdRROfiMk=~Xmon][color=#f2ef50]"Xmon"[/color][/URL][/b]: asads
+💬 [color=#5e6165]<19;24;16>[/color] 🛠 [b][URL=client://0/S+S1H+IljnueogQZxSNdRROfiMk=~Xmon][color=#fcdb19]"Xmon"[/color][/URL][/b]: asads
+💬 [color=#5e6165]<19;24;16>[/color] 🛠 [b][URL=client://0/S+S1H+IljnueogQZxSNdRROfiMk=~Xmon][color=#bb7940]"Xmon"[/color][/URL][/b]: asads
+💬 [color=#5e6165]<19;24;16>[/color] 🛠 [b][URL=client://0/S+S1H+IljnueogQZxSNdRROfiMk=~Xmon][color=#ba4fa7]"Xmon"[/color][/URL][/b]: asads
+💬 [color=#5e6165]<19;26;58>[/color] 🛠 [b][URL=client://0/S+S1H+IljnueogQZxSNdRROfiMk=~Xmon][color=#82ae4c]"Xmon"[/color][/URL][/b]: asdas

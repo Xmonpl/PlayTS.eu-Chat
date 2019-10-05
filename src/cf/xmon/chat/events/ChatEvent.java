@@ -18,9 +18,11 @@ import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -937,7 +939,22 @@ public class ChatEvent extends TS3EventAdapter {
                     } catch (Exception ex) {
                         TeamSpeakUtils.error(ex);
                     }
-                }else if(args[0].equalsIgnoreCase("!socialspy")) {
+                }else if(args[0].equalsIgnoreCase("!stats")){
+                    try {
+                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), String.format(
+                                "[b]Info and stats\n" +
+                                "   • Bot version: [color=#819402]%s[/color]\n" +
+                                "   • JVM version: [color=#819402]%s[/color]\n" +
+                                "   • Uptime: [color=#819402]%s[/color]\n" +
+                                "   • Users in db: [color=#819402]%s[/color]\n" +
+                                "   • Author: [color=#819402]Xmon[/color]\n" +
+                                "   • Messages written: [color=#819402]%s[/color]\n" +
+                                "   • First release: [color=#819402]01.07.2019[/color]\n" +
+                                "   • Last update: [color=#819402]05.09.2019[/color]", "v1.29.0", System.getProperty("java.version"), TeamSpeakUtils.getTimeFromLong(ManagementFactory.getRuntimeMXBean().getUptime()), UserUtils.getUsers().size(), Files.lines(Paths.get("playts.txt")).count()));
+                    } catch (IOException ex) {
+                        TeamSpeakUtils.error(ex);
+                    }
+                } else if(args[0].equalsIgnoreCase("!socialspy")) {
                     if (c.isInServerGroup(6) || c.isInServerGroup(16)) {
                         if (socialspy.containsKey(c.getUniqueIdentifier())){
                             socialspy.remove(c.getUniqueIdentifier());
@@ -1030,14 +1047,15 @@ public class ChatEvent extends TS3EventAdapter {
                                     if (System.currentTimeMillis() > ux.getMute()) {
                                         if (!x.isInServerGroup(115)) {
                                             if (ux.getChannels().contains(u.getSelect())) {
-                                                if (!x.getNickname().equals(c.getNickname())) {
+                                                //if (!x.getNickname().equals(c.getNickname())) {
                                                     TeamSpeakUtils.api.sendPrivateMessage(x.getId(), parse.replace("@" + x.getNickname(), "[b][color=orange]@" + x.getNickname() + "[/color][/b]").replace(":shrug:", "¯\\_(ツ)_/¯").replace(":lenny:", "( ͡° ͜ʖ ͡°)").replace(":take:", "༼ つ ◕_◕ ༽つ").replace(":dolar:", "[̲̅$̲̅(̲̅5̲̅)̲̅$̲̅]").replace(":lennydolar:", "[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]").replace("<3", "[b][color=red]❤[/color][/b]").replace("@Everyone", (everyone(message, c, x) + "[/b][/color]")));
-                                                }
+                                                //}
                                             }
                                         }
                                     }
                                 }
                             });
+
                             MessageUtils.saveMessageToFile(c, u, message.replace(":shrug:", "¯\\_(ツ)_/¯").replace(":lenny:", "( ͡° ͜ʖ ͡°)").replace(":take:", "༼ つ ◕_◕ ༽つ").replace(":dolar:", "[̲̅$̲̅(̲̅5̲̅)̲̅$̲̅]").replace(":lennydolar:", "[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]").replace("<3", "[b][color=red]❤[/color][/b]"), new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
                         }else{
                             TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Musisz być zarejestrowany!");

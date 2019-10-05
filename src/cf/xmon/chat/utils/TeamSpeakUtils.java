@@ -43,6 +43,11 @@ public class TeamSpeakUtils {
         TeamSpeakUtils.api.addTS3Listeners(new ChatEvent());
         TeamSpeakUtils.api.addTS3Listeners(new JoinEvent());
     }
+    public static String getTimeFromLong(Long time){
+        Date d = new Date(time);
+        SimpleDateFormat df2 = new SimpleDateFormat("HH:mm:ss");
+        return df2.format(d);
+    }
     public static void error (Exception e){
         final SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         final Date now = new Date();
