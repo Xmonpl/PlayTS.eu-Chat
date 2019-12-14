@@ -7,7 +7,6 @@ import cf.xmon.chat.events.JoinEvent;
 import com.github.theholywaffle.teamspeak3.TS3Api;
 import com.github.theholywaffle.teamspeak3.TS3Config;
 import com.github.theholywaffle.teamspeak3.TS3Query;
-import com.github.theholywaffle.teamspeak3.api.event.TS3EventType;
 import com.github.theholywaffle.teamspeak3.api.reconnect.ConnectionHandler;
 import com.github.theholywaffle.teamspeak3.api.reconnect.ReconnectStrategy;
 import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
@@ -58,8 +57,7 @@ public class TeamSpeakUtils {
         ts3Api.login(c.getInstance().getQueryLogin(), c.getInstance().getPassword());
         ts3Api.selectVirtualServerByPort(9987,"Chat");
         ts3Api.moveClient(ts3Api.whoAmI().getId(), 1216);
-        query.getApi().registerEvent(TS3EventType.TEXT_PRIVATE);
-        query.getApi().registerEvent(TS3EventType.SERVER);
+        ts3Api.registerAllEvents();
     }
     /*
     public static void TeamSpeakConnect(@NotNull String queryip, @NotNull int queryport, @NotNull boolean debug, @NotNull String querylogin, @NotNull String querypassword, @NotNull int virtualserverid) {

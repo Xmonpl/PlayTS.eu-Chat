@@ -29,9 +29,9 @@ public class User {
     }
 
     public User(String uuid){
-        this.name = TeamSpeakUtils.api.getClientByUId(uuid).getNickname().replace("')", "").replace("\")", "").replace("\\\\", "").replace("Ctrl+Z", "").replace("DROP DATABASE", "");
+        this.name = TeamSpeakUtils.query.getApi().getClientByUId(uuid).getNickname().replace("')", "").replace("\")", "").replace("\\\\", "").replace("Ctrl+Z", "").replace("DROP DATABASE", "");
         this.uuid = uuid;
-        this.dbid = TeamSpeakUtils.api.getClientByUId(uuid).getDatabaseId();
+        this.dbid =  TeamSpeakUtils.query.getApi().getClientByUId(uuid).getDatabaseId();
         this.select = "playts";
         this.channels = "playts@";
         this.color = "null";
