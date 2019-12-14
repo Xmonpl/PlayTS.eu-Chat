@@ -24,12 +24,12 @@ public class JackPotTask {
                 if (ChatEvent.jackpot != null){
                     if (ChatEvent.jackpot.size() == 1){
                         if (timetoEnd == 3) {
-                            TeamSpeakUtils.api.getClients().forEach(x ->{
+                            TeamSpeakUtils.query.getApi().getClients().forEach(x ->{
                                 if (x.isRegularClient()) {
                                     User ux = UserUtils.get(x);
                                     if (ux.getChannels().toLowerCase().contains("gaming")) {
                                         if (System.currentTimeMillis() > ux.getMute()) {
-                                            TeamSpeakUtils.api.sendPrivateMessage(x.getId(), "[b][color=gray][[color=gold]JACKPOT[color=gray]] [color=red]Przepraszamy, nikt nie dołączył do puli. Pięniądze wróciły do ");
+                                            TeamSpeakUtils.query.getApi().sendPrivateMessage(x.getId(), "[b][color=gray][[color=gold]JACKPOT[color=gray]] [color=red]Przepraszamy, nikt nie dołączył do puli. Pięniądze wróciły do ");
                                         }
                                     }
                                 }
@@ -56,12 +56,12 @@ public class JackPotTask {
                             Client win = winnerList.get(ii);
                             User u = UserUtils.get(win);
                             u.setMoney(u.getMoney() + ChatEvent.jackpotKwota);
-                            TeamSpeakUtils.api.getClients().forEach(x ->{
+                            TeamSpeakUtils.query.getApi().getClients().forEach(x ->{
                                 if (x.isRegularClient()) {
                                     User ux = UserUtils.get(x);
                                     if (ux.getChannels().toLowerCase().contains("gaming")) {
                                         if (System.currentTimeMillis() > ux.getMute()) {
-                                            TeamSpeakUtils.api.sendPrivateMessage(x.getId(), "[b][color=gray][[color=gold]JACKPOT[color=gray]] [color=green]Szcześliwym zwycieżcą puli o łącznej wartości " + ChatEvent.jackpotKwota + "$ jest " + win.getNickname());
+                                            TeamSpeakUtils.query.getApi().sendPrivateMessage(x.getId(), "[b][color=gray][[color=gold]JACKPOT[color=gray]] [color=green]Szcześliwym zwycieżcą puli o łącznej wartości " + ChatEvent.jackpotKwota + "$ jest " + win.getNickname());
                                         }
                                     }
                                 }

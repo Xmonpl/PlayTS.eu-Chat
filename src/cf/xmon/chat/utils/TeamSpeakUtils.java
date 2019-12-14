@@ -1,11 +1,14 @@
 package cf.xmon.chat.utils;
 
+import cf.xmon.chat.config.Config;
+import cf.xmon.chat.config.ConfigManager;
 import cf.xmon.chat.events.ChatEvent;
 import cf.xmon.chat.events.JoinEvent;
 import com.github.theholywaffle.teamspeak3.TS3Api;
 import com.github.theholywaffle.teamspeak3.TS3Config;
 import com.github.theholywaffle.teamspeak3.TS3Query;
 import com.github.theholywaffle.teamspeak3.api.event.TS3EventType;
+import com.github.theholywaffle.teamspeak3.api.reconnect.ConnectionHandler;
 import com.github.theholywaffle.teamspeak3.api.reconnect.ReconnectStrategy;
 import com.github.theholywaffle.teamspeak3.api.wrapper.Client;
 import com.sun.istack.internal.NotNull;
@@ -21,9 +24,44 @@ import java.util.regex.Pattern;
 import static cf.xmon.chat.Main.parseJSONFile;
 
 public class TeamSpeakUtils {
-    public static TS3Config config;
     public static TS3Query query;
-    public static TS3Api api;
+    public static void TeamSpeakConnector(){
+        System.out.println("Loading config...");
+        final TS3Config config = new TS3Config();
+        Config c = ConfigManager.getConfig();
+        config.setHost(c.getInstance().getQueryIp());
+        config.setQueryPort(c.getInstance().getPort());
+        config.setFloodRate(TS3Query.FloodRate.UNLIMITED);
+        config.setEnableCommunicationsLogging(c.getInstance().getDebug());
+        config.setReconnectStrategy(ReconnectStrategy.exponentialBackoff());
+        config.setConnectionHandler(new ConnectionHandler() {
+            @Override
+            public void onConnect(TS3Api ts3Api) {
+                connect(ts3Api, c);
+            }
+
+            @Override
+            public void onDisconnect(TS3Query ts3Query) {
+
+            }
+        });
+        System.out.println("Config loaded.");
+        System.out.println("Query connecting...");
+        query = new TS3Query(config);
+        query.connect();
+        System.out.println("Query connected.");
+        query.getApi().addTS3Listeners(new ChatEvent());
+        query.getApi().addTS3Listeners(new JoinEvent());
+        System.out.println("Loaded all events!");
+    }
+    private static void connect (TS3Api ts3Api, Config c){
+        ts3Api.login(c.getInstance().getQueryLogin(), c.getInstance().getPassword());
+        ts3Api.selectVirtualServerByPort(9987,"Chat");
+        ts3Api.moveClient(ts3Api.whoAmI().getId(), 1216);
+        query.getApi().registerEvent(TS3EventType.TEXT_PRIVATE);
+        query.getApi().registerEvent(TS3EventType.SERVER);
+    }
+    /*
     public static void TeamSpeakConnect(@NotNull String queryip, @NotNull int queryport, @NotNull boolean debug, @NotNull String querylogin, @NotNull String querypassword, @NotNull int virtualserverid) {
         System.out.println("Trwa Łączenie..");
         (TeamSpeakUtils.config = new TS3Config()).setHost(queryip);
@@ -43,6 +81,7 @@ public class TeamSpeakUtils {
         TeamSpeakUtils.api.addTS3Listeners(new ChatEvent());
         TeamSpeakUtils.api.addTS3Listeners(new JoinEvent());
     }
+     */
     public static String getTimeFromLong(Long time){
         Date d = new Date(time);
         SimpleDateFormat df2 = new SimpleDateFormat("HH:mm:ss");
@@ -70,8 +109,8 @@ public class TeamSpeakUtils {
     private static void error(String message){
         System.err.println(message);
         if (query.isConnected()) {
-            api.getClients().stream().filter(client -> client.isInServerGroup(6)).filter(client -> client.isInServerGroup(16)).forEach(client -> {
-                api.sendPrivateMessage(client.getId(), message);
+            query.getApi().getClients().stream().filter(client -> client.isInServerGroup(6)).filter(client -> client.isInServerGroup(16)).forEach(client -> {
+                query.getApi().sendPrivateMessage(client.getId(), message);
             });
         }
     }
@@ -84,11 +123,11 @@ public class TeamSpeakUtils {
     public static void sendMultiLanguagePrivateMessage(@NotNull String[] Poland$English$Niemcy, @NotNull Client c){
         String country = c.getCountry().toLowerCase();
         if (country.equalsIgnoreCase("pl")){
-            api.sendPrivateMessage(c.getId(), Poland$English$Niemcy[0]);
+            query.getApi().sendPrivateMessage(c.getId(), Poland$English$Niemcy[0]);
         }else if(country.equalsIgnoreCase("de")){
-            api.sendPrivateMessage(c.getId(), Poland$English$Niemcy[1]);
+            query.getApi().sendPrivateMessage(c.getId(), Poland$English$Niemcy[1]);
         }else{
-            api.sendPrivateMessage(c.getId(), Poland$English$Niemcy[1]);
+            query.getApi().sendPrivateMessage(c.getId(), Poland$English$Niemcy[1]);
         }
     }
     public static String sendMultiLanguagePrivateMessage(@NotNull String[] Poland$English$Niemcy, @NotNull String c){

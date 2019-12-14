@@ -83,14 +83,15 @@ public class ChatEvent extends TS3EventAdapter {
     static {
         URL_PATTERN = Pattern.compile("(.*(www\\.|http://|https://|ftp://).*|.*\\.(com|pl|eu|org|net|yt|tk|ga|cf|me|ml|gq|xyz|online).*)");
         IPPATTERN = Pattern.compile("^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
-        BANNED_WORDS = Pattern.compile("(.*chuj.*|.*huj.*|.*cip.*|.*j[e3]b[aicny4].*|.*pi[e3]prz[oyan].*|.*p[i1l|][e3]rd[aoz4].*|.*[kq]urw.*|.*kurews.*|.*qrwa.*|.*kut[a4]s.*|.*m[a4]tk[o0]j[e3]bc.*|.*p[i1l|]zd.*|.*piczka.*|.*poj[e3]b.*|.*suk[i1l|]nsy.*|.*sraj.*|.*ssij.*|.*gn[o0]ju.*|.*lamus.*|.*pipa.*|.*dupa.*|.*rucha.*|.*szm[a4]ta.*|.*suka.*|.*d[i1l|]ld[o0].*|.*n[i!1]g+er.*|.*[a@]dolf.*|.*h[i!1][dt]+l(er|a).*|.*n[a@]+z[i!1].*|.*wi(chs|x+)(er|a).*|.*(hure|schlampe|fotze|卍|卐|spast).*|.*([█▄▀►◄▲▼◣◢■▌▐▬])\\1{5}.*)");
+       //BANNED_WORDS = Pattern.compile("(.*chuj.*|.*huj.*|.*cip.*|.*j[e3]b[aicny4].*|.*pi[e3]prz[oyan].*|.*p[i1l|][e3]rd[aoz4].*|.*[kq]urw.*|.*kurews.*|.*qrwa.*|.*kut[a4]s.*|.*m[a4]tk[o0]j[e3]bc.*|.*p[i1l|]zd.*|.*piczka.*|.*poj[e3]b.*|.*suk[i1l|]nsy.*|.*sraj.*|.*ssij.*|.*gn[o0]ju.*|.*lamus.*|.*pipa.*|.*dupa.*|.*rucha.*|.*szm[a4]ta.*|.*suka.*|.*d[i1l|]ld[o0].*|.*n[i!1]g+er.*|.*[a@]dolf.*|.*h[i!1][dt]+l(er|a).*|.*n[a@]+z[i!1].*|.*wi(chs|x+)(er|a).*|.*(hure|schlampe|fotze|卍|卐|spast).*|.*([█▄▀►◄▲▼◣◢■▌▐▬])\\1{5}.*)");
+        BANNED_WORDS = Pattern.compile("(.*[kq][uó]rw.*|.*kurews.*|.*kurestw.*|.*qrwa.*|.*h[uó]j.*|.*cip[aąeęi].*|.*kut[a4]s.*|.*j[e3]b[aicny4].*|.*pi[e3]prz[oyan].*|.*p[i1l|][e3]rd[aoz4].*|.*m[a4]tk[o0]j[e3]bc.*|.*p[i1l|][zź]d.*|.*piczka.*|.*poj[e3]b.*|.*suk[i1l|]nsy.*|.*sra[jcćm].*|.*zasranym.*|.*ssij.*|.*gn[o0]ju.*|.*pipa.*|.*dup[ai].*|.*rucha.*|.*szm[a4]ta.*|.*suka.*|.*d[i1l|]ld[o0].*|.*n[i!1]g+er.*|.*[a@]dolf.*|.*h[i!1][dt]+l(er|a).*|.*n[a@]+z[i!1].*|.*wi(chs|x+)(er|a).*|.*(hure|schlampe|fotze|卍|卐|spast).*)");
         uppercase = Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$");
     }
 
     @Override
     public void onTextMessage(@NotNull TextMessageEvent e){
         if(!e.getInvokerName().equals("Chat")) {
-            Client c = TeamSpeakUtils.api.getClientInfo(e.getInvokerId());
+            Client c = TeamSpeakUtils.query.getApi().getClientInfo(e.getInvokerId());
             if (c.isRegularClient()) {
                 User u = UserUtils.get(c.getUniqueIdentifier());
                 String message = e.getMessage();
@@ -105,16 +106,16 @@ public class ChatEvent extends TS3EventAdapter {
                 if (!(c.isInServerGroup(6) || c.isInServerGroup(16))) {
                     slowdown.put(c.getUniqueIdentifier(), System.currentTimeMillis());
                 }
-                TeamSpeakUtils.api.getClients().forEach(admins ->{
+                TeamSpeakUtils.query.getApi().getClients().forEach(admins ->{
                     if (admins.isInServerGroup(16) || admins.isInServerGroup(6)) {
                         if (socialspy.containsKey(admins.getUniqueIdentifier())) {
-                            TeamSpeakUtils.api.sendPrivateMessage(admins.getId(), "[b][color=gray][[color=gold]SS[color=gray]] [color=orange][url=" + c.getClientURI() + "]" + c.getNickname() + "[/url]: " + message);
+                            TeamSpeakUtils.query.getApi().sendPrivateMessage(admins.getId(), "[b][color=gray][[color=gold]SS[color=gray]] [color=orange][url=" + c.getClientURI() + "]" + c.getNickname() + "[/url]: " + message);
                         }
                     }
                 });
                 System.out.println(c.getNickname() + " - " + message);
                 if ((message.toString().toLowerCase().contains("\u2067") || message.toString().toLowerCase().contains("\u2068"))){
-                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Nie jestem idiotą ~Xmon");
+                    TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "Nie jestem idiotą ~Xmon");
                     return;
                 }
                 /*
@@ -146,7 +147,7 @@ public class ChatEvent extends TS3EventAdapter {
                                         MessageUtils.reverseList(s).forEach(x -> {
                                             sb.append(x);
                                         });
-                                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "\n" + sb.toString());
+                                        TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "\n" + sb.toString());
                                     } else {
                                         TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Nie możesz dołączyć do kanału #" + args[1].toLowerCase().replace("#", "") + ".", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]You can not join the channel #" + args[1].toLowerCase().replace("#", "") + ".", "brak"}, c);
                                     }
@@ -163,26 +164,26 @@ public class ChatEvent extends TS3EventAdapter {
                 }else if(args[0].equalsIgnoreCase("!admincoin")){
                     if (c.isInServerGroup(6) || c.isInServerGroup(16)) {
                         if (args.length == 1) {
-                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !admincoin <uid> <kwota>");
+                            TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !admincoin <uid> <kwota>");
                         }else if (args.length == 3){
                             try {
                                 Integer kwota = Integer.parseInt(args[2]);
                                 User add = UserUtils.get(args[1]);
                                 add.setMoney(add.getMoney() + kwota);
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), ":)");
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), ":)");
                             }catch (NumberFormatException ex){
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !admincoin <uid> <kwota>");
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !admincoin <uid> <kwota>");
                             }
                         }else{
-                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !admincoin <uid> <kwota>");
+                            TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !admincoin <uid> <kwota>");
                         }
                     }else{
-                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Nie jesteś moim szefem! 🤓");
+                        TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "Nie jesteś moim szefem! 🤓");
                     }
                 } else if(args[0].equalsIgnoreCase("!info")){
                     if (c.isInServerGroup(6) || c.isInServerGroup(16)) {
                         if (args.length == 1) {
-                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !info <uid/nick>");
+                            TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !info <uid/nick>");
                         } else {
                             StringBuilder sb = new StringBuilder();
                             if (args.length == 2){
@@ -194,39 +195,39 @@ public class ChatEvent extends TS3EventAdapter {
                             }
                             User info = UserUtils.getUserByNickName(sb.toString());
                             if (info != null){
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), info.toString());
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), info.toString());
                             }else{
-                                //Client inf = TeamSpeakUtils.api.getClientByNameExact(sb.toString(), false);
-                                TeamSpeakUtils.api.getDatabaseClients().stream().filter(user -> user.getNickname().contains(sb.toString())).forEach(x ->{
+                                //Client inf = TeamSpeakUtils.query.getApi().getClientByNameExact(sb.toString(), false);
+                                TeamSpeakUtils.query.getApi().getDatabaseClients().stream().filter(user -> user.getNickname().contains(sb.toString())).forEach(x ->{
                                     if (x == null){
-                                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Brak użytkownika w bazie.");
+                                        TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "Brak użytkownika w bazie.");
                                         return;
                                     }else{
-                                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), UserUtils.get(x.getUniqueIdentifier()).toString());
+                                        TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), UserUtils.get(x.getUniqueIdentifier()).toString());
                                     }
                                 });
                             }
                         }
                     }else{
-                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Nie jesteś moim szefem! 🤓");
+                        TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "Nie jesteś moim szefem! 🤓");
                     }
                 } else if(args[0].equalsIgnoreCase("!ruletka")|| args[0].equalsIgnoreCase("!roullete")){
                     if (args.length == 1) {
-                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !ruletka <black/red/green> <kwota>");
+                        TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !ruletka <black/red/green> <kwota>");
                     }else if(args.length == 3){
                         if (args[1].equalsIgnoreCase("black") || args[1].equalsIgnoreCase("red") || args[1].equalsIgnoreCase("green")){
                             try {
                                 Integer kwota = Integer.parseInt(args[2]);
                                 if (kwota > u.getMoney()){
-                                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Nie posiadasz wystarczającej ilości środków!");
+                                    TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Nie posiadasz wystarczającej ilości środków!");
                                     return;
                                 }
                                 if (kwota.toString().contains("-") || kwota.toString().contains("+") || kwota.toString().contains("*") || kwota.toString().contains(":")){
-                                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Sugaros już przetestował, nie musisz tego testować ;)");
+                                    TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Sugaros już przetestował, nie musisz tego testować ;)");
                                     return;
                                 }
                                 if (kwota < 1000){
-                                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Zbyt mała kwota. (min. 1000$)");
+                                    TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Zbyt mała kwota. (min. 1000$)");
                                     return;
                                 }
                                 String kolor = args[1].toLowerCase();
@@ -240,7 +241,7 @@ public class ChatEvent extends TS3EventAdapter {
                                         kod = "[color=red]Niestety, przegrałeś/aś " + kwota + "$, kwota została odjęta z twojego konta bankowego. (!stankonta)";
                                     }
                                     //green
-                                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), ("[b][color=red]Ruletka: " + kod + "\n" +
+                                    TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), ("[b][color=red]Ruletka: " + kod + "\n" +
                                             " ----\n" +
                                             " | [color={COLOR1}]⬤[/color] |\n" +
                                             " | [color={COLOR2}]⬤[/color] |\n" +
@@ -259,7 +260,7 @@ public class ChatEvent extends TS3EventAdapter {
                                         kod = "[color=red]Niestety, przegrałeś/aś " + kwota + "$, kwota została odjęta z twojego konta bankowego. (!stankonta)";
                                     }
                                     //red
-                                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), ("[b][color=red]Ruletka: " + kod + "\n" +
+                                    TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), ("[b][color=red]Ruletka: " + kod + "\n" +
                                             " ----\n" +
                                             " | [color={COLOR1}]⬤[/color] |\n" +
                                             " | [color={COLOR2}]⬤[/color] |\n" +
@@ -277,7 +278,7 @@ public class ChatEvent extends TS3EventAdapter {
                                         kod = "[color=red]Niestety, przegrałeś/aś " + kwota + "$, kwota została odjęta z twojego konta bankowego. (!stankonta)";
                                     }
                                     //black
-                                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), ("[b][color=red]Ruletka: " + kod + "\n" +
+                                    TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), ("[b][color=red]Ruletka: " + kod + "\n" +
                                             " ----\n" +
                                             " | [color={COLOR1}]⬤[/color] |\n" +
                                             " | [color={COLOR2}]⬤[/color] |\n" +
@@ -289,13 +290,13 @@ public class ChatEvent extends TS3EventAdapter {
                                             " ----").replace("{COLOR1}", rouletteColors[RandomUtil.getNextInt(rouletteColors.length)]).replace("{COLOR2}", rouletteColors[RandomUtil.getNextInt(rouletteColors.length)]).replace("{COLOR3}", rouletteColors[RandomUtil.getNextInt(rouletteColors.length)]).replace("{COLOR4}", rouletteColors[RandomUtil.getNextInt(rouletteColors.length)]).replace("{COLOR5}", rouletteColors[RandomUtil.getNextInt(rouletteColors.length)]).replace("{COLOR6}", rouletteColors[RandomUtil.getNextInt(rouletteColors.length)]));
                                 }
                             }catch (NumberFormatException ex){
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !ruletka <black/red/green> <kwota>");
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !ruletka <black/red/green> <kwota>");
                             }
                         }else{
-                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !ruletka <black/red/green> <kwota>");
+                            TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !ruletka <black/red/green> <kwota>");
                         }
                     }else{
-                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !ruletka <black/red/green> <kwota>");
+                        TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !ruletka <black/red/green> <kwota>");
                     }
                 } else if(args[0].equalsIgnoreCase("!topka")|| args[0].equalsIgnoreCase("!top")|| args[0].equalsIgnoreCase("!leaderboard")){
                     try {
@@ -322,54 +323,54 @@ public class ChatEvent extends TS3EventAdapter {
                             }
                         }
                         rs.close();
-                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), sb.toString());
+                        TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), sb.toString());
                     } catch (Exception ex) {
                         TeamSpeakUtils.error(ex);
                     }
                 } else if(args[0].equalsIgnoreCase("!stankonta")|| args[0].equalsIgnoreCase("!balance") || args[0].equalsIgnoreCase("!bal") || args[0].equalsIgnoreCase("!money")){
-                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=orange][b]Twój aktualny stan konta wynosi: [color=red]" + u.getMoney() + "$");
+                    TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=orange][b]Twój aktualny stan konta wynosi: [color=red]" + u.getMoney() + "$");
                 }else if(args[0].equalsIgnoreCase("!przelej")){
                     if (args.length == 1) {
-                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !przelej <kwota> <nick>");
+                        TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !przelej <kwota> <nick>");
                     }else if(args.length >= 3){
                         try {
                             Integer kwota = Integer.parseInt(args[1]);
                             if (kwota > u.getMoney()){
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Nie posiadasz wystarczającej ilości środków!");
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Nie posiadasz wystarczającej ilości środków!");
                                 return;
                             }
                             if (kwota.toString().contains("-") || kwota.toString().contains("+") || kwota.toString().contains("*") || kwota.toString().contains(":")){
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Sugaros już przetestował, nie musisz tego testować ;)");
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Sugaros już przetestował, nie musisz tego testować ;)");
                                 return;
                             }
                             if (kwota < 1000){
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Zbyt mała kwota przelewu. (min. 1000$)");
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Zbyt mała kwota przelewu. (min. 1000$)");
                                 return;
                             }
-                            Client send = TeamSpeakUtils.api.getClientByNameExact(message.replace(args[0] + " " + args[1] + " ", ""), false);
+                            Client send = TeamSpeakUtils.query.getApi().getClientByNameExact(message.replace(args[0] + " " + args[1] + " ", ""), false);
                             if (send != null){
                                 if (!c.getNickname().equals(send.getNickname())) {
                                     User sendto = UserUtils.get(send.getUniqueIdentifier());
                                     u.setMoney(u.getMoney() - kwota);
                                     sendto.setMoney(sendto.getMoney() + kwota);
-                                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[b][color=green]Pięniądze w wysokości " + kwota + "$ zostały przelane do [url=" + send.getClientURI() + "]" + send.getNickname() + "[/url]");
-                                    TeamSpeakUtils.api.sendPrivateMessage(send.getId(), "[b][color=green]Dostałeś/aś pięniądze w wysokości " + kwota + "$ od [url=" + c.getClientURI() + "]" + c.getNickname() + "[/url]");
+                                    TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[b][color=green]Pięniądze w wysokości " + kwota + "$ zostały przelane do [url=" + send.getClientURI() + "]" + send.getNickname() + "[/url]");
+                                    TeamSpeakUtils.query.getApi().sendPrivateMessage(send.getId(), "[b][color=green]Dostałeś/aś pięniądze w wysokości " + kwota + "$ od [url=" + c.getClientURI() + "]" + c.getNickname() + "[/url]");
                                 }else{
-                                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Nie możesz przelać pieniędzy sam do siebie!");
+                                    TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Nie możesz przelać pieniędzy sam do siebie!");
                                 }
                             }else{
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Czy napewno wpisałeś/aś poprawny nick?");
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Czy napewno wpisałeś/aś poprawny nick?");
                             }
                         }catch (NumberFormatException ex){
-                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !przelej <kwota> <nick>");
+                            TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !przelej <kwota> <nick>");
                         }
                     }else{
-                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !przelej <kwota> <nick>");
+                        TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !przelej <kwota> <nick>");
                     }
                 } else if(args[0].equalsIgnoreCase("!crime")){
                     if (crimeTime.containsKey(c.getUniqueIdentifier()) && !TeamSpeakUtils.canUse(crimeTime.get(c.getUniqueIdentifier()), 900 * 1000)) {
                         String time = Long.toString(900 - TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - crimeTime.get(c.getUniqueIdentifier())));
-                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Jesteś poszukiwany/na, następną pracę będziesz mógł/mogła wykonać za " + time + " sekund");
+                        TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Jesteś poszukiwany/na, następną pracę będziesz mógł/mogła wykonać za " + time + " sekund");
                         return;
                     }
                     crimeTime.put(c.getUniqueIdentifier(), System.currentTimeMillis());
@@ -380,27 +381,27 @@ public class ChatEvent extends TS3EventAdapter {
                     }else{
                         u.setMoney(u.getMoney() + money);
                     }
-                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[b][color=green]" + msg.replace("{BADMONEY}", String.valueOf(money)).replace("{MONEY}", String.valueOf(money)));
+                    TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[b][color=green]" + msg.replace("{BADMONEY}", String.valueOf(money)).replace("{MONEY}", String.valueOf(money)));
                 }else if(args[0].equalsIgnoreCase("!jackpot")){
                     if (args.length == 1) {
-                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !jackpot <kwota>");
+                        TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !jackpot <kwota>");
                     }else if(args.length == 2){
                         try{
                             Integer kwota = Integer.parseInt(args[1]);
                             if (kwota > u.getMoney()){
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Nie posiadasz wystarczającej ilości środków!");
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Nie posiadasz wystarczającej ilości środków!");
                                 return;
                             }
                             if (kwota.toString().contains("-") || kwota.toString().contains("+") || kwota.toString().contains("*") || kwota.toString().contains(":")){
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Sugaros już przetestował, nie musisz tego testować ;)");
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Sugaros już przetestował, nie musisz tego testować ;)");
                                 return;
                             }
                             if (kwota < 1000){
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Zbyt mała kwota przelewu. (min. 1000$)");
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Zbyt mała kwota przelewu. (min. 1000$)");
                                 return;
                             }
                             if (!u.getChannels().toLowerCase().contains("gaming")){
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Aby grać wymagane jest dołączenie do kanału #gaming (!join gaming   i następnie      #gry)");
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Aby grać wymagane jest dołączenie do kanału #gaming (!join gaming   i następnie      #gry)");
                                 return;
                             }
                             if (jackpot.size() == 0){
@@ -409,36 +410,36 @@ public class ChatEvent extends TS3EventAdapter {
                             jackpot.put(c, kwota);
                             jackpotKwota += kwota;
                             u.setMoney(u.getMoney() - kwota);
-                            TeamSpeakUtils.api.getClients().forEach(x ->{
+                            TeamSpeakUtils.query.getApi().getClients().forEach(x ->{
                                 User ux = UserUtils.get(x);
                                 if (ux.getChannels().toLowerCase().contains("gaming")){
                                     if (System.currentTimeMillis() > ux.getMute()) {
-                                        TeamSpeakUtils.api.sendPrivateMessage(x.getId(), "[b][color=gray][[color=gold]JACKPOT[color=gray]] [color=red]UWAGA, [color=green]Użytkownik " + c.getNickname() + " dodał/a do puli " + kwota + "$. Łączna wartość puli wynosi " + jackpotKwota + "$");
+                                        TeamSpeakUtils.query.getApi().sendPrivateMessage(x.getId(), "[b][color=gray][[color=gold]JACKPOT[color=gray]] [color=red]UWAGA, [color=green]Użytkownik " + c.getNickname() + " dodał/a do puli " + kwota + "$. Łączna wartość puli wynosi " + jackpotKwota + "$");
                                     }
                                 }
                             });
                         }catch (NumberFormatException ex){
-                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !jackpot <kwota>");
+                            TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !jackpot <kwota>");
                         }
                     }else{
-                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !jackpot <kwota>");
+                        TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !jackpot <kwota>");
                     }
                 } else if(args[0].equalsIgnoreCase("!praca") || args[0].equalsIgnoreCase("!work")){
                     if (workTime.containsKey(c.getUniqueIdentifier()) && !TeamSpeakUtils.canUse(workTime.get(c.getUniqueIdentifier()), 300 * 1000)) {
                         String time = Long.toString(300 - TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - workTime.get(c.getUniqueIdentifier())));
-                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Jesteś zmęczony/na, następną pracę będziesz mógł/mogła wykonać za " + time + " sekund");
+                        TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Jesteś zmęczony/na, następną pracę będziesz mógł/mogła wykonać za " + time + " sekund");
                         return;
                     }
                     workTime.put(c.getUniqueIdentifier(), System.currentTimeMillis());
                     Integer money = RandomUtil.getRandInt(250, 2500);
                     u.setMoney(u.getMoney() + money);
-                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[b][color=green]" + workMessage[RandomUtil.getNextInt(workMessage.length)].replace("{MONEY}", String.valueOf(money)));
+                    TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[b][color=green]" + workMessage[RandomUtil.getNextInt(workMessage.length)].replace("{MONEY}", String.valueOf(money)));
                 } else if(args[0].equalsIgnoreCase("!bones") || args[0].equalsIgnoreCase("!kosci") || args[0].equalsIgnoreCase("!kostka") || args[0].equalsIgnoreCase("!kości")){
                     try {
                         Random rand = new Random();
                         if (args.length == 1) {
                             //zasady do gier w kości
-                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[b]Koścmi można grać w wiele gier jedną z nich jest poker oto jego zasady:\nNa start wybieramy osobę zaczynającą (zazwyczaj osoba która wygrała poprzednią gre). Osoba zaczynająca rzuca sześcioma kostkami, może rzucić jeszcze raz aby ułożyć odpowiednia figure.\n Kategoria „Małe figury” to:\n" +
+                            TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[b]Koścmi można grać w wiele gier jedną z nich jest poker oto jego zasady:\nNa start wybieramy osobę zaczynającą (zazwyczaj osoba która wygrała poprzednią gre). Osoba zaczynająca rzuca sześcioma kostkami, może rzucić jeszcze raz aby ułożyć odpowiednia figure.\n Kategoria „Małe figury” to:\n" +
                                     "\n" +
                                     "- „para” – dwie takie same kości, liczy się suma oczek z kości tworzących parę,\n" +
                                     "\n" +
@@ -462,7 +463,7 @@ public class ChatEvent extends TS3EventAdapter {
                         } else if (args.length == 2) {
                             int lkosci = Integer.parseInt(args[1]);
                             if (lkosci == 0 || lkosci > 16){
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]" + args[0] + " <liczba kości min. 1, max. 16>");
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]" + args[0] + " <liczba kości min. 1, max. 16>");
                                 return;
                             }
                             String ss = "";
@@ -484,32 +485,32 @@ public class ChatEvent extends TS3EventAdapter {
                                 TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Spróbuj jeszcze raz wybrać kanał oraz dołączyć do kanału, który wybrałeś/aś.", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]Try again to choose a channel and join the channel you have chosen.", "bral"}, c);
                                 return;
                             }
-                            TeamSpeakUtils.api.getClients().forEach(x ->{
+                            TeamSpeakUtils.query.getApi().getClients().forEach(x ->{
                                 if (x.isRegularClient()) {
                                     User ux = UserUtils.get(x);
                                     if (ux.getChannels().toLowerCase().contains("gaming")) {
                                         if (System.currentTimeMillis() > ux.getMute()) {
-                                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#FF008A][b](" + c.getNickname() + ") [color=violet]Kostki: [" + sb.toString() + "]");
+                                            TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#FF008A][b](" + c.getNickname() + ") [color=violet]Kostki: [" + sb.toString() + "]");
                                         }
                                     }
                                 }
                             });
                         } else {
-                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]" + args[0] + " <liczba kości>");
+                            TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]" + args[0] + " <liczba kości>");
                         }
                     }catch (NumberFormatException ex){
-                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]" + args[0] + " <liczba kości>");
+                        TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]" + args[0] + " <liczba kości>");
                     }
                 } else if(args[0].equalsIgnoreCase("!spin")){
                     if (args.length == 2) {
                         try {
                             Integer kwota = Integer.parseInt(args[1]);
                             if (kwota < 100){
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]!spin <kwota min. 100$>");
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]!spin <kwota min. 100$>");
                                 return;
                             }
                             if (kwota > u.getMoney()){
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Nie posiadasz wystarczającej ilości środków!");
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Nie posiadasz wystarczającej ilości środków!");
                                 return;
                             }
                             u.setMoney(u.getMoney() - kwota);
@@ -527,7 +528,7 @@ public class ChatEvent extends TS3EventAdapter {
                                     wygrana = kwota * 10;
                                 }
                                 u.setMoney(u.getMoney() + wygrana);
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=green][b]Linia: " + ala + " " + bob + " " + jacek + "\n Wygrałeś/aś: " + wygrana + "$");
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=green][b]Linia: " + ala + " " + bob + " " + jacek + "\n Wygrałeś/aś: " + wygrana + "$");
                             } else if (ala.equals(bob) || bob.equals(jacek)) {
                                 if (bob.equals("\uD83C\uDF52")) {
                                     wygrana = kwota * 5;
@@ -535,15 +536,15 @@ public class ChatEvent extends TS3EventAdapter {
                                     wygrana = kwota * 2;
                                 }
                                 u.setMoney(u.getMoney() + wygrana);
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=green][b]Para: " + ala + " " + bob + " " + jacek + "\n Wygrałeś/aś: " + wygrana + "$");
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=green][b]Para: " + ala + " " + bob + " " + jacek + "\n Wygrałeś/aś: " + wygrana + "$");
                             } else {
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=red][b]UnLucky: " + ala + " " + bob + " " + jacek + "\n Przegrałeś/aś: " + kwota + "$");
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=red][b]UnLucky: " + ala + " " + bob + " " + jacek + "\n Przegrałeś/aś: " + kwota + "$");
                             }
                         }catch (NumberFormatException ex){
-                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]!spin <kwota>");
+                            TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]!spin <kwota>");
                         }
                     }else{
-                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]!spin <kwota>");
+                        TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]!spin <kwota>");
                     }
                 } else if (args[0].equalsIgnoreCase("!gc")) {
                     if (c.isInServerGroup(6) || c.isInServerGroup(16) || c.isInServerGroup(17) || c.isInServerGroup(26) || c.isInServerGroup(75)) {
@@ -563,9 +564,9 @@ public class ChatEvent extends TS3EventAdapter {
                                 sb.append("  [color=gray]» [color=white]" + t.getName() + ": " + l + "%[/color]\n");
                             }
                         }
-                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "\n[color=gray]» [color=white]Maksymalny ram: [b]" + Runtime.getRuntime().maxMemory() / 1024L / 1024L + "MB[/b]\n[color=gray]» [color=white]Całkowity ram: [b]" + Runtime.getRuntime().totalMemory() / 1024L / 1024L + "MB[/b]\n[color=gray]» [color=white]Wolny ram: [b]" + Runtime.getRuntime().freeMemory() / 1024L / 1024L + "MB[/b]\n[color=gray]» [color=white]Wątki: [b]\n" + sb.toString());
+                        TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "\n[color=gray]» [color=white]Maksymalny ram: [b]" + Runtime.getRuntime().maxMemory() / 1024L / 1024L + "MB[/b]\n[color=gray]» [color=white]Całkowity ram: [b]" + Runtime.getRuntime().totalMemory() / 1024L / 1024L + "MB[/b]\n[color=gray]» [color=white]Wolny ram: [b]" + Runtime.getRuntime().freeMemory() / 1024L / 1024L + "MB[/b]\n[color=gray]» [color=white]Wątki: [b]\n" + sb.toString());
                     } else {
-                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Nie jesteś moim szefem! 🤓");
+                        TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "Nie jesteś moim szefem! 🤓");
                     }
                     /*
                         #kick command
@@ -577,20 +578,20 @@ public class ChatEvent extends TS3EventAdapter {
                                 String uuid = args[1].split("/")[3].replaceAll("~.+", "");
                                 User ua = UserUtils.get(uuid);
                                 u.setChannels(u.getChannels().replace(args[2].toLowerCase() + "@", ""));
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Użytkownik został wyrzucony!");
-                                if (TeamSpeakUtils.api.isClientOnline(ua.getUuid())) {
-                                    Client wyrzu = TeamSpeakUtils.api.getClientByUId(ua.getUuid());
-                                    TeamSpeakUtils.api.pokeClient(wyrzu.getId(), "[color=red][b]Zostałeś/aś wyrzucony/na z kanalu: #" + args[2].toLowerCase() + " przez: " + c.getNickname());
-                                    TeamSpeakUtils.api.pokeClient(wyrzu.getId(), "[color=red][b]Powód: " + SB(args, 3));
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "Użytkownik został wyrzucony!");
+                                if (TeamSpeakUtils.query.getApi().isClientOnline(ua.getUuid())) {
+                                    Client wyrzu = TeamSpeakUtils.query.getApi().getClientByUId(ua.getUuid());
+                                    TeamSpeakUtils.query.getApi().pokeClient(wyrzu.getId(), "[color=red][b]Zostałeś/aś wyrzucony/na z kanalu: #" + args[2].toLowerCase() + " przez: " + c.getNickname());
+                                    TeamSpeakUtils.query.getApi().pokeClient(wyrzu.getId(), "[color=red][b]Powód: " + SB(args, 3));
                                 }
                             } else {
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Taki kanał nie istnieje!");
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "Taki kanał nie istnieje!");
                             }
                         } else {
                             TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !kick <przenies klienta> <kanal> <powód>", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]Correct use: !kick <move client> <channel> <reason>", "brak"}, c);
                         }
                     } else {
-                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Nie jesteś moim szefem! 🤓");
+                        TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "Nie jesteś moim szefem! 🤓");
                     }
                 } else if (args[0].equalsIgnoreCase("!broadcast")) {
                     if (c.isInServerGroup(6) || c.isInServerGroup(16) || c.isInServerGroup(17)) {
@@ -601,32 +602,32 @@ public class ChatEvent extends TS3EventAdapter {
                             }
                             String write = "Wiadomosc od [url=" + c.getClientURI() + "]" + c.getNickname() + "[/url] o treści: " + sb.toString();
                             if (args[1].equalsIgnoreCase("all")) {
-                                TeamSpeakUtils.api.getClients().forEach(y -> {
-                                    TeamSpeakUtils.api.sendPrivateMessage(y.getId(), "\n\uD83D\uDCAC [color=#5e6165]" + MessageUtils.getTime() + "[/color][b] ⚙️\"[color=#2580c3]Chat[/color]\": " + write);
+                                TeamSpeakUtils.query.getApi().getClients().forEach(y -> {
+                                    TeamSpeakUtils.query.getApi().sendPrivateMessage(y.getId(), "\n\uD83D\uDCAC [color=#5e6165]" + MessageUtils.getTime() + "[/color][b] ⚙️\"[color=#2580c3]Chat[/color]\": " + write);
                                 });
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Wiadomość została pomyślnie wysłana do wszystkich osób!");
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "Wiadomość została pomyślnie wysłana do wszystkich osób!");
                             } else if (args[1].equalsIgnoreCase("mute")) {
-                                TeamSpeakUtils.api.getClients().forEach(y -> {
+                                TeamSpeakUtils.query.getApi().getClients().forEach(y -> {
                                     User ubroad = UserUtils.get(y.getUniqueIdentifier());
                                     if (ubroad.getChannels().equals("@") || ubroad.getMute() > System.currentTimeMillis()) {
-                                        TeamSpeakUtils.api.sendPrivateMessage(y.getId(), "\n\uD83D\uDCAC [color=#5e6165]" + MessageUtils.getTime() + "[/color][b] ⚙️\"[color=#2580c3]Chat[/color]\": " + write);
+                                        TeamSpeakUtils.query.getApi().sendPrivateMessage(y.getId(), "\n\uD83D\uDCAC [color=#5e6165]" + MessageUtils.getTime() + "[/color][b] ⚙️\"[color=#2580c3]Chat[/color]\": " + write);
                                     }
                                 });
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Wiadomość została pomyślnie wysłana do wszystkich osób, które mają wyciszony chat!");
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "Wiadomość została pomyślnie wysłana do wszystkich osób, które mają wyciszony chat!");
                             } else {
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "!broadcast <all/mute> <wiadomosć>");
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "!broadcast <all/mute> <wiadomosć>");
                             }
                         } else {
-                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "!broadcast <all/mute> <wiadomosć>");
+                            TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "!broadcast <all/mute> <wiadomosć>");
                         }
                     } else {
-                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Nie jesteś moim szefem! 🤓");
+                        TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "Nie jesteś moim szefem! 🤓");
                     }
                 }else if (args[0].equals("!admins")){
                     if (c.isInServerGroup(6) || c.isInServerGroup(16) || c.isInServerGroup(17) || c.isInServerGroup(26) || c.isInServerGroup(75)) {
-                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "\n [b]* Informacje *[/b]\n  Jak ktoś was pyta jak wyciszyć to gówno itd to przygotowałem dla was prostą formułkę. Oto ona: @<NICK TEJ OSOBY> Chat można wyciszyć na określony czas przy użyciu komendy !mute <czas np. 1m/1h/1d> lub na dłuższy czas przy użyciu komendy: !leave playts\n\n[b]* Komendy dla Administracji *[/b] \n  Nadanie timeouta - !timeout <uid (Skąd wziąc uid? https://xmon.cf/uploads/63qipr )> <czas (1m/1h/1d itd)>\n Odebranie timeouta - !timeout revoke <uid (Skąd wziąc uid? https://xmon.cf/uploads/63qipr )>\n [color=red]GDYBY z jakis nie przewidzianych przczyn bot przestał działać lub online by nie działał [b](Jak będziecie spamować tą komendą to zabije 🔪)[/b] - !botreload[/color]\n Nie polecam używać bez wiedzy - !slowdown <czas w sekundach np. 5/6/7>\n Tego również - !charlimit <ilość znaków podstaw. 140>\n Wydajność raczej was to nie dotyczy oraz nie interesuje ale napisze a kto mi zabroni 😂 - !gc\n PS. - Sory za błedy ale pisałem to na szybko ~Xmon 😍");
+                        TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "\n [b]* Informacje *[/b]\n  Jak ktoś was pyta jak wyciszyć to gówno itd to przygotowałem dla was prostą formułkę. Oto ona: @<NICK TEJ OSOBY> Chat można wyciszyć na określony czas przy użyciu komendy !mute <czas np. 1m/1h/1d> lub na dłuższy czas przy użyciu komendy: !leave playts\n\n[b]* Komendy dla Administracji *[/b] \n  Nadanie timeouta - !timeout <uid (Skąd wziąc uid? https://xmon.cf/uploads/63qipr )> <czas (1m/1h/1d itd)>\n Odebranie timeouta - !timeout revoke <uid (Skąd wziąc uid? https://xmon.cf/uploads/63qipr )>\n [color=red]GDYBY z jakis nie przewidzianych przczyn bot przestał działać lub online by nie działał [b](Jak będziecie spamować tą komendą to zabije 🔪)[/b] - !botreload[/color]\n Nie polecam używać bez wiedzy - !slowdown <czas w sekundach np. 5/6/7>\n Tego również - !charlimit <ilość znaków podstaw. 140>\n Wydajność raczej was to nie dotyczy oraz nie interesuje ale napisze a kto mi zabroni 😂 - !gc\n PS. - Sory za błedy ale pisałem to na szybko ~Xmon 😍");
                     }else{
-                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Nie jesteś moim szefem! 🤓");
+                        TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "Nie jesteś moim szefem! 🤓");
                     }
                 } else if (args[0].equalsIgnoreCase("!timeout")) {
                     if (args.length == 1) {
@@ -640,7 +641,7 @@ public class ChatEvent extends TS3EventAdapter {
                                     String uuid = args[2];
                                     User ua = UserUtils.get(uuid);
                                     ua.setTimeout(System.currentTimeMillis());
-                                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Użytkownik " + ua.getName() + " został odciszony!");
+                                    TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "Użytkownik " + ua.getName() + " został odciszony!");
                                 } else {
                                     TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !timeout revoke <przenies klienta>", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]Correct use: !timeout revoke <move client>", "brak"}, c);
                                 }
@@ -650,19 +651,19 @@ public class ChatEvent extends TS3EventAdapter {
                                         long czas = System.currentTimeMillis() + TeamSpeakUtils.getTimeWithString(args[2]);
                                         String uuid = args[1];
                                         if (uuid.equals("bu6qFc46PRdafcJCkXqLEJz506A=") || uuid.equals("S+S1H+IljnueogQZxSNdRROfiMk=")) {
-                                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "XD");
+                                            TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "XD");
                                         } else {
                                             User ua = UserUtils.get(uuid);
                                             ua.setTimeout(czas);
                                             JSONObject jsonObject = (JSONObject) parseJSONFile("channelconfig.json");
                                             String parse = MessageUtils.parserMessage("System", "[b][color=#00bcd4]Użytkownik " + ua.getName() + " został [color=#d50000]wyciszony[/color], do [B]" + TeamSpeakUtils.getDate(czas) + " przez [url=" + c.getClientURI() + "]" + c.getNickname() + "[/url]", new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
-                                            TeamSpeakUtils.api.getClients().forEach(x -> {
+                                            TeamSpeakUtils.query.getApi().getClients().forEach(x -> {
                                                 if (x.isRegularClient()) {
                                                     User ux = UserUtils.get(x.getUniqueIdentifier());
                                                     if (System.currentTimeMillis() > ux.getMute()) {
                                                         if (!x.isInServerGroup(115)) {
                                                             if (ux.getChannels().contains(u.getSelect())) {
-                                                                TeamSpeakUtils.api.sendPrivateMessage(x.getId(), parse);
+                                                                TeamSpeakUtils.query.getApi().sendPrivateMessage(x.getId(), parse);
                                                             }
                                                         }
                                                     }
@@ -678,7 +679,7 @@ public class ChatEvent extends TS3EventAdapter {
                                 }
                             }
                         } else {
-                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Nie jesteś moim szefem! 🤓");
+                            TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "Nie jesteś moim szefem! 🤓");
                         }
                     }
                 } else if (args[0].equalsIgnoreCase("!switch") || args[0].equalsIgnoreCase("!przelacz") || args[0].equalsIgnoreCase("!select") || args[0].equalsIgnoreCase("!schalter")) {
@@ -742,7 +743,7 @@ public class ChatEvent extends TS3EventAdapter {
                     }
                 } else if (args[0].equalsIgnoreCase("!botreload")) {
                     if (c.isInServerGroup(6) || c.isInServerGroup(16) || c.isInServerGroup(17) || c.isInServerGroup(26) || c.isInServerGroup(75)) {
-                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Może to troszkę potrwać.");
+                        TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "Może to troszkę potrwać.");
                         try {
                             Main.registerChannels();
                             Main.createFiles();
@@ -756,15 +757,15 @@ public class ChatEvent extends TS3EventAdapter {
                             OnlineTask.timer.cancel();
                             OnlineTask.timer.purge();
                             OnlineTask.update();
-                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Bot został zreloadowany!");
+                            TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "Bot został zreloadowany!");
                         } catch (Exception ex) {
                             TeamSpeakUtils.error(ex);
                         }
                     } else {
-                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Nie jesteś moim szefem! 🤓");
+                        TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "Nie jesteś moim szefem! 🤓");
                     }
                 } else if (args[0].equalsIgnoreCase("!botinfo") || args[0].equalsIgnoreCase("!info") || args[0].equalsIgnoreCase("!autor")) {
-                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[b][color=orange]Witaj 🖐\n Moim tatusiem jest Xmon, spędził nade mną wiele ciężkich godzin pracy oraz litry wypitych energetyków, abym działał doskonale. Zaprogramował mnie tak, aby przy tej komendzie wysłał link do jego githuba: [url=github.com/Xmonpl]github.com/Xmonpl[/url]");
+                    TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[b][color=orange]Witaj 🖐\n Moim tatusiem jest Xmon, spędził nade mną wiele ciężkich godzin pracy oraz litry wypitych energetyków, abym działał doskonale. Zaprogramował mnie tak, aby przy tej komendzie wysłał link do jego githuba: [url=github.com/Xmonpl]github.com/Xmonpl[/url]");
                 }else if (args[0].equalsIgnoreCase("!channels") || args[0].equalsIgnoreCase("!kanaly") || args[0].equalsIgnoreCase("!kanäle")) {
                     TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[b]Znaczek [[color=#00e676]✔[/color]] oznacza że już subskrybujesz ten kanał, natomiast [[color=#ff1744]✖[/color]] oznacza że nie subskrybujesz tego kanału. Podkreślony kanał to ten w którym obecnie rozmawiasz. Zmiana komendą !switch[/b]", "[b]Badge [[color=#00e676]✔[/color]] means that you've subscribed to this channel, but [[color=#ff1744]✖[/color]] means that you do not subscribe to this channel. The underlined channel is the one you are currently talking to. Change with the command !switch[/b]", "bral"}, c);
                     String s = "";
@@ -808,7 +809,7 @@ public class ChatEvent extends TS3EventAdapter {
                     if (args.length == 2) {
                         if (Main.channels.contains(args[1].replace("#", ""))) {
                             if (args[1].contains("staff")){
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Chciałoby się, nie? \uD83D\uDE18");
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "Chciałoby się, nie? \uD83D\uDE18");
                                 return;
                             }
                             if (u.getChannels().contains(args[1].replace("#", ""))) {
@@ -828,15 +829,15 @@ public class ChatEvent extends TS3EventAdapter {
                         if (args.length == 2) {
                             try {
                                 charlimit = Integer.parseInt(args[1]);
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Zmieniono charlimit na " + args[1] + " a dla rang premium " + Integer.parseInt(args[1]) * 2);
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "Zmieniono charlimit na " + args[1] + " a dla rang premium " + Integer.parseInt(args[1]) * 2);
                             } catch (NumberFormatException ee) {
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Argument[1] nie jest liczbą!");
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "Argument[1] nie jest liczbą!");
                             }
                         } else {
-                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=red]Blad! [color=pink]Poprawne użycie: !char <limit>");
+                            TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=red]Blad! [color=pink]Poprawne użycie: !char <limit>");
                         }
                     } else {
-                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Nie jesteś moim szefem! 🤓");
+                        TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "Nie jesteś moim szefem! 🤓");
                     }
                 }else if (args[0].equalsIgnoreCase("!mute") || args[0].equalsIgnoreCase("!zmutuj") || args[0].equalsIgnoreCase("!stumm")) {
                     if (args.length == 2) {
@@ -873,7 +874,7 @@ public class ChatEvent extends TS3EventAdapter {
                                     }
                                 }
                             } else {
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=red]Blad! [color=pink]Chciałoby się nie? 😪");
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=red]Blad! [color=pink]Chciałoby się nie? 😪");
                             }
                         } else {
                             TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !color <#ffffff>", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]Correct use: !color <#ffffff>", "brral"}, c);
@@ -886,10 +887,10 @@ public class ChatEvent extends TS3EventAdapter {
                         if (args.length == 2) {
                             if (args[1].equalsIgnoreCase("on")) {
                                 u.setColor("rainbow");
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[b][color=#24BACB]P[/color][color=#26EA70]o[/color][color=#BD5C64]m[/color][color=#F478B1]y[/color][color=#74CE81]ś[/color][color=#C1FB82]l[/color][color=#EFDA01]n[/color][color=#B7B465]i[/color][color=#E776CF]e[/color] [color=#E0BD82]w[/color][color=#CCDF8B]ł[/color][color=#FAB0DF]ą[/color][color=#31950E]c[/color][color=#4389DC]z[/color][color=#DBF6AB]y[/color][color=#731F47]ł[/color][color=#457ECE]e[/color][color=#E22F6C]ś[/color][color=#7B3D8F]/[/color][color=#532EB8]a[/color][color=#6EC6B2]ś[/color] [color=#5BD855]t[/color][color=#158315]r[/color][color=#312AB0]y[/color][color=#6A0EBA]b[/color] [color=#00DC51]r[/color][color=#2BD84F]a[/color][color=#56FE3F]i[/color][color=#88FF77]n[/color][color=#FDCA07]b[/color][color=#3DF702]o[/color][color=#341617]w[/color][color=#3B3B6F]![/color][/b]");
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[b][color=#24BACB]P[/color][color=#26EA70]o[/color][color=#BD5C64]m[/color][color=#F478B1]y[/color][color=#74CE81]ś[/color][color=#C1FB82]l[/color][color=#EFDA01]n[/color][color=#B7B465]i[/color][color=#E776CF]e[/color] [color=#E0BD82]w[/color][color=#CCDF8B]ł[/color][color=#FAB0DF]ą[/color][color=#31950E]c[/color][color=#4389DC]z[/color][color=#DBF6AB]y[/color][color=#731F47]ł[/color][color=#457ECE]e[/color][color=#E22F6C]ś[/color][color=#7B3D8F]/[/color][color=#532EB8]a[/color][color=#6EC6B2]ś[/color] [color=#5BD855]t[/color][color=#158315]r[/color][color=#312AB0]y[/color][color=#6A0EBA]b[/color] [color=#00DC51]r[/color][color=#2BD84F]a[/color][color=#56FE3F]i[/color][color=#88FF77]n[/color][color=#FDCA07]b[/color][color=#3DF702]o[/color][color=#341617]w[/color][color=#3B3B6F]![/color][/b]");
                             } else if (args[1].equalsIgnoreCase("off")) {
                                 u.setColor(TeamSpeakUtils.getRainbowColor());
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[b][color=#914C3B]P[/color][color=#4213CB]o[/color][color=#A0DC07]m[/color][color=#FE24EF]y[/color][color=#EF696A]ś[/color][color=#9A3BF9]l[/color][color=#022B1E]n[/color][color=#28DFFF]i[/color][color=#308277]e[/color] [color=#2FAC6C]w[/color][color=#585D9A]y[/color][color=#661641]ł[/color][color=#96EBD8]ą[/color][color=#67B125]c[/color][color=#DBD02A]z[/color][color=#2EF831]y[/color][color=#8A183A]ł[/color][color=#183590]e[/color][color=#915CD3]ś[/color][color=#E6FA0A]/[/color][color=#55A571]a[/color][color=#514DFF]ś[/color] [color=#B598DC]t[/color][color=#C50538]r[/color][color=#E8FD1C]y[/color][color=#F8F3E7]b[/color] [color=#70A7E2]r[/color][color=#A701F1]a[/color][color=#4E4A33]i[/color][color=#3CC287]n[/color][color=#F99F54]b[/color][color=#7C6BF1]o[/color][color=#DCC32A]w[/color][color=#07ED7F]![/color][/b]");
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[b][color=#914C3B]P[/color][color=#4213CB]o[/color][color=#A0DC07]m[/color][color=#FE24EF]y[/color][color=#EF696A]ś[/color][color=#9A3BF9]l[/color][color=#022B1E]n[/color][color=#28DFFF]i[/color][color=#308277]e[/color] [color=#2FAC6C]w[/color][color=#585D9A]y[/color][color=#661641]ł[/color][color=#96EBD8]ą[/color][color=#67B125]c[/color][color=#DBD02A]z[/color][color=#2EF831]y[/color][color=#8A183A]ł[/color][color=#183590]e[/color][color=#915CD3]ś[/color][color=#E6FA0A]/[/color][color=#55A571]a[/color][color=#514DFF]ś[/color] [color=#B598DC]t[/color][color=#C50538]r[/color][color=#E8FD1C]y[/color][color=#F8F3E7]b[/color] [color=#70A7E2]r[/color][color=#A701F1]a[/color][color=#4E4A33]i[/color][color=#3CC287]n[/color][color=#F99F54]b[/color][color=#7C6BF1]o[/color][color=#DCC32A]w[/color][color=#07ED7F]![/color][/b]");
                             } else {
                                 TeamSpeakUtils.sendMultiLanguagePrivateMessage(new String[]{"[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Poprawne użycie: !rainbow on/off", "[color=#d50000][B]Error:[/B][/color] [color=#00bcd4]Correct use: !rainbow on/off", "brral"}, c);
                             }
@@ -902,9 +903,9 @@ public class ChatEvent extends TS3EventAdapter {
                 }else if (args[0].equalsIgnoreCase("!help") || args[0].equalsIgnoreCase("!pomoc") || args[0].equalsIgnoreCase("!komendy") || args[0].equalsIgnoreCase("!hilfe")){
                     try {
                         if (c.getCountry().toUpperCase().equalsIgnoreCase("PL")){
-                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), Files.readAllLines(new File("help_PL.txt").toPath()).get(0).replace("\r\n", System.lineSeparator()).replace("{NEW}", "\n"));
+                            TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), Files.readAllLines(new File("help_PL.txt").toPath()).get(0).replace("\r\n", System.lineSeparator()).replace("{NEW}", "\n"));
                         }else{
-                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), Files.readAllLines(new File("help_EN.txt").toPath()).get(0).replace("\r\n", System.lineSeparator()).replace("{NEW}", "\n"));
+                            TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), Files.readAllLines(new File("help_EN.txt").toPath()).get(0).replace("\r\n", System.lineSeparator()).replace("{NEW}", "\n"));
                         }
                     } catch (Exception ex) {
                         TeamSpeakUtils.error(ex);
@@ -914,34 +915,34 @@ public class ChatEvent extends TS3EventAdapter {
                         if (args.length == 2) {
                             try {
                                 slowdowntime = Integer.parseInt(args[1]);
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Zmieniono slowdowntime na " + args[1]);
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "Zmieniono slowdowntime na " + args[1]);
                             } catch (NumberFormatException ee) {
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Argument[1] nie jest liczbą!");
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "Argument[1] nie jest liczbą!");
                             }
                         } else {
-                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=red]Blad! [color=pink]Poprawne użycie: !slowdown <limit>");
+                            TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=red]Blad! [color=pink]Poprawne użycie: !slowdown <limit>");
                         }
                     } else {
-                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Nie jesteś moim szefem! 🤓");
+                        TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "Nie jesteś moim szefem! 🤓");
                     }
                 }else if (args[0].equalsIgnoreCase("!rules") || args[0].equalsIgnoreCase("!regulamin") || args[0].equalsIgnoreCase("!zasady") || args[0].equalsIgnoreCase("!regeln")){
                         /*
                         else if (c.getCountry().toUpperCase().equalsIgnoreCase("DE")){
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), Files.readAllLines(new File("rules_DE.txt").toPath()).get(0).replace("\n", "\n"));
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), Files.readAllLines(new File("rules_DE.txt").toPath()).get(0).replace("\n", "\n"));
                             }
                          */
                     try {
                         if (c.getCountry().toUpperCase().equalsIgnoreCase("PL")){
-                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), Files.readAllLines(new File("rules_PL.txt").toPath()).get(0).replace("\n", "\n").replace("{NEW}", "\n"));
+                            TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), Files.readAllLines(new File("rules_PL.txt").toPath()).get(0).replace("\n", "\n").replace("{NEW}", "\n"));
                         }else{
-                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), Files.readAllLines(new File("rules_EN.txt").toPath()).get(0).replace("\n", "\n").replace("{NEW}", "\n"));
+                            TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), Files.readAllLines(new File("rules_EN.txt").toPath()).get(0).replace("\n", "\n").replace("{NEW}", "\n"));
                         }
                     } catch (Exception ex) {
                         TeamSpeakUtils.error(ex);
                     }
                 }else if(args[0].equalsIgnoreCase("!stats")){
                     try {
-                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), String.format(
+                        TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), String.format(
                                 "[b]Info and stats\n" +
                                 "   • Bot version: [color=#819402]%s[/color]\n" +
                                 "   • JVM version: [color=#819402]%s[/color]\n" +
@@ -958,13 +959,13 @@ public class ChatEvent extends TS3EventAdapter {
                     if (c.isInServerGroup(6) || c.isInServerGroup(16)) {
                         if (socialspy.containsKey(c.getUniqueIdentifier())){
                             socialspy.remove(c.getUniqueIdentifier());
-                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Tryb socialspy został wyłączony!");
+                            TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "Tryb socialspy został wyłączony!");
                         }else{
                             socialspy.put(c.getUniqueIdentifier(), c.getUniqueIdentifier());
-                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Tryb socialspy został włączony!");
+                            TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "Tryb socialspy został włączony!");
                         }
                     }else{
-                        TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "Nie jesteś moim szefem! 🤓");
+                        TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "Nie jesteś moim szefem! 🤓");
                     }
                 }else if (args[0].startsWith("#")){
                     if (Main.channels.contains(args[0].replace("#", "").toLowerCase())){
@@ -1012,7 +1013,7 @@ public class ChatEvent extends TS3EventAdapter {
                                 return;
                             }
                             if (System.currentTimeMillis() < u.getMute()) {
-                                TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Masz wyciszony chat użyj komendy !unmute aby go odsiczyć!");
+                                TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Masz wyciszony chat użyj komendy !unmute aby go odsiczyć!");
                                 return;
                             }
                             if (!(c.isInServerGroup(6) || c.isInServerGroup(16))) {
@@ -1037,18 +1038,18 @@ public class ChatEvent extends TS3EventAdapter {
                             }
                             if (!jsonObject.getJSONObject(u.getSelect()).getBoolean("write")){
                                 if (!(c.isInServerGroup(6) || c.isInServerGroup(16))) {
-                                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Na wybranym przez Ciebie kanale może pisać wyłącznie Administracja.");
+                                    TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Na wybranym przez Ciebie kanale może pisać wyłącznie Administracja.");
                                 }
                             }
                             String parse = MessageUtils.parserMessage(c, u, message, new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
-                            TeamSpeakUtils.api.getClients().forEach(x -> {
+                            TeamSpeakUtils.query.getApi().getClients().forEach(x -> {
                                 if (x.isRegularClient()) {
                                     User ux = UserUtils.get(x.getUniqueIdentifier());
                                     if (System.currentTimeMillis() > ux.getMute()) {
                                         if (!x.isInServerGroup(115)) {
                                             if (ux.getChannels().contains(u.getSelect())) {
                                                 //if (!x.getNickname().equals(c.getNickname())) {
-                                                    TeamSpeakUtils.api.sendPrivateMessage(x.getId(), parse.replace("@" + x.getNickname(), "[b][color=orange]@" + x.getNickname() + "[/color][/b]").replace(":shrug:", "¯\\_(ツ)_/¯").replace(":lenny:", "( ͡° ͜ʖ ͡°)").replace(":take:", "༼ つ ◕_◕ ༽つ").replace(":dolar:", "[̲̅$̲̅(̲̅5̲̅)̲̅$̲̅]").replace(":lennydolar:", "[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]").replace("<3", "[b][color=red]❤[/color][/b]").replace("@Everyone", (everyone(message, c, x) + "[/b][/color]")));
+                                                    TeamSpeakUtils.query.getApi().sendPrivateMessage(x.getId(), parse.replace("@" + x.getNickname(), "[b][color=orange]@" + x.getNickname() + "[/color][/b]").replace(":shrug:", "¯\\_(ツ)_/¯").replace(":lenny:", "( ͡° ͜ʖ ͡°)").replace(":take:", "༼ つ ◕_◕ ༽つ").replace(":dolar:", "[̲̅$̲̅(̲̅5̲̅)̲̅$̲̅]").replace(":lennydolar:", "[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]").replace("<3", "[b][color=red]❤[/color][/b]").replace("@Everyone", (everyone(message, c, x) + "[/b][/color]")));
                                                 //}
                                             }
                                         }
@@ -1058,13 +1059,13 @@ public class ChatEvent extends TS3EventAdapter {
 
                             MessageUtils.saveMessageToFile(c, u, message.replace(":shrug:", "¯\\_(ツ)_/¯").replace(":lenny:", "( ͡° ͜ʖ ͡°)").replace(":take:", "༼ つ ◕_◕ ༽つ").replace(":dolar:", "[̲̅$̲̅(̲̅5̲̅)̲̅$̲̅]").replace(":lennydolar:", "[̲̅$̲̅(̲̅ ͡° ͜ʖ ͡°̲̅)̲̅$̲̅]").replace("<3", "[b][color=red]❤[/color][/b]"), new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file")));
                         }else{
-                            TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Musisz być zarejestrowany!");
+                            TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Musisz być zarejestrowany!");
                         }
                     } catch (Exception ex) {
                         TeamSpeakUtils.error(ex);
                     }
                 }else{
-                    TeamSpeakUtils.api.sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Nie znana funkcja! Użyj !help");
+                    TeamSpeakUtils.query.getApi().sendPrivateMessage(c.getId(), "[color=#d50000][B]Błąd:[/B][/color] [color=#00bcd4]Nie znana funkcja! Użyj !help");
                 }
             }
         }
@@ -1082,7 +1083,7 @@ public class ChatEvent extends TS3EventAdapter {
         if (c.isInServerGroup(6) || c.isInServerGroup(16)){
             if (s.toLowerCase().contains("@everyone")) {
                 User u = UserUtils.get(c);
-                TeamSpeakUtils.api.pokeClient(pokeclient.getId(), "[color=green][b]Zostaleś/aś wspomniany/na na kanale: [color=lightgreen]#" + u.getSelect());
+                TeamSpeakUtils.query.getApi().pokeClient(pokeclient.getId(), "[color=green][b]Zostaleś/aś wspomniany/na na kanale: [color=lightgreen]#" + u.getSelect());
                 System.out.println(pokeclient.getNickname());
                 return "[color=orange][b]@EveryOne";
             }

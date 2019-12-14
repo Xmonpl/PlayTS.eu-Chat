@@ -106,7 +106,7 @@ public class UserUtils {
         //List<User> uu = new ArrayList<User>(users);
         uu.stream().filter(x -> !(x.getChannels().equals(""))).forEach(u ->{
             Arrays.stream(u.getChannels().split("@")).filter(y -> !y.isEmpty()).forEach(y -> {
-                if (TeamSpeakUtils.api.isClientOnline(u.getUuid())) {
+                if (TeamSpeakUtils.query.getApi().isClientOnline(u.getUuid())) {
                     onlinenew.put(y.toLowerCase(), (Integer) onlinenew.get(y.toLowerCase()) + 1);
                 }
                 maxnew.put(y.toLowerCase(), (Integer) maxnew.get(y.toLowerCase()) + 1);
@@ -117,7 +117,7 @@ public class UserUtils {
 
                 uu.stream().filter(x -> !(x.getChannels().equals(""))).forEach(u ->{
             Arrays.stream(u.getChannels().split("@")).filter(y -> !y.isEmpty()).forEach(y -> {
-                    if (TeamSpeakUtils.api.isClientOnline(u.getUuid())) {
+                    if (TeamSpeakUtils.query.getApi().isClientOnline(u.getUuid())) {
                         onlinenew.put(y.toLowerCase(), (Integer) onlinenew.get(y.toLowerCase()) + 1);
                     }
                     maxnew.put(y.toLowerCase(), (Integer) maxnew.get(y.toLowerCase()) + 1);
@@ -132,7 +132,7 @@ public class UserUtils {
                             .parallel()
                             .filter(channel -> !channel.isEmpty())
                             .forEach(channel -> {
-                                if (TeamSpeakUtils.api.isClientOnline(user.getUuid())){
+                                if (TeamSpeakUtils.query.getApi().isClientOnline(user.getUuid())){
                                     onlinenew.put(channel.toLowerCase(), onlinenew.get(channel.toLowerCase()) + 1);
                                 }
                                 maxnew.put(channel.toLowerCase(), (Integer) maxnew.get(channel.toLowerCase()) + 1);
@@ -144,7 +144,7 @@ public class UserUtils {
                 if (!u.getChannels().equals("")) {
                     Arrays.stream(u.getChannels().split("@")).forEach(y -> {
                         if (!y.equals("")) {
-                            if (TeamSpeakUtils.api.isClientOnline(u.getUuid())) {
+                            if (TeamSpeakUtils.query.getApi().isClientOnline(u.getUuid())) {
                                 onlinenew.put(y.toLowerCase(), (Integer) onlinenew.get(y.toLowerCase()) + 1);
                             }
                             maxnew.put(y.toLowerCase(), (Integer) maxnew.get(y.toLowerCase()) + 1);

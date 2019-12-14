@@ -7,7 +7,6 @@ import cf.xmon.chat.database.StoreMode;
 import cf.xmon.chat.database.StoreMySQL;
 import cf.xmon.chat.database.StoreSQLITE;
 import cf.xmon.chat.object.User;
-import cf.xmon.chat.tasks.AntyCrash;
 import cf.xmon.chat.tasks.AutoClearChannelsTask;
 import cf.xmon.chat.tasks.OnlineTask;
 import cf.xmon.chat.utils.MessageUtils;
@@ -41,7 +40,8 @@ public class Main {
         registerChannels();
         UserUtils.load();
         createFiles();
-        TeamSpeakUtils.TeamSpeakConnect(c.getInstance().getQueryIp(), c.getInstance().getPort(), c.getInstance().getDebug(), c.getInstance().getQueryLogin(), c.getInstance().getPassword(), c.getInstance().getVirtualServerId());
+        TeamSpeakUtils.TeamSpeakConnector();
+        //TeamSpeakUtils.TeamSpeakConnect(c.getInstance().getQueryIp(), c.getInstance().getPort(), c.getInstance().getDebug(), c.getInstance().getQueryLogin(), c.getInstance().getPassword(), c.getInstance().getVirtualServerId());
         UserUtils.loadOnline();
         online.putAll(UserUtils.onlinenew);
         max.putAll(UserUtils.maxnew);
@@ -49,15 +49,15 @@ public class Main {
         //ServerCreator.createServer();
         OnlineTask.update();
         AutoClearChannelsTask.update();
-        AntyCrash.update();
-        AntyCrash.update1();
+        //AntyCrash.update();
+        //AntyCrash.update1();
         System.out.println("Uruchomiono w " + (System.currentTimeMillis() - start) + "ms!");
         System.out.println("x-Chat created by Xmon for PlayTS.eu (https://github.com/xmonpl)");
     }
 
     private static void onload(String[] args) throws IOException {
         JSONObject jsonObject = (JSONObject) parseJSONFile("channelconfig.json");
-        TeamSpeakUtils.api.getClients().forEach(x ->{
+        TeamSpeakUtils.query.getApi().getClients().forEach(x ->{
             if (x.isRegularClient() && !x.isInServerGroup(36) && !x.isInServerGroup(92)) {
                 System.out.println(x.getNickname());
                 try {
@@ -65,9 +65,9 @@ public class Main {
                     if (u == null) {
                         new User(x.getUniqueIdentifier());
                         if (args.length == 0) {
-                            TeamSpeakUtils.api.sendPrivateMessage(x.getId(), "\n " + MessageUtils.getTime() + " ⚙️ [color=#2580c3][b]\"System\"[/b][/color]: [b][color=#76ff03]Nowość![/color] Kanały tekstowe jak na [color=#7289da]Discord[/color]zie. Wybierz kanał wpisując [u][color=#8d6e63]!channels[/color][/u] lub [u][color=#795548]!help[/color][/u].\n" +
+                            TeamSpeakUtils.query.getApi().sendPrivateMessage(x.getId(), "\n " + MessageUtils.getTime() + " ⚙️ [color=#2580c3][b]\"System\"[/b][/color]: [b]Kanały tekstowe jak na [color=#7289da]Discord[/color]zie. Wybierz kanał wpisując [u][color=#8d6e63]!channels[/color][/u] lub [u][color=#795548]!help[/color][/u].\n" +
                                     "Automatycznie dołączono" +
-                                    " do kanału [color=#f4511e]#playts[/color] ([color=#43a047]" + online.get("playts") + "/" + max.get("playts") + " online[/color]). [i]Ostatnie 5 wiadomości z kanału [color=#f4511e]#playts[/color]:[/i][/b]\n");
+                                    " do kanału [color=#f4511e]#playts[/color] ([color=#43a047]" + online.get("playts") + "/" + max.get("playts") + " online[/color]). \n[i]Ostatnie 5 wiadomości z kanału [color=#f4511e]#playts[/color]:[/i][/b]\n");
                             File file = new File(jsonObject.getJSONObject("playts").getString("file"));
                             int n_lines = 5;
                             int counter = 0;
@@ -83,7 +83,7 @@ public class Main {
                             MessageUtils.reverseList(s).forEach(y -> {
                                 sb.append(y);
                             });
-                            TeamSpeakUtils.api.sendPrivateMessage(x.getId(), "\n" + sb.toString());
+                            TeamSpeakUtils.query.getApi().sendPrivateMessage(x.getId(), "\n" + sb.toString());
                         }
                     } else {
                         if (args.length == 0) {
@@ -92,8 +92,8 @@ public class Main {
                             Arrays.stream(u.getChannels().split("@")).forEach(y -> {
                                 sbb.append("[color=#f4511e]#" + y.toLowerCase() + "[/color] ([color=#43a047]" + online.get(y.toLowerCase()) + "/" + max.get(y.toLowerCase()) + " online[/color]), ");
                             });
-                            TeamSpeakUtils.api.sendPrivateMessage(x.getId(), "\n " + MessageUtils.getTime() + " ⚙️ [color=#2580c3][b]\"System\"[/b][/color]: [b][color=#76ff03]Nowość![/color] Kanały tekstowe jak na [color=#7289da]Discord[/color]zie. Wybierz kanał wpisując [u][color=#8d6e63]!channels[/color][/u] lub [u][color=#795548]!help[/color][/u].\n" +
-                                    "Znajdujesz się w kanałach: " + sbb.toString() + " [i]Ostatnie 5 wiadomości z kanału [color=#f4511e]#" + u.getSelect().toLowerCase() + "[/color]:[/i][/b]\n");
+                            TeamSpeakUtils.query.getApi().sendPrivateMessage(x.getId(), "\n " + MessageUtils.getTime() + " ⚙️ [color=#2580c3][b]\"System\"[/b][/color]: [b]Kanały tekstowe jak na [color=#7289da]Discord[/color]zie. Wybierz kanał wpisując [u][color=#8d6e63]!channels[/color][/u] lub [u][color=#795548]!help[/color][/u].\n" +
+                                    "Znajdujesz się w kanałach: " + sbb.toString() + " \n[i]Ostatnie 5 wiadomości z kanału [color=#f4511e]#" + u.getSelect().toLowerCase() + "[/color]:[/i][/b]\n");
                             File file = new File(jsonObject.getJSONObject(u.getSelect().toLowerCase()).getString("file"));
                             int n_lines = 5;
                             int counter = 0;
@@ -109,7 +109,7 @@ public class Main {
                             MessageUtils.reverseList(s).forEach(z -> {
                                 sb.append(z);
                             });
-                            TeamSpeakUtils.api.sendPrivateMessage(x.getId(), "\n" + sb.toString());
+                            TeamSpeakUtils.query.getApi().sendPrivateMessage(x.getId(), "\n" + sb.toString());
                         }
                     }
                 } catch (Exception ex) {
